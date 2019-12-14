@@ -1,0 +1,14 @@
+# hexo robots.txt
+User-agent: *
+Allow: /
+Allow: /archives/
+Allow: /categories/
+Allow: /tags/
+
+Disallow: /css/
+Disallow: /images/
+Disallow: /js/
+Disallow: /uploads/
+Disallow: /vendors/
+
+Sitemap: http://zyxin.xyz/blog/sitemap.xml
