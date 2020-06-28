@@ -2,6 +2,27 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://zyxin.xyz/blog/2020-06/AlgebraBasicsNotes/</loc>
+    
+    <lastmod>2020-06-28T01:02:13.161Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://zyxin.xyz/blog/2019-06/MatrixAlgebra/</loc>
+    
+    <lastmod>2020-06-28T00:08:29.078Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://zyxin.xyz/blog/2017-08/WordMath/</loc>
+    
+    <lastmod>2020-06-27T18:40:00.000Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>http://zyxin.xyz/blog/2020-06/ControlSystemNotes/</loc>
     
     <lastmod>2020-06-10T19:25:34.137Z</lastmod>
@@ -79,42 +100,7 @@
   </url>
   
   <url>
-    <loc>http://zyxin.xyz/blog/2019-08/ROSParameter/</loc>
-    
-    <lastmod>2019-11-12T03:02:41.997Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://zyxin.xyz/blog/2017-08/MCTowerSugarcane/</loc>
-    
-    <lastmod>2019-11-12T03:02:41.997Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://zyxin.xyz/blog/2018-02/ToolBrowser/</loc>
-    
-    <lastmod>2019-11-12T03:02:41.997Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://zyxin.xyz/blog/2018-11/PowerShellForCSharpProgrammer/</loc>
-    
-    <lastmod>2019-11-12T03:02:41.997Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://zyxin.xyz/blog/2017-08/MCTowerWheat/</loc>
-    
-    <lastmod>2019-11-12T03:02:41.997Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://zyxin.xyz/blog/2019-11/ParallelismInPythonAndCsharp/</loc>
+    <loc>http://zyxin.xyz/blog/2019-01/WindowsRemoteDesktop/</loc>
     
     <lastmod>2019-11-12T03:02:41.997Z</lastmod>
     
@@ -128,21 +114,21 @@
   </url>
   
   <url>
-    <loc>http://zyxin.xyz/blog/2017-08/MCTrailAndStone/</loc>
+    <loc>http://zyxin.xyz/blog/2018-02/ToolFXPlugins/</loc>
     
     <lastmod>2019-11-12T03:02:41.997Z</lastmod>
     
   </url>
   
   <url>
-    <loc>http://zyxin.xyz/blog/2019-06/MatrixAlgebra/</loc>
+    <loc>http://zyxin.xyz/blog/2018-11/PowerShellForCSharpProgrammer/</loc>
     
     <lastmod>2019-11-12T03:02:41.997Z</lastmod>
     
   </url>
   
   <url>
-    <loc>http://zyxin.xyz/blog/2017-12/PythonCall/</loc>
+    <loc>http://zyxin.xyz/blog/2019-11/ParallelismInPythonAndCsharp/</loc>
     
     <lastmod>2019-11-12T03:02:41.997Z</lastmod>
     
@@ -156,16 +142,51 @@
   </url>
   
   <url>
-    <loc>http://zyxin.xyz/blog/2019-01/WindowsRemoteDesktop/</loc>
+    <loc>http://zyxin.xyz/blog/2019-08/ROSParameter/</loc>
     
     <lastmod>2019-11-12T03:02:41.997Z</lastmod>
     
   </url>
   
   <url>
-    <loc>http://zyxin.xyz/blog/2018-02/ToolFXPlugins/</loc>
+    <loc>http://zyxin.xyz/blog/2017-12/PythonCall/</loc>
     
     <lastmod>2019-11-12T03:02:41.997Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://zyxin.xyz/blog/2018-02/ToolBrowser/</loc>
+    
+    <lastmod>2019-11-12T03:02:41.997Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://zyxin.xyz/blog/2017-08/MCTowerSugarcane/</loc>
+    
+    <lastmod>2019-11-12T03:02:41.997Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://zyxin.xyz/blog/2017-08/MCTrailAndStone/</loc>
+    
+    <lastmod>2019-11-12T03:02:41.997Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://zyxin.xyz/blog/2017-08/MCTowerWheat/</loc>
+    
+    <lastmod>2019-11-12T03:02:41.997Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://zyxin.xyz/blog/2017-08/MCTowerCocoa/</loc>
+    
+    <lastmod>2019-11-12T03:02:41.993Z</lastmod>
     
   </url>
   
@@ -184,21 +205,14 @@
   </url>
   
   <url>
-    <loc>http://zyxin.xyz/blog/2017-08/MCTowerCocoa/</loc>
-    
-    <lastmod>2019-11-12T03:02:41.993Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://zyxin.xyz/blog/2017-08/MCRedstoneRes/</loc>
+    <loc>http://zyxin.xyz/blog/2017-08/MCSnowMachine/</loc>
     
     <lastmod>2019-11-12T03:02:41.989Z</lastmod>
     
   </url>
   
   <url>
-    <loc>http://zyxin.xyz/blog/2017-08/MCSnowMachine/</loc>
+    <loc>http://zyxin.xyz/blog/2017-08/MCRedstoneRes/</loc>
     
     <lastmod>2019-11-12T03:02:41.989Z</lastmod>
     
@@ -212,13 +226,6 @@
   </url>
   
   <url>
-    <loc>http://zyxin.xyz/blog/2017-09/MCHumanCannon/</loc>
-    
-    <lastmod>2019-11-12T03:02:41.985Z</lastmod>
-    
-  </url>
-  
-  <url>
     <loc>http://zyxin.xyz/blog/2017-08/MCFlowerMachine/</loc>
     
     <lastmod>2019-11-12T03:02:41.985Z</lastmod>
@@ -226,9 +233,9 @@
   </url>
   
   <url>
-    <loc>http://zyxin.xyz/blog/2017-08/MCChickenFarm/</loc>
+    <loc>http://zyxin.xyz/blog/2017-09/MCHumanCannon/</loc>
     
-    <lastmod>2019-11-12T03:02:41.981Z</lastmod>
+    <lastmod>2019-11-12T03:02:41.985Z</lastmod>
     
   </url>
   
@@ -240,7 +247,14 @@
   </url>
   
   <url>
-    <loc>http://zyxin.xyz/blog/2019-04/LinuxDistroSelection/</loc>
+    <loc>http://zyxin.xyz/blog/2017-08/MCChickenFarm/</loc>
+    
+    <lastmod>2019-11-12T03:02:41.981Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://zyxin.xyz/blog/2019-08/CythonInterop/</loc>
     
     <lastmod>2019-11-12T03:02:41.977Z</lastmod>
     
@@ -254,7 +268,14 @@
   </url>
   
   <url>
-    <loc>http://zyxin.xyz/blog/2017-12/CythonIntro/</loc>
+    <loc>http://zyxin.xyz/blog/2019-04/LinuxDistroSelection/</loc>
+    
+    <lastmod>2019-11-12T03:02:41.977Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://zyxin.xyz/blog/2019-08/CythonFunctions/</loc>
     
     <lastmod>2019-11-12T03:02:41.977Z</lastmod>
     
@@ -268,21 +289,14 @@
   </url>
   
   <url>
+    <loc>http://zyxin.xyz/blog/2017-12/CythonIntro/</loc>
+    
+    <lastmod>2019-11-12T03:02:41.977Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>http://zyxin.xyz/blog/2018-12/CythonTypes/</loc>
-    
-    <lastmod>2019-11-12T03:02:41.977Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://zyxin.xyz/blog/2018-11/AddGDriveToExplorer/</loc>
-    
-    <lastmod>2019-11-12T03:02:41.977Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://zyxin.xyz/blog/2017-08/Initialization/</loc>
     
     <lastmod>2019-11-12T03:02:41.977Z</lastmod>
     
@@ -296,20 +310,6 @@
   </url>
   
   <url>
-    <loc>http://zyxin.xyz/blog/2017-09/IntelMultiDisplayer/</loc>
-    
-    <lastmod>2019-11-12T03:02:41.977Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://zyxin.xyz/blog/2019-08/CythonInterop/</loc>
-    
-    <lastmod>2019-11-12T03:02:41.977Z</lastmod>
-    
-  </url>
-  
-  <url>
     <loc>http://zyxin.xyz/blog/2018-09/LatexSetup/</loc>
     
     <lastmod>2019-11-12T03:02:41.977Z</lastmod>
@@ -317,7 +317,21 @@
   </url>
   
   <url>
-    <loc>http://zyxin.xyz/blog/2019-08/CythonFunctions/</loc>
+    <loc>http://zyxin.xyz/blog/2017-09/IntelMultiDisplayer/</loc>
+    
+    <lastmod>2019-11-12T03:02:41.977Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://zyxin.xyz/blog/2017-08/Initialization/</loc>
+    
+    <lastmod>2019-11-12T03:02:41.977Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://zyxin.xyz/blog/2018-11/AddGDriveToExplorer/</loc>
     
     <lastmod>2019-11-12T03:02:41.977Z</lastmod>
     
@@ -341,13 +355,6 @@
     <loc>http://zyxin.xyz/blog/2017-08/MCRecollect/</loc>
     
     <lastmod>2017-08-28T03:22:37.000Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://zyxin.xyz/blog/2017-08/WordMath/</loc>
-    
-    <lastmod>2017-08-25T18:06:55.000Z</lastmod>
     
   </url>
   
