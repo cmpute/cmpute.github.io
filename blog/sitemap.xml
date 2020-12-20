@@ -4,14 +4,28 @@
   <url>
     <loc>http://zyxin.xyz/blog/2020-06/ControlSystemNotes/</loc>
     
-    <lastmod>2020-12-18T04:36:59.972Z</lastmod>
+    <lastmod>2020-12-20T01:12:08.918Z</lastmod>
     
   </url>
   
   <url>
     <loc>http://zyxin.xyz/blog/2020-06/AlgebraBasicsNotes/</loc>
     
-    <lastmod>2020-12-18T02:30:59.795Z</lastmod>
+    <lastmod>2020-12-19T16:20:29.812Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://zyxin.xyz/blog/2019-03/StochasticSystemNotes/</loc>
+    
+    <lastmod>2020-12-18T15:23:05.047Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://zyxin.xyz/blog/2019-02/ProbabilityNotes/</loc>
+    
+    <lastmod>2020-12-18T15:23:03.990Z</lastmod>
     
   </url>
   
@@ -82,20 +96,6 @@
     <loc>http://zyxin.xyz/blog/2020-05/TerminalControlCharacters/</loc>
     
     <lastmod>2020-05-10T22:50:05.182Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://zyxin.xyz/blog/2019-02/ProbabilityNotes/</loc>
-    
-    <lastmod>2020-02-12T19:30:58.480Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://zyxin.xyz/blog/2019-03/StochasticSystemNotes/</loc>
-    
-    <lastmod>2020-02-12T19:09:47.406Z</lastmod>
     
   </url>
   
@@ -219,14 +219,14 @@
   </url>
   
   <url>
-    <loc>http://zyxin.xyz/blog/2017-08/MCTowerCactus/</loc>
+    <loc>http://zyxin.xyz/blog/2017-08/MCTowerCocoa/</loc>
     
     <lastmod>2019-11-12T03:02:41.993Z</lastmod>
     
   </url>
   
   <url>
-    <loc>http://zyxin.xyz/blog/2017-08/MCTowerCocoa/</loc>
+    <loc>http://zyxin.xyz/blog/2017-08/MCTowerCactus/</loc>
     
     <lastmod>2019-11-12T03:02:41.993Z</lastmod>
     
@@ -282,7 +282,7 @@
   </url>
   
   <url>
-    <loc>http://zyxin.xyz/blog/2017-12/CythonIntro/</loc>
+    <loc>http://zyxin.xyz/blog/2019-08/CythonFunctions/</loc>
     
     <lastmod>2019-11-12T03:02:41.977Z</lastmod>
     
@@ -310,14 +310,14 @@
   </url>
   
   <url>
-    <loc>http://zyxin.xyz/blog/2019-08/CythonFunctions/</loc>
+    <loc>http://zyxin.xyz/blog/2019-04/LinuxDistroSelection/</loc>
     
     <lastmod>2019-11-12T03:02:41.977Z</lastmod>
     
   </url>
   
   <url>
-    <loc>http://zyxin.xyz/blog/2019-04/LinuxDistroSelection/</loc>
+    <loc>http://zyxin.xyz/blog/2017-12/CythonIntro/</loc>
     
     <lastmod>2019-11-12T03:02:41.977Z</lastmod>
     
