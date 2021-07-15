@@ -1,6 +1,6 @@
-@import url(fontawesome-all.min.css);
-@import url(bongo-cat.css);
+@import url("https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.12.1/css/all.min.css");
 @import url("https://fonts.googleapis.com/css?family=Source+Sans+Pro:300italic,600italic,300,600");
+@import url(bongo-cat.css);
 
 /*
 	Dimension by HTML5 UP
