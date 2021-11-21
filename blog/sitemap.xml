@@ -4,28 +4,49 @@
   <url>
     <loc>http://zyxin.xyz/blog/2019-02/ProbabilityNotes/</loc>
     
-    <lastmod>2021-11-13</lastmod>
+    <lastmod>2021-11-21</lastmod>
     
   </url>
   
   <url>
     <loc>http://zyxin.xyz/blog/2020-06/AlgebraBasicsNotes/</loc>
     
-    <lastmod>2021-11-13</lastmod>
+    <lastmod>2021-11-21</lastmod>
     
   </url>
   
   <url>
     <loc>http://zyxin.xyz/blog/2019-03/StochasticSystemNotes/</loc>
     
-    <lastmod>2021-11-13</lastmod>
+    <lastmod>2021-11-21</lastmod>
     
   </url>
   
   <url>
     <loc>http://zyxin.xyz/blog/2020-06/ControlSystemNotes/</loc>
     
-    <lastmod>2021-11-13</lastmod>
+    <lastmod>2021-11-21</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://zyxin.xyz/blog/2021-11/UtilizeYourComputationPower/</loc>
+    
+    <lastmod>2021-11-21</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://zyxin.xyz/blog/2021-11/TermuxSetup/</loc>
+    
+    <lastmod>2021-11-21</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://zyxin.xyz/blog/2021-07/MegaFavNumbers/</loc>
+    
+    <lastmod>2021-11-14</lastmod>
     
   </url>
   
@@ -68,13 +89,6 @@
     <loc>http://zyxin.xyz/blog/2018-02/ToolWindows/</loc>
     
     <lastmod>2021-09-09</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://zyxin.xyz/blog/2021-07/MegaFavNumbers/</loc>
-    
-    <lastmod>2021-07-28</lastmod>
     
   </url>
   
@@ -424,7 +438,7 @@
 
   <url>
     <loc>http://zyxin.xyz/blog</loc>
-    <lastmod>2021-11-13</lastmod>
+    <lastmod>2021-11-21</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
@@ -432,336 +446,336 @@
   
   <url>
     <loc>http://zyxin.xyz/blog/tags/Robotics/</loc>
-    <lastmod>2021-11-13</lastmod>
+    <lastmod>2021-11-21</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>http://zyxin.xyz/blog/tags/Math/</loc>
-    <lastmod>2021-11-13</lastmod>
+    <lastmod>2021-11-21</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>http://zyxin.xyz/blog/tags/Algebra/</loc>
-    <lastmod>2021-11-13</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>http://zyxin.xyz/blog/tags/Windows/</loc>
-    <lastmod>2021-11-13</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>http://zyxin.xyz/blog/tags/Google/</loc>
-    <lastmod>2021-11-13</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>http://zyxin.xyz/blog/tags/Google-Drive/</loc>
-    <lastmod>2021-11-13</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>http://zyxin.xyz/blog/tags/Explorer/</loc>
-    <lastmod>2021-11-13</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>http://zyxin.xyz/blog/tags/Audiophile/</loc>
-    <lastmod>2021-11-13</lastmod>
+    <lastmod>2021-11-21</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>http://zyxin.xyz/blog/tags/Linux/</loc>
-    <lastmod>2021-11-13</lastmod>
+    <lastmod>2021-11-21</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>http://zyxin.xyz/blog/tags/Windows/</loc>
+    <lastmod>2021-11-21</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>http://zyxin.xyz/blog/tags/Google/</loc>
+    <lastmod>2021-11-21</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>http://zyxin.xyz/blog/tags/Google-Drive/</loc>
+    <lastmod>2021-11-21</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>http://zyxin.xyz/blog/tags/Explorer/</loc>
+    <lastmod>2021-11-21</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>http://zyxin.xyz/blog/tags/Audiophile/</loc>
+    <lastmod>2021-11-21</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>http://zyxin.xyz/blog/tags/Shell/</loc>
-    <lastmod>2021-11-13</lastmod>
+    <lastmod>2021-11-21</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>http://zyxin.xyz/blog/tags/Ubuntu/</loc>
-    <lastmod>2021-11-13</lastmod>
+    <lastmod>2021-11-21</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>http://zyxin.xyz/blog/tags/KDE/</loc>
-    <lastmod>2021-11-13</lastmod>
+    <lastmod>2021-11-21</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>http://zyxin.xyz/blog/tags/Cython/</loc>
-    <lastmod>2021-11-13</lastmod>
+    <lastmod>2021-11-21</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>http://zyxin.xyz/blog/tags/Python/</loc>
-    <lastmod>2021-11-13</lastmod>
+    <lastmod>2021-11-21</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>http://zyxin.xyz/blog/tags/C/</loc>
-    <lastmod>2021-11-13</lastmod>
+    <lastmod>2021-11-21</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>http://zyxin.xyz/blog/tags/Keras/</loc>
-    <lastmod>2021-11-13</lastmod>
+    <lastmod>2021-11-21</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>http://zyxin.xyz/blog/tags/CNTK/</loc>
-    <lastmod>2021-11-13</lastmod>
+    <lastmod>2021-11-21</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>http://zyxin.xyz/blog/tags/Tensorflow/</loc>
-    <lastmod>2021-11-13</lastmod>
+    <lastmod>2021-11-21</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>http://zyxin.xyz/blog/tags/Deep-Learning/</loc>
-    <lastmod>2021-11-13</lastmod>
+    <lastmod>2021-11-21</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>http://zyxin.xyz/blog/tags/LaTeX/</loc>
-    <lastmod>2021-11-13</lastmod>
+    <lastmod>2021-11-21</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>http://zyxin.xyz/blog/tags/Visual-Studio-Code/</loc>
-    <lastmod>2021-11-13</lastmod>
+    <lastmod>2021-11-21</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>http://zyxin.xyz/blog/tags/Server/</loc>
-    <lastmod>2021-11-13</lastmod>
+    <lastmod>2021-11-21</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>http://zyxin.xyz/blog/tags/Redstone/</loc>
-    <lastmod>2021-11-13</lastmod>
+    <lastmod>2021-11-21</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>http://zyxin.xyz/blog/tags/Automation/</loc>
-    <lastmod>2021-11-13</lastmod>
+    <lastmod>2021-11-21</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>http://zyxin.xyz/blog/tags/Docker/</loc>
-    <lastmod>2021-11-13</lastmod>
+    <lastmod>2021-11-21</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>http://zyxin.xyz/blog/tags/Fully-automated/</loc>
-    <lastmod>2021-11-13</lastmod>
+    <lastmod>2021-11-21</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>http://zyxin.xyz/blog/tags/Semi-automated/</loc>
-    <lastmod>2021-11-13</lastmod>
+    <lastmod>2021-11-21</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>http://zyxin.xyz/blog/tags/Mod/</loc>
-    <lastmod>2021-11-13</lastmod>
+    <lastmod>2021-11-21</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>http://zyxin.xyz/blog/tags/Matrix/</loc>
-    <lastmod>2021-11-13</lastmod>
+    <lastmod>2021-11-21</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>http://zyxin.xyz/blog/tags/C/</loc>
-    <lastmod>2021-11-13</lastmod>
+    <lastmod>2021-11-21</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>http://zyxin.xyz/blog/tags/Parallelism/</loc>
-    <lastmod>2021-11-13</lastmod>
+    <lastmod>2021-11-21</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>http://zyxin.xyz/blog/tags/PowerShell/</loc>
-    <lastmod>2021-11-13</lastmod>
+    <lastmod>2021-11-21</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>http://zyxin.xyz/blog/tags/ROS/</loc>
-    <lastmod>2021-11-13</lastmod>
+    <lastmod>2021-11-21</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>http://zyxin.xyz/blog/tags/Autonomy/</loc>
-    <lastmod>2021-11-13</lastmod>
+    <lastmod>2021-11-21</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>http://zyxin.xyz/blog/tags/C-C/</loc>
-    <lastmod>2021-11-13</lastmod>
+    <lastmod>2021-11-21</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>http://zyxin.xyz/blog/tags/Visual-Studio/</loc>
-    <lastmod>2021-11-13</lastmod>
+    <lastmod>2021-11-21</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>http://zyxin.xyz/blog/tags/Word/</loc>
-    <lastmod>2021-11-13</lastmod>
+    <lastmod>2021-11-21</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>http://zyxin.xyz/blog/tags/Microsoft/</loc>
-    <lastmod>2021-11-13</lastmod>
+    <lastmod>2021-11-21</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>http://zyxin.xyz/blog/tags/Office/</loc>
-    <lastmod>2021-11-13</lastmod>
+    <lastmod>2021-11-21</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>http://zyxin.xyz/blog/tags/TeX/</loc>
-    <lastmod>2021-11-13</lastmod>
+    <lastmod>2021-11-21</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>http://zyxin.xyz/blog/tags/Desktop/</loc>
-    <lastmod>2021-11-13</lastmod>
+    <lastmod>2021-11-21</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>http://zyxin.xyz/blog/tags/AMD/</loc>
-    <lastmod>2021-11-13</lastmod>
+    <lastmod>2021-11-21</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>http://zyxin.xyz/blog/tags/NVIDIA/</loc>
-    <lastmod>2021-11-13</lastmod>
+    <lastmod>2021-11-21</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>http://zyxin.xyz/blog/tags/Probability/</loc>
-    <lastmod>2021-11-13</lastmod>
+    <lastmod>2021-11-21</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>http://zyxin.xyz/blog/tags/Stochastic/</loc>
-    <lastmod>2021-11-13</lastmod>
+    <lastmod>2021-11-21</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>http://zyxin.xyz/blog/tags/Control/</loc>
-    <lastmod>2021-11-13</lastmod>
+    <lastmod>2021-11-21</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>http://zyxin.xyz/blog/tags/Rust/</loc>
-    <lastmod>2021-11-13</lastmod>
+    <lastmod>2021-11-21</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>http://zyxin.xyz/blog/tags/Comparison/</loc>
-    <lastmod>2021-11-13</lastmod>
+    <lastmod>2021-11-21</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
@@ -770,119 +784,119 @@
   
   <url>
     <loc>http://zyxin.xyz/blog/categories/ACGN/</loc>
-    <lastmod>2021-11-13</lastmod>
+    <lastmod>2021-11-21</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>http://zyxin.xyz/blog/categories/System/</loc>
-    <lastmod>2021-11-13</lastmod>
+    <lastmod>2021-11-21</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>http://zyxin.xyz/blog/categories/Notes/</loc>
-    <lastmod>2021-11-13</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>http://zyxin.xyz/blog/categories/Notes/Math/</loc>
-    <lastmod>2021-11-13</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>http://zyxin.xyz/blog/categories/Trick/</loc>
-    <lastmod>2021-11-13</lastmod>
+    <lastmod>2021-11-21</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>http://zyxin.xyz/blog/categories/Misc/</loc>
-    <lastmod>2021-11-13</lastmod>
+    <lastmod>2021-11-21</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>http://zyxin.xyz/blog/categories/Notes/Math/</loc>
+    <lastmod>2021-11-21</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>http://zyxin.xyz/blog/categories/Trick/</loc>
+    <lastmod>2021-11-21</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>http://zyxin.xyz/blog/categories/System/Linux/</loc>
-    <lastmod>2021-11-13</lastmod>
+    <lastmod>2021-11-21</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>http://zyxin.xyz/blog/categories/Coding/</loc>
-    <lastmod>2021-11-13</lastmod>
+    <lastmod>2021-11-21</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>http://zyxin.xyz/blog/categories/Coding/Language/</loc>
-    <lastmod>2021-11-13</lastmod>
+    <lastmod>2021-11-21</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>http://zyxin.xyz/blog/categories/Game/</loc>
-    <lastmod>2021-11-13</lastmod>
+    <lastmod>2021-11-21</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>http://zyxin.xyz/blog/categories/Coding/Machine-Learning/</loc>
-    <lastmod>2021-11-13</lastmod>
+    <lastmod>2021-11-21</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>http://zyxin.xyz/blog/categories/Game/Minecraft/</loc>
-    <lastmod>2021-11-13</lastmod>
+    <lastmod>2021-11-21</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>http://zyxin.xyz/blog/categories/System/ROS/</loc>
-    <lastmod>2021-11-13</lastmod>
+    <lastmod>2021-11-21</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>http://zyxin.xyz/blog/categories/Tools/</loc>
-    <lastmod>2021-11-13</lastmod>
+    <lastmod>2021-11-21</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>http://zyxin.xyz/blog/categories/System/Windows/</loc>
-    <lastmod>2021-11-13</lastmod>
+    <lastmod>2021-11-21</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>http://zyxin.xyz/blog/categories/Notes/Control/</loc>
-    <lastmod>2021-11-13</lastmod>
+    <lastmod>2021-11-21</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>http://zyxin.xyz/blog/categories/Coding/Languages/</loc>
-    <lastmod>2021-11-13</lastmod>
+    <lastmod>2021-11-21</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
