@@ -1,5 +1,8 @@
-@import url("https://cdn.jsdelivr.net/npm/@xz/fonts@1/serve/liberation-serif.min.css");
-@import url("https://cdn.jsdelivr.net/npm/@xz/fonts@1/serve/roboto-mono.min.css");
+@font-face {
+  font-family: "Courier";
+  src: url("https://cdn.jsdelivr.net/gh/xaoxuu/cdn-fonts/Courier/Courier.dfont");
+  font-weight: 300;
+}
 .gutter pre {
   color: rgba(0,0,0,0.4);
 }
@@ -92,8 +95,8 @@ pre .xml .cdata {
   opacity: 0.5;
 }
 body {
-  font-family: "Liberation Serif", Menlo, Monaco, Arial, sans-serif;
-  font-size: 16px;
+  font-family: Courier, Menlo, Monaco, "Helvetica Neue", Arial, sans-serif;
+  font-size: 15px;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   color: #22313f;
@@ -292,7 +295,7 @@ em {
 #nav .nav-dropdown {
   display: none;
   box-sizing: border-box;
-  max-height: calc(100vh - 56px);
+  max-height: calc(100vh - 60px);
   overflow-y: auto;
   position: absolute;
   top: 100%;
@@ -387,12 +390,9 @@ sup.beta.beta {
   h2+p {
     page-break-before: avoid;
   }
-  .noprint {
-    display: none !important;
-  }
   a:link:after,
   a:visited:after {
-    content: "";
+    content: " [" attr(href) "] ";
   }
 }
 #comments #valine_container .info {
@@ -447,7 +447,7 @@ sup.beta.beta {
 #header {
   background-color: #fff;
   height: 40px;
-  padding: 8px 60px;
+  padding: 10px 60px;
   position: relative;
   z-index: 100;
   box-shadow: 0 1px 1px rgba(0,0,0,0.12), 0 2px 2px rgba(0,0,0,0.08);
@@ -466,7 +466,7 @@ body.docs #nav {
   padding: 0;
   position: absolute;
   right: 30px;
-  top: 8px;
+  top: 10px;
   height: 40px;
   line-height: 40px;
 }
@@ -547,7 +547,7 @@ body.docs #nav {
   font-size: 1.8em;
   line-height: 40px;
   color: rgba(33,150,243,0.9);
-  font-family: "Liberation Serif", Menlo, Monaco, Arial, sans-serif, cursive;
+  font-family: Courier, Menlo, Monaco, "Helvetica Neue", Arial, sans-serif, cursive;
   font-weight: 500;
 }
 #logo img {
@@ -573,7 +573,7 @@ body.docs #nav {
   -o-transition: all 0.5s ease;
 }
 #mobile-bar .nav-title {
-  font-family: "Liberation Serif", Menlo, Monaco, Arial, sans-serif;
+  font-family: Courier, Menlo, Monaco, "Helvetica Neue", Arial, sans-serif;
   font-size: 1.1em;
   line-height: 52px;
   color: #2c3e50;
@@ -625,7 +625,7 @@ body.docs #nav {
   -ms-overflow-style: none;
 }
 .sidebar header {
-  padding-top: 56px;
+  padding-top: 60px;
   padding-left: 12px;
 }
 .sidebar header h2 {
@@ -791,7 +791,7 @@ body.docs #nav {
     width: 280px;
   }
   .sidebar.open .header {
-    padding-top: 28px;
+    padding-top: 30px;
   }
 }
 @media print {
@@ -945,7 +945,7 @@ sup {
 .content {
   position: relative;
   padding: 46px 0;
-  max-width: 800px;
+  max-width: 720px;
   margin: 0 auto;
   padding-left: 40px;
   text-align: justify;
@@ -1024,7 +1024,7 @@ sup {
   height: 24px;
 }
 .content h2 {
-  margin: 2em 0 0.8em;
+  margin: 3.5em 0 0.8em;
   padding-bottom: 0.7em;
   border-bottom: 1px solid #ddd;
   font-size: 1.6em;
@@ -1038,7 +1038,7 @@ sup {
   color: #2c3e50;
 }
 .content h3 {
-  margin: 1.5rem 0 0;
+  margin: 3rem 0 0;
   line-height: 1.2;
   position: relative;
   font-size: 1.4em;
@@ -1065,7 +1065,7 @@ sup {
   margin-top: 0;
 }
 .content h4 {
-  margin: 1rem 0 0;
+  margin: 2rem 0 0;
   color: #22313f;
   font-size: 16px;
 }
@@ -1387,7 +1387,7 @@ sup {
 @media screen and (max-width: 900px) {
   body {
     -webkit-text-size-adjust: none;
-    font-size: 16px;
+    font-size: 15px;
   }
   #header {
     display: none;
@@ -1444,6 +1444,22 @@ sup {
   }
   iframe {
     margin: 0 !important;
+  }
+}
+@media print {
+  .footer {
+    display: none;
+  }
+  .content {
+    padding-left: 0px;
+  }
+  .content p {
+    line-height: 1.35em;
+  }
+  .content p.tip {
+    background-color: #fff;
+    border: 2px solid #e8e8e8;
+    border-left: 4px solid #f66;
   }
 }
 [data-p="blue"] {
@@ -1589,47 +1605,6 @@ sup {
 .content span.keyword:before {
   content: '#';
   opacity: 0.5;
-}
-@media print {
-  .footer {
-    display: none;
-  }
-  .content {
-    padding-left: 0px;
-    max-width: none;
-  }
-  .content h2 {
-    margin: 0;
-  }
-  .content p,
-  .content ul,
-  .content ol {
-    line-height: 1.35em;
-  }
-  .content p,
-  .content li {
-    margin: 8px 0;
-  }
-  .content span.compact li {
-    line-height: 1em;
-  }
-  .content .resume-header {
-    padding: 8px 4px;
-  }
-  .content .resume-header .resume-title {
-    margin-top: 4px;
-    margin-bottom: 4px;
-  }
-  .content .resume-header .description {
-    line-height: 1em;
-    margin-top: 4px;
-    margin-bottom: 4px;
-  }
-  .content > table.contact td {
-    padding: 0;
-    border: none;
-    vertical-align: top;
-  }
 }
 .resume-footer {
   margin-top: 120px;
