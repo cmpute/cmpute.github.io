@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Coding on JacobZ</title><link>https://zyxin.xyz/blog/en/categories/Coding/</link><description>Recent content in Coding on JacobZ</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><lastBuildDate>Thu, 05 Aug 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://zyxin.xyz/blog/en/categories/Coding/index.xml" rel="self" type="application/rss+xml"/><item><title>Select Modern Programming Languages by One-line comments</title><link>https://zyxin.xyz/blog/en/2021-08/OneLinePerProgrammingLanguage/</link><pubDate>Thu, 05 Aug 2021 00:00:00 +0000</pubDate><guid>https://zyxin.xyz/blog/en/2021-08/OneLinePerProgrammingLanguage/</guid><description>&lt;p>In recent years, Many novel programming languages have emergerd, and new concepts continued to appear. I always wanted to learn about various new programming languages, and it would be nice to master one more language if it is prospective. Therefore, this article summarizes my understanding of some popular modern languages and their various characteristics. If you are also interested in trying a new language, then I hope this article can help you~&lt;/p>
+&lt;p>For the popularity of languages, we can refer to &lt;a class="link" href="https://www.tiobe.com/tiobe-index/" target="_blank" rel="noopener"
+>TIOBE rankings&lt;/a>, &lt;a class="link" href="https://madnight.github.io/githut" target="_blank" rel="noopener"
+>Github rankings&lt;/a> and &lt;a class="link" href="https://insights.stackoverflow.com/survey/2020#technology-most-loved-dreaded-and-wanted-languages-loved" target="_blank" rel="noopener"
+>StackOverflow rankings&lt;/a>. I won&amp;rsquo;t go into details in this post about the language features, since they&amp;rsquo;re still evolving over time. And for the same reason, the comments on each language only reflects my impression on each language listed here.&lt;/p>
+&lt;p>This post focuses on general programming languange. For Domain-Specific Languages (DSL) like SQL, I won&amp;rsquo;t include them cuz you have to learn them only when needed.&lt;/p>
+&lt;p>In terms of the history of the programming languages, there&amp;rsquo;s a very interesting picture below (&lt;a class="link" href="https://infographicnow.com/educational/languages/educational-infographic-timeline-of-programming-languages-infographic/" target="_blank" rel="noopener"
+>source here&lt;/a>), if you&amp;rsquo;re interested in the details, you can refer to the wikipedia pages about &lt;a class="link" href="https://en.wikipedia.org/wiki/History_of_programming_languages" target="_blank" rel="noopener"
+>the history&lt;/a> and &lt;a class="link" href="https://en.wikipedia.org/wiki/Timeline_of_programming_languages" target="_blank" rel="noopener"
+>the timeline&lt;/a> (highly recommend the second one!), or refer to &lt;a class="link" href="https://www.levenez.com/lang/" target="_blank" rel="noopener"
+>this website&lt;/a>.&lt;/p>
+&lt;p>&lt;img src="https://zyxin.xyz/blog/blog/en/2021-08/OneLinePerProgrammingLanguage/timeline-of-programming-languages.jpg"
+width="600"
+height="1621"
+loading="lazy"
+alt="Timeline of the programming languages"
+class="gallery-image"
+data-flex-grow="37"
+data-flex-basis="88px"
+>&lt;/p>
+&lt;h2 id="features-of-a-modern-languange">Features of a modern languange&lt;/h2>
+&lt;p>Before the summary, first I should introduce some programming concepts for a better understanding of the languages. The comparison in depth of the concepts can be also found in &lt;a class="link" href="https://en.wikipedia.org/wiki/Comparison_of_programming_languages#:~:text=General%20comparison%20%20%20%20Language%20%20,%20%20%20%2020%20more%20rows%20" target="_blank" rel="noopener"
+>wikipedia&lt;/a>. Here the introduction is also very brief, you can search these keywords for further information.&lt;/p>
+&lt;ul>
+&lt;li>&lt;strong>Object-Oriented&lt;/strong>: This should familiar to you if you have attended any class about programming. Object-oriented programming usually means that the core logic of the code is built around &amp;ldquo;classes&amp;rdquo;. A class contains a definition of an object and some associated methods, an derived class can be used to simplify the code.&lt;/li>
+&lt;li>&lt;strong>Dynamic / Static Types&lt;/strong>: Static typing requires the program to specify the type of each variable while for dynamic typing that&amp;rsquo;s not a requirement. These two options are trade-off between the flexibilty and the safety of the program. A similar naming of this choice is &lt;strong>strong / weak typing&lt;/strong>. In weak typing languages, there&amp;rsquo;s a concept called &amp;ldquo;Duck-typing&amp;rdquo;, which means we only care about what interface the object/type provides, rather than ensure that the object has a specific type.&lt;/li>
+&lt;li>&lt;strong>Meta-Programming / Generic Type&lt;/strong>: Meta-programming means that we can generate code with some &amp;ldquo;meta&amp;rdquo; code, a representative case is the template in C++. Meanwhile, generic types are similar to meta-programming, but it won&amp;rsquo;t generate code explicitly, it&amp;rsquo;s just some code supporting types as parameters.&lt;/li>
+&lt;li>&lt;strong>Imperative / Declarative / Functional&lt;/strong>: In imperative Languages, you instruct the program, step by step, to do something; In declarative Languages, you only tell the program what you want to do; In functional Languages, the function is the first-class citizen and the program will achieve the goal by call functions sequentially. The functions usually can be stored in variables as well.&lt;/li>
+&lt;li>&lt;strong>Parallelism&lt;/strong>: Parallelism means that the program supports running multiple code blocks in parallel (including processes, threads and coroutines)&lt;/li>
+&lt;li>&lt;strong>Data Science&lt;/strong>: Some programming Languages are designed for data scientists, which mainly features the built-in support for high-precision and high-dimensional data.&lt;/li>
+&lt;li>&lt;strong>Test-driven Development (TDD) / Design by Contract (Doc)&lt;/strong>: These are two different paradigm for building the program. Test-driving means that the target of coding is to passing some tests, while design by contract means the program has to meet some constraints during coding. Support for tests and contracts are not critical for programming languages, but in modern complex programs, they can drastically improve the efficiency and safety of the development.&lt;/li>
+&lt;li>&lt;strong>Virtual Machine / Intermediate Language&lt;/strong>: A few languages support cross-platform compatibility through languange virtual machine, which will convert the intermediate codes to machine codes. The representatives are JVM, CLR and LLVM.&lt;/li>
+&lt;li>&lt;strong>Garbage Collection (GC)&lt;/strong>: Garbage collection is a feature built in some languages&amp;rsquo; runtime. With this feature, you don&amp;rsquo;t need to worry about the lifetime of variables, since the garbage collector handles the deconstruction for you.&lt;/li>
+&lt;/ul>
+&lt;/hr>
+&lt;blockquote>
+&lt;p>Now I will lists the 1-line comments of the mainstream programming languages selected from the rankings mentioned above.&lt;/p>
+&lt;/blockquote>
+&lt;h2 id="why-to-choose-this-languange-in-about-1-sentence">Why to choose this languange in (about) 1 sentence&lt;/h2>
+&lt;ul>
+&lt;li>&lt;strong>C&lt;/strong>: All time god which is closest to assembly languange with little dependency and high performance. The ABI written with C can be called from most other languages&lt;/li>
+&lt;li>&lt;strong>CoffeeScript&lt;/strong>: Javascript with syntax sugar&lt;/li>
+&lt;li>&lt;strong>C++&lt;/strong>: One of the most powerful Languages with full support of object-oriented programming and meta-programming, and full compatibility with C&lt;/li>
+&lt;li>&lt;strong>C#&lt;/strong>: Full of syntax sugar and faster than Java. The recent advancements in open-source provide more resources.&lt;/li>
+&lt;li>&lt;strong>D&lt;/strong>: Aiming at replacing C++ with many modern features including design by contract&lt;/li>
+&lt;li>&lt;strong>Dart&lt;/strong>: Backed by Google and aiming at replacing Javascript, but that&amp;rsquo;s it&lt;/li>
+&lt;li>&lt;strong>F#&lt;/strong>: Functional version of C#&lt;/li>
+&lt;li>&lt;strong>Fortran&lt;/strong>: Old but blazing fast language, even faster than C&lt;/li>
+&lt;li>&lt;strong>Go&lt;/strong>: Fast compilation with great coroutine support and produces single file executable without dependencies&lt;/li>
+&lt;li>&lt;strong>Groovy&lt;/strong>: Dynamic typing version of Java built by Apache, similar goal to Ruby&lt;/li>
+&lt;li>&lt;strong>Haskell&lt;/strong>: Representative of functional language&lt;/li>
+&lt;li>&lt;strong>Java&lt;/strong>: Widely used in server applications with tons of available packages, equipped with garbage collector&lt;/li>
+&lt;li>&lt;strong>Javascript&lt;/strong>: Popular in both front-end and backend development, being very flexible and supported by most browsers. Also comes with tons of availabe packages.&lt;/li>
+&lt;li>&lt;strong>Julia&lt;/strong>: Science-computing oriented languange with builtin support to n-dimensional tensor and fast speed. Has the potential to be the next Fortran&lt;/li>
+&lt;li>&lt;strong>Kotlin&lt;/strong>: Java with modern syntax sugar developed by JetBrains, compile to Java or JS&lt;/li>
+&lt;li>&lt;strong>Matlab&lt;/strong>: Designed for engineers and scientists with many engineering packages. The Simulink package has no alternatives by now.&lt;/li>
+&lt;li>&lt;strong>Objective-C&lt;/strong>: Any pros?&lt;/li>
+&lt;li>&lt;strong>Perl&lt;/strong>: Suitable to be used as scripting or glue language, with great string processing utilites.&lt;/li>
+&lt;li>&lt;strong>PHP&lt;/strong>: Server-oriented languange that can be embedded into HTML, flexible and simple&lt;/li>
+&lt;li>&lt;strong>Python&lt;/strong>: Very flexible with everything being an object. Great readability and interoperability with C/C++. Tons of available packages&lt;/li>
+&lt;li>&lt;strong>R&lt;/strong>: Designed for statistics with rich domain-specific packages&lt;/li>
+&lt;li>&lt;strong>Ruby&lt;/strong>: Chained calling, sugar syntax and as flexible as Python&lt;/li>
+&lt;li>&lt;strong>Rust&lt;/strong>: Memory safety ensured in language level. No garbage collector means that it&amp;rsquo;s fast!&lt;/li>
+&lt;li>&lt;strong>Scala&lt;/strong>: Scala is like C++ on JVM, while Kotlin is like C# on JVM&lt;/li>
+&lt;li>&lt;strong>Swift&lt;/strong>: Replacement for Obj-C developed by Apple. Similar to Java&lt;/li>
+&lt;li>&lt;strong>Typescript&lt;/strong>: Strong typing version of Javascript&lt;/li>
+&lt;li>&lt;strong>Vala&lt;/strong>: Aiming at replacing C/C++ in GUI programming in Linux (Elementary OS). Compile to C = fast speed.&lt;/li>
+&lt;li>&lt;strong>Visual Basic&lt;/strong>: Builtin support by many Microsoft software&lt;/li>
+&lt;/ul>
+&lt;h2 id="why-to-avoid-this-languange-in-about-1-sentense">Why to avoid this languange in (about) 1 sentense&lt;/h2>
+&lt;ul>
+&lt;li>&lt;strong>C&lt;/strong>: No modern language features, unsafe and hard for object-oriented programming&lt;/li>
+&lt;li>&lt;strong>CoffeeScript&lt;/strong>: No compelling feature, Typescript might be a better choice&lt;/li>
+&lt;li>&lt;strong>C++&lt;/strong>: Templates are very hard for debugging, slow compilation. Many modern features are implemented based on templates and std libraries, which are not elegant&lt;/li>
+&lt;li>&lt;strong>C#&lt;/strong>: Confusing runtime standards, frequently changing API and sometimes break backward compatibility&lt;/li>
+&lt;li>&lt;strong>D&lt;/strong>: No sponsor = poor eco-system&lt;/li>
+&lt;li>&lt;strong>Dart&lt;/strong>: Again, typescript might be a better choice&lt;/li>
+&lt;li>&lt;strong>F#&lt;/strong>: I don&amp;rsquo;t know who is using it, C# is good enough&lt;/li>
+&lt;li>&lt;strong>Fortran&lt;/strong>: Old syntax and no modern language features&lt;/li>
+&lt;li>&lt;strong>Go&lt;/strong>: No generics, don&amp;rsquo;t allow unused variables and modules&lt;/li>
+&lt;li>&lt;strong>Groovy&lt;/strong>: There&amp;rsquo;re better alternatives outside of JVM Languages&lt;/li>
+&lt;li>&lt;strong>Haskell&lt;/strong>: Learning it is like learning to be a mathematician&lt;/li>
+&lt;li>&lt;strong>Java&lt;/strong>: Verbose, not as elegant and fast as C#&lt;/li>
+&lt;li>&lt;strong>Javascript&lt;/strong>: Single-threaded, too flexible (see the meme below)
+{% asset_img js-triangle.jpg Javascript等号三位一体%}&lt;/li>
+&lt;li>&lt;strong>Julia&lt;/strong>: The package manangement is very hard to use. The syntax is also hard to understand&lt;/li>
+&lt;li>&lt;strong>Kotlin&lt;/strong>: Slow to compile. No big problems other than that, but there&amp;rsquo;re better alternatives outside JVM&lt;/li>
+&lt;li>&lt;strong>Matlab&lt;/strong>: Proprietary languange owned by Mathworks and you have to install a big Matlab software to run the code. Python and Julia are good enough to replace Matlab (if you are not a Simulink user)&lt;/li>
+&lt;li>&lt;strong>Objective-C&lt;/strong>: Only used by Apple, hard to read&lt;/li>
+&lt;li>&lt;strong>Perl&lt;/strong>: Hard to read, too flexible and slow. Python is better&lt;/li>
+&lt;li>&lt;strong>PHP&lt;/strong>: Single threaded, only suitable for Web development. Javascript is better in terms of general abilities and community size&lt;/li>
+&lt;li>&lt;strong>Python&lt;/strong>: Bad performance, single threaded (caused by GIL)&lt;/li>
+&lt;li>&lt;strong>R&lt;/strong>: Even worse than Matlab&lt;/li>
+&lt;li>&lt;strong>Rust&lt;/strong>: The compiler is too strict sometimes, and it&amp;rsquo;s hard to manipulate strings in Rust&lt;/li>
+&lt;li>&lt;strong>Ruby&lt;/strong>: Bad performance, usually used only by backend engineers&lt;/li>
+&lt;li>&lt;strong>Scala&lt;/strong>: Harder to learn than Kotlin, and worse interoperability with Java&lt;/li>
+&lt;li>&lt;strong>Swift&lt;/strong>: Only a good choice for iOS and OSX development.&lt;/li>
+&lt;li>&lt;strong>Typescript&lt;/strong>: Only a good choice for Web development&lt;/li>
+&lt;li>&lt;strong>Vala&lt;/strong>: Only used by Gnome and ElementaryOS, very small community&lt;/li>
+&lt;li>&lt;strong>Visual Basic&lt;/strong>: Don&amp;rsquo;t use it if you can!&lt;/li>
+&lt;/ul></description></item><item><title>The Pitfall Of Long Double</title><link>https://zyxin.xyz/blog/en/1-01/ThePitfallOfLongDouble/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://zyxin.xyz/blog/en/1-01/ThePitfallOfLongDouble/</guid><description>&lt;p>{% note default %}&lt;/p>
+&lt;h2 id="preface">Preface&lt;/h2>
+&lt;p>This article is a repost, originally written by David on the Prelert&amp;rsquo;s website. The original article is now only &lt;a class="link" href="https://web.archive.org/web/20170422155137/http://info.prelert.com/blog/author/david" target="_blank" rel="noopener"
+>accessible on WebArchive&lt;/a>.&lt;/p>
+&lt;p>I found this article when I&amp;rsquo;m searching for the reason why Rust doesn&amp;rsquo;t have a corresponding type for &lt;code>long double&lt;/code> in C/C++, which have caused some interoperability issues (see &lt;a class="link" href="https://immunant.com/blog/2019/11/rust2020/#:~:text=long%20doubletypes%20in%20C%20are%20specified%20as%20being,with%20C%20code%2C%20Rust%20needs%20to%20support%20long" target="_blank" rel="noopener"
+>here&lt;/a> and &lt;a class="link" href="https://github.com/rust-lang/rust-bindgen/issues/1549" target="_blank" rel="noopener"
+>here&lt;/a>). On the contrary, the languages Zig and the newly born Carbon both support &lt;code>f16&lt;/code> and &lt;code>f128&lt;/code> types (Zig also supports &lt;code>f80&lt;/code> and Carbon also supports &lt;code>bfloat16&lt;/code>). But that&amp;rsquo;s not suprising because they all aim to provide max interoperability with C/C++. This article might explain some of the reason why Rust doesn&amp;rsquo;t support float types with higher precision.
+{% endnote %}&lt;/p>
+&lt;h2 id="contents">Contents&lt;/h2>
+&lt;p>C++ provides three floating point data types: &lt;code>float&lt;/code>, &lt;code>double&lt;/code> and &lt;code>long double&lt;/code>. All the &lt;a class="link" href="http://webstore.ansi.org/RecordDetail.aspx?sku=INCITS%2FISO%2FIEC&amp;#43;14882-2012" target="_blank" rel="noopener"
+>C++11 standard&lt;/a> says about these types is:&lt;/p>
+&lt;blockquote>
+&lt;p>The type double provides at least as much precision as float, and the type long double provides at least as much precision as double.&lt;/p>
+&lt;p>The set of values of the type float is a subset of the set of values of the type double; the set of values of the type double is a subset of the set of values of the type long double. The value representation of floating-point types is implementation-defined.&lt;/p>
+&lt;/blockquote>
+&lt;p>However, almost all C++ compilers are part of a family that also includes a C compiler, and Annex F of the &lt;a class="link" href="http://webstore.ansi.org/RecordDetail.aspx?sku=INCITS/ISO/IEC%209899-1999%20%28R2005%29" target="_blank" rel="noopener"
+>C99 standard&lt;/a> is more prescriptive:&lt;/p>
+&lt;blockquote>
+&lt;ul>
+&lt;li>The float type matches the IEC 60559 single format.&lt;/li>
+&lt;li>The double type matches the IEC 60559 double format.&lt;/li>
+&lt;li>The long double type matches an IEC 60559 extended format, else a non-IEC 60559 extended format, else the IEC 60559 double format.&lt;/li>
+&lt;/ul>
+&lt;/blockquote>
+&lt;p>Since only a complete masochist would write a C++ compiler that used different types for floating point than their closely related C compiler, in practice C++ adheres to the same rules. Certainly every C++ compiler I&amp;rsquo;ve ever worked with over the last 20 years has implemented the float and double types using the single and double precision representations defined in &lt;a class="link" href="http://en.wikipedia.org/wiki/IEEE_floating_point" target="_blank" rel="noopener"
+>IEC 60559&lt;/a> (which is the same as &lt;a class="link" href="http://en.wikipedia.org/wiki/IEEE_754-1985" target="_blank" rel="noopener"
+>IEEE 754&lt;/a>). But there is some variation in implementations of the last of these types, long double, and this can cause problems.&lt;/p>
+&lt;p>Throughout my career in software development I&amp;rsquo;ve run into several issues with the long double type, and these fall into the two basic categories of:&lt;/p>
+&lt;ol>
+&lt;li>Lack of testing&lt;/li>
+&lt;li>Portability&lt;/li>
+&lt;/ol>
+&lt;h3 id="lack-of-testing">Lack of testing&lt;/h3>
+&lt;p>At the end of last year &lt;a class="link" href="https://web.archive.org/web/20170305103541/http://www.prelert.com/blog/linux-speeds-ahead/" target="_blank" rel="noopener"
+>I wrote about a problem&lt;/a> that would fall into the first category. A &lt;a class="link" href="http://sourceware.org/bugzilla/show_bug.cgi?id=2445" target="_blank" rel="noopener"
+>bug&lt;/a> in the x86_64 implementation of the &lt;code>powl()&lt;/code> function in glibc went unfixed for over 5 years. I suspect if the bug had been in the more widely used &lt;a class="link" href="http://pubs.opengroup.org/onlinepubs/9699919799/functions/pow.html" target="_blank" rel="noopener"
+>pow()&lt;/a> function then more of a fuss would have been made and somebody would have fixed it sooner. Because the long double version of the function is less widely used, the bug was left to fester.&lt;/p>
+&lt;p>Another example of the lack of testing long double gets is a problem I ran into with the IBM xlC/C++ compiler on &lt;a class="link" href="http://www-03.ibm.com/systems/power/software/aix/" target="_blank" rel="noopener"
+>AIX&lt;/a> before joining Prelert. The name (hard link) through which the compiler is &lt;a class="link" href="http://publib.boulder.ibm.com/infocenter/comphelp/v8v101/index.jsp?topic=%2Fcom.ibm.xlcpp8a.doc%2Fcompiler%2Fref%2Ftucmpinv1.htm" target="_blank" rel="noopener"
+>invoked&lt;/a> defines how it will behave, and when invoked using the name xlC128_r it uses a 128 bit representation for long double. At one time, even the most trivial programs compiled like this would core dump. Although the &lt;a class="link" href="http://www-01.ibm.com/support/docview.wss?uid=swg1IY96361" target="_blank" rel="noopener"
+>bug report&lt;/a> shows an example calling &lt;a class="link" href="http://pubs.opengroup.org/onlinepubs/007908775/xsh/fork.html" target="_blank" rel="noopener"
+>fork()&lt;/a>, even a simple &amp;ldquo;Hello world&amp;rdquo; program would core dump on exit if compiled with the &lt;a class="link" href="http://publib.boulder.ibm.com/infocenter/comphelp/v8v101/index.jsp?topic=%2Fcom.ibm.xlcpp8a.doc%2Fcompiler%2Fref%2Fruoptbrt.htm" target="_blank" rel="noopener"
+>-brtl&lt;/a> flag! Clearly all the testing had been done on the more commonly used invocations of the compiler (where long double is not 128 bits in size).&lt;/p>
+&lt;h3 id="portability">Portability&lt;/h3>
+&lt;p>On the portability side, some gotchas to be aware of are:&lt;/p>
+&lt;ol>
+&lt;li>Microsoft &lt;a class="link" href="http://en.wikipedia.org/wiki/Visual_C%2B%2B" target="_blank" rel="noopener"
+>Visual C++&lt;/a> represents long double using IEEE 754 double precision – just like double (the third option permitted by C99). Therefore, making a distinction between double and long double in your code is pointless if you only ever compile with Microsoft Visual C++. But if you have to support platforms other than Windows too and use long double then you&amp;rsquo;ve built in a key difference in behaviour between the platforms that may bite you. Most other x86 compilers treat long double as being the 80 bit extended precision type as used by the &lt;a class="link" href="http://en.wikipedia.org/wiki/X87" target="_blank" rel="noopener"
+>x87&lt;/a> floating-point unit.&lt;/li>
+&lt;li>On &lt;a class="link" href="http://en.wikipedia.org/wiki/SPARC" target="_blank" rel="noopener"
+>SPARC&lt;/a> chips (OK I know they&amp;rsquo;re dying out) the long double type maps to a 128 bit representation, but, by default, compilers will generate code to do the operations in software rather than in hardware. This dates back to a time when most SPARC chips couldn&amp;rsquo;t do the operations in hardware and would request it be done in software using interrupts. Doing the 128 bit floating point operations in software unconditionally was faster than reacting to these interrupts. However, doing operations on long doubles in software is orders of magnitude slower than doing the same operations on doubles in hardware – some of our unit tests were 20 times slower when we encountered this problem, and the tests weren&amp;rsquo;t purely doing long double arithmetic. This is a case where code can be portable in terms of compiling and producing the correct results, but not in terms of having acceptable performance.&lt;/li>
+&lt;/ol>
+&lt;p>It&amp;rsquo;s instructive to look at what other portable languages do. Java has &lt;a class="link" href="http://docs.oracle.com/javase/tutorial/java/nutsandbolts/datatypes.html" target="_blank" rel="noopener"
+>float and double types&lt;/a> corresponding to IEEE 754&amp;rsquo;s single and double precision representations (and unlike C++ the Java standard is &lt;a class="link" href="http://docs.oracle.com/javase/specs/jls/se7/html/jls-4.html#jls-4.2.3" target="_blank" rel="noopener"
+>very explicit&lt;/a> about how floating point operations may be implemented). Java doesn&amp;rsquo;t make a long double type available to the programmer, presumably due to the portability issues I&amp;rsquo;ve outlined (although the standard allows the x87 extended precision format to be used in intermediate calculations done by the JVM). &lt;a class="link" href="http://docs.python.org/2/library/stdtypes.html#typesnumeric" target="_blank" rel="noopener"
+>Python&lt;/a> just has a float type, which is &amp;ldquo;usually implemented as a double type in C&amp;rdquo;. So, if your overall system contains components written in other languages then you&amp;rsquo;ll avoid a data interchange problem by avoiding long double. The same goes if you want to store floating point numbers in a database table – for example &lt;a class="link" href="http://www.postgresql.org/" target="_blank" rel="noopener"
+>PostgreSQL&lt;/a> offers &lt;a class="link" href="http://www.postgresql.org/docs/9.2/static/datatype-numeric.html#DATATYPE-FLOAT" target="_blank" rel="noopener"
+>real and double&lt;/a> corresponding to IEEE 754&amp;rsquo;s single and double precision representations.&lt;/p>
+&lt;p>A final advantage on x86 CPUs of sticking to float and double is that the compiler can then choose to do floating point calculations in the &lt;a class="link" href="http://en.wikipedia.org/wiki/Streaming_SIMD_Extensions" target="_blank" rel="noopener"
+>SSE&lt;/a> unit of the CPU, which means two or four operations can potentially be done in parallel and function arguments passed in registers by &lt;a class="link" href="http://en.wikipedia.org/wiki/X86_calling_conventions#x86-64_calling_conventions" target="_blank" rel="noopener"
+>64 bit calling conventions&lt;/a> are nicely in the SSE registers ready to be used. By contrast, long double variables can only be operated on in the x87 floating-point unit and are not passed in registers, slowing the program down.&lt;/p>
+&lt;h3 id="conclusion">Conclusion&lt;/h3>
+&lt;p>Some might say that using long double improves the accuracy of results. This may be true, but regardless of the amount of digits a fixed precision floating point type has it will be subject to &lt;a class="link" href="http://en.wikipedia.org/wiki/Loss_of_significance" target="_blank" rel="noopener"
+>loss of significance&lt;/a> if a poorly chosen algorithm is applied to it. Using extended precision rather than double precision may mask this effect in some cases, but in the long term the only solutions are to use algorithms more appropriate for computer calculations or to somehow detect the loss of significance and replace the answer with an appropriate value.&lt;/p>
+&lt;p>In my opinion, if you want to write portable C++ code that not only compiles on multiple architectures but also doesn&amp;rsquo;t have horrendous performance problems on some architectures, long double is best avoided. That&amp;rsquo;s what we do at Prelert – our C++ code doesn&amp;rsquo;t use long double and when we use Boost we define the macro &lt;a class="link" href="http://www.boost.org/doc/libs/1_54_0/libs/math/doc/html/math_toolkit/config_macros.html#math_toolkit.config_macros.boost_math_macros" target="_blank" rel="noopener"
+>BOOST_MATH_NO_LONG_DOUBLE_MATH_FUNCTIONS&lt;/a> so that &lt;a class="link" href="http://www.boost.org/doc/libs/1_54_0/libs/math/doc/html/index.html" target="_blank" rel="noopener"
+>Boost.Math&lt;/a> doesn&amp;rsquo;t either.&lt;/p></description></item><item><title>The Pitfall Of VLA in C</title><link>https://zyxin.xyz/blog/en/1-01/ThePitfallOfVLA/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://zyxin.xyz/blog/en/1-01/ThePitfallOfVLA/</guid><description>&lt;p>{% note default %}&lt;/p>
+&lt;h2 id="preface">Preface&lt;/h2>
+&lt;p>This article is a repost, originally &lt;a class="link" href="https://blog.joren.ga/vla-pitfalls" target="_blank" rel="noopener"
+>written by Jorengarenar&lt;/a>. I found this article when I found that Rust doesn&amp;rsquo;t support dynamically stack allocation, and list this article in my blog for translation. If you want to read the Chinese version, please select the Chinese language at the bottom of this page.
+{% endnote %}&lt;/p></description></item></channel></rss>

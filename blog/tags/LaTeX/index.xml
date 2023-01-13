@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>LaTeX on JacobZ</title><link>https://zyxin.xyz/blog/tags/LaTeX/</link><description>Recent content in LaTeX on JacobZ</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><lastBuildDate>Tue, 18 Sep 2018 00:00:00 +0000</lastBuildDate><atom:link href="https://zyxin.xyz/blog/tags/LaTeX/index.xml" rel="self" type="application/rss+xml"/><item><title>利用Visual Studio Code搭建Latex编辑环境</title><link>https://zyxin.xyz/blog/2018-09/LatexSetup/</link><pubDate>Tue, 18 Sep 2018 00:00:00 +0000</pubDate><guid>https://zyxin.xyz/blog/2018-09/LatexSetup/</guid><description>&lt;img src="https://zyxin.xyz/blog/2018-09/LatexSetup/workshop_screenshot.png" alt="Featured image of post 利用Visual Studio Code搭建Latex编辑环境" />&lt;p>由于没有足够的动力，之前一直没有学LaTeX。苍天饶过谁，这回有一门课强制使用LaTeX交作业，没办法只能装上LaTeX了。如果是在几年前大一大二的时候，我可能还忍不了MiKTeX难用的命令行和WinEdit丑陋的界面，但是现在有了VSCode，一切都变得easy and works like a charm。 本文就讲述如何利用VSCode搭建LaTeX的编辑环境。如果你还没有装VSCode的话就赶紧去官网下载吧~&lt;/p>
+&lt;h2 id="miktex--lyx">MiKTeX + LyX&lt;/h2>
+&lt;p>想要使用LaTeX，首先需要安装一个LaTeX发行版，也就是实现LaTeX功能的软件包。著名的发行版有&lt;a class="link" href="https://tug.org/texlive/" target="_blank" rel="noopener"
+>TeX Live&lt;/a>、&lt;a class="link" href="http://miktex.org/" target="_blank" rel="noopener"
+>MiKTeX&lt;/a>、&lt;a class="link" href="http://www.ctex.org/HomePage" target="_blank" rel="noopener"
+>CTeX&lt;/a>等。我选择的是MiKTeX，原因有&lt;/p>
+&lt;ol>
+&lt;li>MiKTeX是老师推荐的发行版&lt;/li>
+&lt;li>MiKTeX是LyX的默认后端&lt;/li>
+&lt;li>MiKTeX体积不大而且安装简单&lt;/li>
+&lt;/ol>
+&lt;p>安装有多简单呢：直接从&lt;a class="link" href="https://miktex.org/download" target="_blank" rel="noopener"
+>官网下载界面&lt;/a>下载对应安装包，双击安装即可。安装过程中的选项可以保持默认。MiKTeX里面有一些包含有Perl脚本，因此建议再给系统装上Perl的运行时。Perl的运行时也有不同的发行版，我选择的是&lt;a class="link" href="http://strawberryperl.com/" target="_blank" rel="noopener"
+>Strawberry Perl&lt;/a>。两者都安装完毕后打开命令行，运行&lt;code>latexmk&lt;/code>测试MiKTeX是否安装正常。&lt;/p>
+&lt;p>另外你还可以选择安装LyX，这是一个让你像使用Word一样编写tex的软件，由于我也还没怎么用过，就不详细介绍了。LyX安装包有两种，一种是包含了MiKTeX的安装包的，建议先单独安装MiKTeX，再使用独立安装包安装LyX，便于MikTeX的调试。&lt;/p>
+&lt;h2 id="visual-studio-code-插件">Visual Studio Code 插件&lt;/h2>
+&lt;p>VSCode原生只支持&lt;code>.tex&lt;/code>文件的高亮，如果想要利用VSCode完成TeX的整个编写流程（编写、预览、编译、发布）就需要安装额外的插件。我使用的是目前做多star的&lt;strong>LaTeX Workshop&lt;/strong>。安装上这个插件后，只要你的系统路径中装有MiKTeX，那么就直接使用了~&lt;/p>
+&lt;p>&lt;img src="https://zyxin.xyz/blog/blog/2018-09/LatexSetup/workshop_screenshot.png"
+width="2736"
+height="1744"
+loading="lazy"
+alt="LaTeX Workshop 使用界面"
+class="gallery-image"
+data-flex-grow="156"
+data-flex-basis="376px"
+>&lt;/p>
+&lt;p>常用的操作可以通过左侧的TeX选项卡、左下角的TeX状态按钮或在编辑窗口右键来完成。并且LaTeX Workshop提供的预览功能支持实时更新，在你每次保存&lt;code>.tex&lt;/code>文件时它会自动刷新。另外，如果你安装了vscode-pdf插件的话，LaTeX Workshop会提示它已经包含了vscode-pdf的功能重复了，但我感觉如果纯看PDF的话还是用vscode-pdf比较稳定。&lt;/p>
+&lt;h2 id="一些latex技巧">一些LaTeX技巧&lt;/h2>
+&lt;p>虽然我也是LaTeX新手，但是从Word转换过来时还是有不少操作比较不直观，因此在这里提一些我用到的技巧：&lt;/p>
+&lt;ul>
+&lt;li>利用&lt;code>.pgf&lt;/code>格式的图片可以使得Matplotlib出的图与LaTeX无缝集成
+&lt;blockquote>
+&lt;p>在LaTeX中使用pgf格式图片需要引用&lt;code>pgfplots&lt;/code>库：&lt;code>\usepackage{pgfplots}&lt;/code>&lt;/p>
+&lt;/blockquote>
+&lt;/li>
+&lt;li>在LaTeX中打单边的括号可以使用&lt;code>\left$&lt;/code>与&lt;code>\right$&lt;/code>，其中&amp;quot;$&amp;ldquo;代表括号，如果只有单边的话另一边的&amp;rdquo;$&amp;ldquo;使用&amp;rdquo;.&amp;ldquo;替代
+&lt;blockquote>
+&lt;p>LaTeX中&lt;code>\left{ \right.&lt;/code>的效果等价于word中&lt;code>{ \close&lt;/code>&lt;/p>
+&lt;/blockquote>
+&lt;/li>
+&lt;/ul>
+&lt;hr>
+&lt;blockquote>
+&lt;p>我的其他博文: 关于Visual Studio Code的其他插件可以参考[VSCode插件推荐](https://zyxin.xyz/blog/2018-02/ToolVisualStudio/，关于Word中公式的输入技巧则可以参见&lt;a class="link" href="https://zyxin.xyz/blog/2017-08/WordMath/" >快速输入数学公式&lt;/a>。&lt;/p>
+&lt;/blockquote></description></item></channel></rss>

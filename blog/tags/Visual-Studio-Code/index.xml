@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Visual Studio Code on JacobZ</title><link>https://zyxin.xyz/blog/tags/Visual-Studio-Code/</link><description>Recent content in Visual Studio Code on JacobZ</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><lastBuildDate>Tue, 18 Sep 2018 00:00:00 +0000</lastBuildDate><atom:link href="https://zyxin.xyz/blog/tags/Visual-Studio-Code/index.xml" rel="self" type="application/rss+xml"/><item><title>利用Visual Studio Code搭建Latex编辑环境</title><link>https://zyxin.xyz/blog/2018-09/LatexSetup/</link><pubDate>Tue, 18 Sep 2018 00:00:00 +0000</pubDate><guid>https://zyxin.xyz/blog/2018-09/LatexSetup/</guid><description>&lt;img src="https://zyxin.xyz/blog/2018-09/LatexSetup/workshop_screenshot.png" alt="Featured image of post 利用Visual Studio Code搭建Latex编辑环境" />&lt;p>由于没有足够的动力，之前一直没有学LaTeX。苍天饶过谁，这回有一门课强制使用LaTeX交作业，没办法只能装上LaTeX了。如果是在几年前大一大二的时候，我可能还忍不了MiKTeX难用的命令行和WinEdit丑陋的界面，但是现在有了VSCode，一切都变得easy and works like a charm。 本文就讲述如何利用VSCode搭建LaTeX的编辑环境。如果你还没有装VSCode的话就赶紧去官网下载吧~&lt;/p>
+&lt;h2 id="miktex--lyx">MiKTeX + LyX&lt;/h2>
+&lt;p>想要使用LaTeX，首先需要安装一个LaTeX发行版，也就是实现LaTeX功能的软件包。著名的发行版有&lt;a class="link" href="https://tug.org/texlive/" target="_blank" rel="noopener"
+>TeX Live&lt;/a>、&lt;a class="link" href="http://miktex.org/" target="_blank" rel="noopener"
+>MiKTeX&lt;/a>、&lt;a class="link" href="http://www.ctex.org/HomePage" target="_blank" rel="noopener"
+>CTeX&lt;/a>等。我选择的是MiKTeX，原因有&lt;/p>
+&lt;ol>
+&lt;li>MiKTeX是老师推荐的发行版&lt;/li>
+&lt;li>MiKTeX是LyX的默认后端&lt;/li>
+&lt;li>MiKTeX体积不大而且安装简单&lt;/li>
+&lt;/ol>
+&lt;p>安装有多简单呢：直接从&lt;a class="link" href="https://miktex.org/download" target="_blank" rel="noopener"
+>官网下载界面&lt;/a>下载对应安装包，双击安装即可。安装过程中的选项可以保持默认。MiKTeX里面有一些包含有Perl脚本，因此建议再给系统装上Perl的运行时。Perl的运行时也有不同的发行版，我选择的是&lt;a class="link" href="http://strawberryperl.com/" target="_blank" rel="noopener"
+>Strawberry Perl&lt;/a>。两者都安装完毕后打开命令行，运行&lt;code>latexmk&lt;/code>测试MiKTeX是否安装正常。&lt;/p>
+&lt;p>另外你还可以选择安装LyX，这是一个让你像使用Word一样编写tex的软件，由于我也还没怎么用过，就不详细介绍了。LyX安装包有两种，一种是包含了MiKTeX的安装包的，建议先单独安装MiKTeX，再使用独立安装包安装LyX，便于MikTeX的调试。&lt;/p>
+&lt;h2 id="visual-studio-code-插件">Visual Studio Code 插件&lt;/h2>
+&lt;p>VSCode原生只支持&lt;code>.tex&lt;/code>文件的高亮，如果想要利用VSCode完成TeX的整个编写流程（编写、预览、编译、发布）就需要安装额外的插件。我使用的是目前做多star的&lt;strong>LaTeX Workshop&lt;/strong>。安装上这个插件后，只要你的系统路径中装有MiKTeX，那么就直接使用了~&lt;/p>
+&lt;p>&lt;img src="https://zyxin.xyz/blog/blog/2018-09/LatexSetup/workshop_screenshot.png"
+width="2736"
+height="1744"
+loading="lazy"
+alt="LaTeX Workshop 使用界面"
+class="gallery-image"
+data-flex-grow="156"
+data-flex-basis="376px"
+>&lt;/p>
+&lt;p>常用的操作可以通过左侧的TeX选项卡、左下角的TeX状态按钮或在编辑窗口右键来完成。并且LaTeX Workshop提供的预览功能支持实时更新，在你每次保存&lt;code>.tex&lt;/code>文件时它会自动刷新。另外，如果你安装了vscode-pdf插件的话，LaTeX Workshop会提示它已经包含了vscode-pdf的功能重复了，但我感觉如果纯看PDF的话还是用vscode-pdf比较稳定。&lt;/p>
+&lt;h2 id="一些latex技巧">一些LaTeX技巧&lt;/h2>
+&lt;p>虽然我也是LaTeX新手，但是从Word转换过来时还是有不少操作比较不直观，因此在这里提一些我用到的技巧：&lt;/p>
+&lt;ul>
+&lt;li>利用&lt;code>.pgf&lt;/code>格式的图片可以使得Matplotlib出的图与LaTeX无缝集成
+&lt;blockquote>
+&lt;p>在LaTeX中使用pgf格式图片需要引用&lt;code>pgfplots&lt;/code>库：&lt;code>\usepackage{pgfplots}&lt;/code>&lt;/p>
+&lt;/blockquote>
+&lt;/li>
+&lt;li>在LaTeX中打单边的括号可以使用&lt;code>\left$&lt;/code>与&lt;code>\right$&lt;/code>，其中&amp;quot;$&amp;ldquo;代表括号，如果只有单边的话另一边的&amp;rdquo;$&amp;ldquo;使用&amp;rdquo;.&amp;ldquo;替代
+&lt;blockquote>
+&lt;p>LaTeX中&lt;code>\left{ \right.&lt;/code>的效果等价于word中&lt;code>{ \close&lt;/code>&lt;/p>
+&lt;/blockquote>
+&lt;/li>
+&lt;/ul>
+&lt;hr>
+&lt;blockquote>
+&lt;p>我的其他博文: 关于Visual Studio Code的其他插件可以参考[VSCode插件推荐](https://zyxin.xyz/blog/2018-02/ToolVisualStudio/，关于Word中公式的输入技巧则可以参见&lt;a class="link" href="https://zyxin.xyz/blog/2017-08/WordMath/" >快速输入数学公式&lt;/a>。&lt;/p>
+&lt;/blockquote></description></item><item><title>利器 - Visual Studio &amp; Visual Studio Code</title><link>https://zyxin.xyz/blog/2018-02/ToolVisualStudio/</link><pubDate>Fri, 02 Feb 2018 00:00:00 +0000</pubDate><guid>https://zyxin.xyz/blog/2018-02/ToolVisualStudio/</guid><description>&lt;p>这两大软件是我平时开发的主力软件，因此也将其插件配置分享出来~&lt;/p>
+&lt;h2 id="visual-studio">Visual Studio&lt;/h2>
+&lt;p>VS由于功能已经足够强大了，完全不是很需要插件的存在。不过确实VS还是有不少美中不足的地方的，因此插件也还是会装的~&lt;/p>
+&lt;ul>
+&lt;li>&lt;a class="link" href="https://marketplace.visualstudio.com/items?itemName=NikolaMSFT.InlineColorPicker" target="_blank" rel="noopener"
+>&lt;strong>Inline Color Picker&lt;/strong>&lt;/a>：在代码中将颜色代码对应的颜色标记出来。（注：这个功能在VSCode中已经有部分支持了）&lt;/li>
+&lt;li>&lt;a class="link" href="https://marketplace.visualstudio.com/items?itemName=WholeTomatoSoftware.VisualAssist" target="_blank" rel="noopener"
+>&lt;strong>Visual Assists&lt;/strong>&lt;/a>：VA是个大名鼎鼎的VS插件，提供丰富的代码提示和代码重构功能。但是由于功能实在太强大，导致VS加载变慢很多，而它的功能只是锦上添花不要也罢，因此我一直都把它禁用了。&lt;/li>
+&lt;li>&lt;a class="link" href="https://marketplace.visualstudio.com/items?itemName=SteveCadwallader.CodeMaid" target="_blank" rel="noopener"
+>&lt;strong>CodeMaid&lt;/strong>&lt;/a>：提供丰富的代码整理功能。感觉用的并不多，因此也禁用着= =。&lt;/li>
+&lt;li>&lt;a class="link" href="https://marketplace.visualstudio.com/items?itemName=MikeWard-AnnArbor.VSColorOutput" target="_blank" rel="noopener"
+>&lt;strong>VSColorOutput&lt;/strong>&lt;/a>：将输出窗口的文字显示不同的颜色。很好奇这么常用的功能为什么VS没有实现。。
+&lt;ul>
+&lt;li>搜索时发现一个相似插件&lt;a class="link" href="https://marketplace.visualstudio.com/items?itemName=NikolayBalakin.Outputenhancer" target="_blank" rel="noopener"
+>&lt;strong>Output enhancer&lt;/strong>&lt;/a>，会试试这个好不好用&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;h2 id="visual-studio-code">Visual Studio Code&lt;/h2>
+&lt;p>VSCode本身作为一个代码编辑器，可拓展的地方就有很多了。在编程语言和界面语言的支持上，基本每种语言都有对应的插件，因此在这里只列举语言支持之外的插件。&lt;/p>
+&lt;ul>
+&lt;li>&lt;a class="link" href="https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.vscode-remote-extensionpack" target="_blank" rel="noopener"
+>&lt;strong>Remove Development Pack&lt;/strong>&lt;/a>：VSCode杀手功能！支持SSH到远程服务器写代码，也支持直接到docker和WSL里面写代码。远程连接十分方便，并且带宽需求很少。&lt;/li>
+&lt;li>&lt;a class="link" href="https://marketplace.visualstudio.com/items?itemName=vector-of-bool.cmake-tools" target="_blank" rel="noopener"
+>&lt;strong>CMake Tools&lt;/strong>&lt;/a>：提供CMake工程的支持，在状态栏添加快捷窗口，很方便。注意与&lt;a class="link" href="https://marketplace.visualstudio.com/items?itemName=twxs.cmake" target="_blank" rel="noopener"
+>&lt;strong>CMake&lt;/strong>&lt;/a>语言支持插件区分。有时候CMake Tools比较烦人，比如在写ROS package的时候，这时可以选择只装CMake语言插件。&lt;/li>
+&lt;li>&lt;a class="link" href="https://marketplace.visualstudio.com/items?itemName=hdg.live-html-previewer" target="_blank" rel="noopener"
+>&lt;strong>Live HTML Previewer&lt;/strong>&lt;/a>：提供HTML页面的即时预览，不支持JS和CSS的动态更新。如果需要非常即时的更新的话可以考虑使用&lt;a class="link" href="https://marketplace.visualstudio.com/items?itemName=negokaz.live-server-preview" target="_blank" rel="noopener"
+>&lt;strong>Live Server HTML&lt;/strong>&lt;/a>。&lt;/li>
+&lt;li>&lt;a class="link" href="https://marketplace.visualstudio.com/items?itemName=cssho.vscode-svgviewer" target="_blank" rel="noopener"
+>&lt;strong>SVG Viewer&lt;/strong>&lt;/a>：提供SVG文件的浏览。注意与&lt;a class="link" href="https://marketplace.visualstudio.com/items?itemName=jock.svg" target="_blank" rel="noopener"
+>&lt;strong>SVG&lt;/strong>&lt;/a>语言支持插件区分，后者好像更强大，但是我一般只是看图用。&lt;/li>
+&lt;li>&lt;a class="link" href="https://marketplace.visualstudio.com/items?itemName=robertohuertasm.vscode-icons" target="_blank" rel="noopener"
+>&lt;strong>vscode-icons&lt;/strong>&lt;/a>：VSCode上最老牌的图标包，图标很全！&lt;/li>
+&lt;li>&lt;a class="link" href="https://marketplace.visualstudio.com/items?itemName=slevesque.vscode-hexdump" target="_blank" rel="noopener"
+>&lt;strong>hexdump for VSCode&lt;/strong>&lt;/a>：将文件通过二进制形式查看，类似于Notepad++的&lt;strong>HEX-Editor&lt;/strong>插件。&lt;/li>
+&lt;li>&lt;a class="link" href="https://marketplace.visualstudio.com/items?itemName=tomoki1207.pdf" target="_blank" rel="noopener"
+>&lt;strong>vscode-pdf&lt;/strong>&lt;/a>：提供浏览PDF文件的支持，PDF打开速度不慢&lt;/li>
+&lt;li>&lt;a class="link" href="https://marketplace.visualstudio.com/items?itemName=GrapeCity.gc-excelviewer" target="_blank" rel="noopener"
+>&lt;strong>Excel Viewer&lt;/strong>&lt;/a>：浏览Excel和CSV数据非常方便！还附带筛选功能&lt;/li>
+&lt;li>&lt;a class="link" href="https://marketplace.visualstudio.com/items?itemName=James-Yu.latex-workshop" target="_blank" rel="noopener"
+>&lt;strong>Latex Workshop&lt;/strong>&lt;/a>：Latex配套工具，需要预先安装Latex发行版（如MikTex），提供编译、预览、实时更新等功能&lt;/li>
+&lt;li>&lt;a class="link" href="https://marketplace.visualstudio.com/items?itemName=shd101wyy.markdown-preview-enhanced" target="_blank" rel="noopener"
+>&lt;strong>Markdown Preview Enhanced&lt;/strong>&lt;/a>: 相比内置的Markdown预览提供更高性能的公式渲染。&lt;/li>
+&lt;li>&lt;a class="link" href="https://marketplace.visualstudio.com/items?itemName=Gruntfuggly.todo-tree" target="_blank" rel="noopener"
+>&lt;strong>TODO Tree&lt;/strong>&lt;/a>: 便于查看所有的TODO和FIXME。&lt;/li>
+&lt;li>&lt;a class="link" href="https://marketplace.visualstudio.com/items?itemName=bierner.emojisense" target="_blank" rel="noopener"
+>&lt;strong>:emojisense:&lt;/strong>&lt;/a>: 给Markdown添加emoji代码的提示，十分好用！&lt;/li>
+&lt;li>&lt;a class="link" href="https://marketplace.visualstudio.com/items?itemName=eamodio.gitlens" target="_blank" rel="noopener"
+>&lt;strong>GitLens&lt;/strong>&lt;/a>: 提供每行、每文件的git history、git blame&lt;/li>
+&lt;li>&lt;a class="link" href="https://marketplace.visualstudio.com/items?itemName=mhutchie.git-graph" target="_blank" rel="noopener"
+>&lt;strong>Git Graph&lt;/strong>&lt;/a>: 在VSCode里直接打开git graph！直观查看git历史~&lt;/li>
+&lt;/ul></description></item></channel></rss>

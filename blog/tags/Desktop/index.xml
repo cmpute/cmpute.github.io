@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Desktop on JacobZ</title><link>https://zyxin.xyz/blog/tags/Desktop/</link><description>Recent content in Desktop on JacobZ</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><lastBuildDate>Fri, 09 Nov 2018 23:10:47 +0000</lastBuildDate><atom:link href="https://zyxin.xyz/blog/tags/Desktop/index.xml" rel="self" type="application/rss+xml"/><item><title>My First Rig （Ryzen 2700 + GTX 1070 Ti）</title><link>https://zyxin.xyz/blog/2018-11/BrandNewRig/</link><pubDate>Fri, 09 Nov 2018 23:10:47 +0000</pubDate><guid>https://zyxin.xyz/blog/2018-11/BrandNewRig/</guid><description>&lt;p>自从小时候我爸往家里买了一台式机，我就一直梦想着哪天自己能按照自己的喜好组一个狂拽炫酷掉渣天的PC，这次这个梦想终于实现了&lt;del>一半（毕竟还是budget）&lt;/del>。激动地赶紧写下这篇博客记录一下整个组装的过程，组装好的桌面效果就如下图啦~&lt;/p>
+&lt;p>&lt;img src="https://zyxin.xyz/blog/blog/2018-11/BrandNewRig/Desktop.jpg"
+width="4032"
+height="3024"
+loading="lazy"
+alt="桌面布置"
+class="gallery-image"
+data-flex-grow="133"
+data-flex-basis="320px"
+>
+&lt;img src="https://zyxin.xyz/blog/blog/2018-11/BrandNewRig/Case_Inside1.jpg"
+width="6000"
+height="4000"
+loading="lazy"
+alt="机箱内部"
+class="gallery-image"
+data-flex-grow="150"
+data-flex-basis="360px"
+>
+&lt;img src="https://zyxin.xyz/blog/blog/2018-11/BrandNewRig/Case_Inside2.jpg"
+width="6000"
+height="4000"
+loading="lazy"
+alt="信仰灯"
+class="gallery-image"
+data-flex-grow="150"
+data-flex-basis="360px"
+>&lt;/p>
+&lt;h2 id="选件httpspcpartpickercombrcvntw">&lt;a class="link" href="https://pcpartpicker.com/b/rCvnTW" target="_blank" rel="noopener"
+>选件&lt;/a>&lt;/h2>
+&lt;p>选件三十天，装机一小时。其实装电脑搭系统本身很简单，但是之前挑选零件却是最耗时的。在考虑到性能、预算、兼容性、扩展性和外观等因素选择各种零件是个十分耗时的过程。在这里推荐&lt;a class="link" href="https://pcpartpicker.com" target="_blank" rel="noopener"
+>PCPartPicker网站&lt;/a>，可以通过筛选来选择各部件，而且还可以进行价格追踪，最关键的一点是可以帮你进行兼容性检查，这就省了很多事以及避免犯错导致的损失。另外，选择部件不要过于听信贴吧论坛上的言论，例如水冷就不一定是好于风冷，关于这些选择可以先看看&lt;a class="link" href="https://www.zhihu.com/question/35911743" target="_blank" rel="noopener"
+>知乎这篇帖子&lt;/a>。&lt;/p>
+&lt;blockquote>
+&lt;p>关于装机部件的兼容性主要要考虑一下几点&lt;/p>
+&lt;ol>
+&lt;li>主板芯片是否与CPU兼容&lt;/li>
+&lt;li>各部件的电源接口是否与供电的接口兼容&lt;/li>
+&lt;li>主板是否为各部件提供了足够的插槽和槽位间隙&lt;/li>
+&lt;li>各部件在安装之后是否会产生物理干涉或者走线困难&lt;/li>
+&lt;li>主板的扩展接口是否与机箱以及各部件的扩展接口兼容（如机箱IO接头、水冷泵、LED接口等）&lt;/li>
+&lt;li>机箱大小是否与主板兼容，机箱厚度是否满足CPU散热和GPU板卡的空间需要&lt;/li>
+&lt;li>各部件尽量选择同一厂家，以减少驱动安装的难度&lt;/li>
+&lt;/ol>
+&lt;/blockquote>
+&lt;h3 id="cpu">CPU&lt;/h3>
+&lt;p>桌面CPU目前主流选择是Intel、AMD二选一。用了这么多年的英特尔了，终于有机会用上我大农企的CPU了！在Ryzen系列处理器发布以后，农企终于要翻身了，AMD Yes！于是CPU就在性价比远超蓝厂的2代Ryzen里面选了。综合考虑性能和价格后选择的是&lt;em>AMD Ryzen 2700&lt;/em>，相比一直纠结的2600X，8核终归是有用的&lt;del>而且还带信仰灯哈哈哈&lt;/del>。虽然有想过买AMD的APU系列，这样还能&lt;a class="link" href="https://www.youtube.com/watch?v=_rxFxdvO3fQ&amp;amp;t=480s" target="_blank" rel="noopener"
+>通过黑科技让N卡用上FreeSync&lt;/a>然后省下一大笔显示器的钱，但是由于目前出的APU性能都比较差，最后还是放弃了。&lt;/p>
+&lt;blockquote>
+&lt;p>CPU性能的比较可以参考&lt;a class="link" href="http://www.mydrivers.com/zhuanti/tianti/cpu/" target="_blank" rel="noopener"
+>某驱动之家的CPU天梯榜&lt;/a>和&lt;a class="link" href="http://topic.expreview.com/CPU/" target="_blank" rel="noopener"
+>超能网的CPU天梯榜&lt;/a>&lt;/p>
+&lt;/blockquote>
+&lt;h3 id="gpu">GPU&lt;/h3>
+&lt;p>GPU的选择与CPU相似，NVIDIA、AMD二选一（不得不说农企还是厉害的）。由于CUDA目前没有一个真正可用的AMD替代品，因此只能选择英伟达的显卡了。老黄新推出的RTX系列显卡性能比10系列提升不大，RTX技术又属于战未来系列，只有新的Turing架构里的TensorCore吸引我。RTX2080和GTX1080的定位超出了预算，而同定位的RTX2070与GTX1070(Ti)相比，前者贵出了100刀，但明显的提升其实只有显存从GDDR5变成GDDR6了，实在是不划算。因此最后选择的是1070Ti，有8G显存的N卡中最便宜的一款。最后剁手的是打折购买的&lt;em>Gigabyte GeForce GTX 1070 Ti Gaming 8G&lt;/em>。&lt;/p>
+&lt;blockquote>
+&lt;p>GPU性能的比较可以参考&lt;a class="link" href="http://www.mydrivers.com/zhuanti/tianti/gpu/" target="_blank" rel="noopener"
+>某驱动之家的GPU天梯榜&lt;/a>和&lt;a class="link" href="http://topic.expreview.com/GPU/" target="_blank" rel="noopener"
+>超能网的GPU天梯榜&lt;/a>&lt;/p>
+&lt;/blockquote>
+&lt;h3 id="cpugpu散热">CPU/GPU散热&lt;/h3>
+&lt;p>选择高性能的CPU时还要考虑CPU的散热，由于2700采用钎焊导热，加上平常使用不打算超频，附带的散热器应该还是能压住CPU的。不过为了以后超频的需求，还是看了一下CPU风扇，性能比较好的就是塔式散热器和水冷散热了。塔式散热器体积比较大，而且不是很美观，有条件的还是考虑上一体式水冷吧，或者有条件还有经验的可以上&lt;a class="link" href="https://www.zhihu.com/question/58428123/answer/156957151" target="_blank" rel="noopener"
+>分体式水冷&lt;/a>，但是这就要注意水冷液的选择以及漏液问题了。此外风扇的选择都还要考虑一个要素，就是噪声大小，这方面水冷就非常优势了。&lt;/p>
+&lt;p>对于GPU散热，一般来说使用自带的风扇就足够了，因为游戏显卡的风扇一般都比较多，只要不选择公版的方案一般都比较给力。如果在CPU散热上选择分体式水冷的话就可以考虑把GPU加进水冷循环了~不过这个方案实在太麻烦，因此就不额外处理GPU的散热了。&lt;/p>
+&lt;h3 id="主板">主板&lt;/h3>
+&lt;p>选好CPU后就可以选择主板了，主板的选择就非常多了，有很多参数可以调整。&lt;/p>
+&lt;ul>
+&lt;li>&lt;strong>CPU兼容&lt;/strong>：由于选择了A家的CPU，那么主板的主控芯片自然也选择A家的了，考虑到CPU是2代Ryzen而且性能不差，因此决定用AMD的新款性能级别主板芯片B450来配Ryzen。（根据&lt;a class="link" href="https://www.amd.com/en/products/chipsets-am4" target="_blank" rel="noopener"
+>AMD官网&lt;/a>，A320是Mainstream，B450是Performance，X470是Enthusiast）。
+&lt;blockquote>
+&lt;p>关于AMD主板的选择，&lt;a class="link" href="http://www.tomshardware.com/forum/id-3502839/am4-motherboard-amd-ryzen-cpu-specs-comparison-list.html" target="_blank" rel="noopener"
+>TomsHardware上有大佬贴出了一个总结表格&lt;/a>，非常实用，在选择时可以参考&lt;/p>
+&lt;/blockquote>
+&lt;/li>
+&lt;li>&lt;strong>IO配置&lt;/strong>：由于这台主机应该会用很久，因此还是要考虑扩展性，IO口的数量就不能少了。
+&lt;ul>
+&lt;li>内部接口—DIMM：内存条插槽，有2个或者4个即可，没有必要上8个&lt;/li>
+&lt;li>内部接口—PCIe x16：可以插显卡，一条即可，两条可以给之后双卡做扩展
+&lt;blockquote>
+&lt;p>这里考虑的双卡是做深度学习用，SLI/Crossfire的性价比非常低。&lt;/p>
+&lt;/blockquote>
+&lt;/li>
+&lt;li>内部接口—PCIe x1：插网卡、声卡或者IO卡，至少要一个。&lt;/li>
+&lt;li>内部接口—SATA3：由于需要把以前积攒的资源都存到本地，因此硬盘接口也不能少，4个以上比较合适&lt;/li>
+&lt;li>内部接口—M.2：最近的高性能固态都采用NVMe了，因此另外还需要M.2接口来插NVMe固态。&lt;/li>
+&lt;li>外部接口—VGA/HDMI/DVI/DP：由于不用集显，因此可以不需要显示器接口&lt;/li>
+&lt;li>外部接口—RJ45：通用的网线接口，这个是必须的&lt;/li>
+&lt;li>外部接口—TRRS：音频接口，至少支持耳机和话筒。由于之后肯定是要外接音频设备的，因此这个就无所谓了，不过最好有个SPDI/F的数字输出口。&lt;/li>
+&lt;li>外部接口—USB：这个是最主要的需求了，数量越多越好，标准越新越好，最好能支持最新的USB3.1 Gen2（其实最新的是USB3.2，但是太新了以至于目前还没有真正投产）。另外，在接口形式上，常用的Type-A肯定是需要的，以后可能会需要的Type-C也可以有。&lt;/li>
+&lt;li>外部接口—Legacy：不少主板上面还带着PS/2、COM等给老设备的接口，这个已经完全可以淘汰了，没有需求。&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>&lt;strong>尺寸&lt;/strong>：在给定足够的IO需求以后，尺寸就小不了了，主板型号从EATX、ATX、mATX到ITX等，满足这么多接口需求的话至少也是ATX主板了。由于打算把主机放在桌子底下，查了一下ATX机箱的高度没有问题，因此就选择ATX了。&lt;/li>
+&lt;li>&lt;strong>音频配置&lt;/strong>：主板一般会内置音频解码芯片，并且主流主板基本都采用的是Realtek的ALC887、ALC892、ALC1220这三款芯片。这个尽量能选择最强的ALC1220，输出能力强而且支持ASIO。&lt;/li>
+&lt;li>&lt;strong>无线连接配置&lt;/strong>：近年的主板还有不少型号会带WiFi和蓝牙模块，这个其实对我非常有用，因为由于是租房住，网线很难牵，有WiFi支持的话就再好不过了，而且内置蓝牙还可以支持蓝牙键鼠和手柄，岂不美哉。&lt;/li>
+&lt;li>&lt;strong>品牌&lt;/strong>：最后就是选择主板的品牌了，大厂在主板的做工、用料、稳定性以及BIOS功能设计上普遍比较好，因此可以优先选择华硕、技嘉和微星三大厂的板子。根据&lt;a class="link" href="https://pcpartpicker.com/forums/topic/5769-best-mobo-asus-vs-msi-vs-gigabyte-vs-asrock-" target="_blank" rel="noopener"
+>网上的评价&lt;/a>，华硕的高端板子质量高，BIOS功能多，而技嘉的板子则比较实惠。另外的厂家还有华擎，它的板子设计美观，而且成本较低，也可以考虑。&lt;/li>
+&lt;/ul>
+&lt;p>在筛选掉不符合上面要求的主板后，最后买到的是&lt;em>Gigabyte B450 Aorus Pro WiFi&lt;/em>主板，刚好在Newegg上有打折，而且完美满足需求，&lt;del>而且还带雕牌信仰灯&lt;/del>。&lt;/p>
+&lt;h3 id="内存">内存&lt;/h3>
+&lt;p>内存的话就比较好选了，主要有三个参数：容量、频率和时序&lt;/p>
+&lt;ul>
+&lt;li>&lt;strong>容量&lt;/strong>：之前俺12G内存笔记本编译个LLVM都内存不够，因此至少要16G了，以后看需要甚至可以考虑上32G。&lt;/li>
+&lt;li>&lt;strong>频率&lt;/strong>：频率决定了内存的性能，由于暂不打算内存超频，选择AMD支持的2666/3000MHz DDR4就刚好合适了。&lt;/li>
+&lt;li>&lt;strong>时序&lt;/strong>：时序决定了内存的延迟，这个参数实际体验上影响不大，而且同款内存的C1时序一般都差不多，所以可以忽略。&lt;/li>
+&lt;/ul>
+&lt;p>最后选择的是RGB加持的&lt;em>Corsair Vengeance RGB 16GB (2 x 8GB) DDR4-3000&lt;/em>双通道内存，应该是可以完美配合之前选的主板的。&lt;/p>
+&lt;h3 id="硬盘">硬盘&lt;/h3>
+&lt;p>硬盘也是非常影响体验的一个部件，速度快的硬盘能加速开机、加速程序加载、加载文件拷贝，而对与资料存储来说则是选择一款稳定的硬盘比较关键。对于系统盘，我购买了一块西数NVMe黑盘来装系统，考虑到可能会装一些大型软件在系统盘，最后选择的容量是500G，&lt;a class="link" href="https://www.youtube.com/watch?v=alb6-zp52mA" target="_blank" rel="noopener"
+>给出一定量的冗余空间有利于延长固态硬盘寿命&lt;/a>。由于之前刚好淘了一块Corsair的480G固态以及一块2T西数绿盘，刚好可以分别用作游戏存放盘和资料存放盘，就暂时没有额外购买硬盘了。之后根据资料存储的需要可能还会采购一块4T硬盘，在配上一块便宜的固态来用上AMD的StoreMI技术！&lt;/p>
+&lt;blockquote>
+&lt;p>需要指出的是，对于存储资料的硬盘，选择转速低、缓存小的机械硬盘比较好，这样比较稳定。&lt;/p>
+&lt;/blockquote>
+&lt;h3 id="声卡网卡等其他设备">声卡网卡等其他设备&lt;/h3>
+&lt;p>在声卡和网卡上，由于主板已经满足了基本需求，因此之前考虑过的Creative SoundBlaster声卡和其他带WiFi的网卡就可以不用再买了，也省了两个PCIe的槽位。而光驱的话，由于后文提到购买的机箱没有5.25英尺舱位，决定之后购买USB光驱。&lt;/p>
+&lt;h3 id="电源">电源&lt;/h3>
+&lt;p>电源的考虑因素主要有三点：&lt;/p>
+&lt;ul>
+&lt;li>&lt;strong>功率&lt;/strong>：选好所有内部组件之后就可以给整个系统算一个总TDP功率，然后让总功率处于电源的高效率负载区间就可以了。如果考虑到之后扩展的需求（如超频、加显卡）可以买更大功率的电源。根据PCPartPicker的计算，按照上面的配置装下来系统功率大概是294W，用它除以一般电源的高负载区间（50%~75%）再补一些裕量，这套配置下电源的功率大概是500W左右。&lt;/li>
+&lt;li>&lt;strong>接口&lt;/strong>：电源由于要给主板、GPU、硬盘等设备进行供电，供电接口必须兼容，不过目前较新的电源都与主流设备兼容。电源的选择还有“模组”(Modular)、“半模组”(Semi-Modular)、“非模组”之分。模组的意思是电源接口上全是母口，可以自己选择是否插线以及插什么线，而半模组则是电源自带几根必要的供电线，其他由用户选择。我最后选择的是半模组电源，供电灵活并且便于走线。&lt;/li>
+&lt;li>&lt;strong>效率&lt;/strong>：电源的效率就关乎省不省电了，可以根据&lt;a class="link" href="https://en.wikipedia.org/wiki/80_Plus" target="_blank" rel="noopener"
+>80+标准&lt;/a>来进行选择。&lt;/li>
+&lt;/ul>
+&lt;p>最后我选择的是&lt;em>Corsair TXM Gold 550W 80+ Gold&lt;/em>电源，够用、省电。&lt;/p>
+&lt;h3 id="机箱">机箱&lt;/h3>
+&lt;p>在选好电子部件之后选择机箱就比较简单了，首先限定ATX尺寸，至少3个硬盘位，然后根据外观喜好和接口数量选择即可。仔细一点的话可以考虑机箱&lt;strong>对走线的支持&lt;/strong>、机箱的&lt;strong>5.25英尺舱位数量&lt;/strong>（用来放光驱等设备）、&lt;strong>机箱风扇位数量&lt;/strong>、&lt;strong>机箱对水冷冷排的支持&lt;/strong>以及&lt;strong>机箱风道设计&lt;/strong>等因素。由于带5.25英尺舱位的机箱普遍较丑，因此就没有买带光驱舱位的机箱。最后选择的是外观与内部设计兼具的&lt;em>NZXT H500&lt;/em>机箱。&lt;/p>
+&lt;h3 id="机箱风扇">机箱风扇&lt;/h3>
+&lt;p>由于目前没有高强度的散热需求，因此暂时就不购置机箱风扇了。&lt;/p>
+&lt;blockquote>
+&lt;p>整套设备的零件列表可以参见&lt;a class="link" href="https://pcpartpicker.com/b/rCvnTW" target="_blank" rel="noopener"
+>我在PCPartPicker上的列表&lt;/a>~&lt;/p>
+&lt;/blockquote>
+&lt;h2 id="组装">组装&lt;/h2>
+&lt;p>部件到手后就是引起极大舒适的组装环节啦~&lt;/p>
+&lt;h3 id="硬件组装">硬件组装&lt;/h3>
+&lt;p>硬件组装其实没有什么好说的，按部就班地将部件连接、固定，然后只要能开机就万事大吉了~安装之前注意&lt;a class="link" href="https://www.zhihu.com/question/19584885" target="_blank" rel="noopener"
+>将手上的静电放一放&lt;/a>。（我在Amazon买了个防静电腕带，结果发现很难找地方接地，也没有必要）&lt;/p>
+&lt;p>我的安装顺序如下：&lt;/p>
+&lt;ul>
+&lt;li>&lt;strong>CPU&lt;/strong>：注意CPU上的方向标志要与主板对齐&lt;/li>
+&lt;li>&lt;strong>CPU风扇&lt;/strong>：在CPU上涂上导热硅脂后就可以把风扇固定上去了&lt;/li>
+&lt;li>&lt;strong>内存&lt;/strong>：双通道内存要注意插的槽位，不确定的话看一下说明书&lt;/li>
+&lt;li>&lt;strong>主板&lt;/strong>：把CPU和内存安装好之后再固定主板会比较省事。由于机箱上的风扇会比较碍事，可以先把机箱风扇拆下来。&lt;/li>
+&lt;li>&lt;strong>GPU&lt;/strong>：把侧面对应的挡板要卸下来&lt;/li>
+&lt;li>&lt;strong>硬盘和SSD&lt;/strong>: 稍微留意一下安装的位置和方向，避免SATA线或者电源线不好插。另外根据&lt;a class="link" href="https://www.newegg.com/Product/SingleProductReview.aspx?reviewid=10048833" target="_blank" rel="noopener"
+>&lt;strong>Newegg上的评论&lt;/strong>&lt;/a>，这款主板如果在M.2接口SSD上装系统，应安装在M2A插槽的SSD上。&lt;/li>
+&lt;li>&lt;strong>电源&lt;/strong>：其实这里犯了个错，先将电源线插上之后再安电源会比较好操作。&lt;/li>
+&lt;li>&lt;strong>电源线&lt;/strong>：要给CPU、主板、GPU、硬盘都供上电。&lt;/li>
+&lt;li>&lt;strong>机箱风扇&lt;/strong>：&lt;a class="link" href="https://www.zhihu.com/question/26857719" target="_blank" rel="noopener"
+>这里要考虑一下机箱的风道设计&lt;/a>&lt;/li>
+&lt;/ul>
+&lt;p>安装完毕之后整理一下走线，和没有插上的接头，把拆下来的机箱部件再装回去就OK了~安装完毕后发现按电源键开不了机，后面经过老司机老王指路后换通道插了一下内存就可以了，成功开机之后再把内存插回最快的通道。&lt;/p>
+&lt;h3 id="软件安装">软件安装&lt;/h3>
+&lt;p>一台全新的主机是不带系统的，因此要先装系统啦~如果是安装Windows，那么在装之前先通过安装盘的&lt;a class="link" href="https://blog.csdn.net/u012757487/article/details/53181425" target="_blank" rel="noopener"
+>Diskpart工具将硬盘分区表转换成GPT格式&lt;/a>以支持大容量硬盘，并且在BIOS中开启UEFI启动模式。关于UEFI与GPT好处可以参见&lt;a class="link" href="https://blog.csdn.net/yang2716210363/article/details/78581388" target="_blank" rel="noopener"
+>这篇博文&lt;/a>。不过如果以后想安装Linux双系统的话，[使用UEFI就会有一些蛋疼了](https://zyxin.xyz/blog/2018-09/LinuxDualSystem/。之后从安装盘Boot，安装系统，初始化账号以及更新驱动，一切按部就班即可~&lt;/p>
+&lt;blockquote>
+&lt;p>关于Windows 10的激活：首先，有能力的话还是买正版或者教育版。推荐使用KMS服务激活，如果有学校或者企业的服务器最好，如果没法买正版的话可以使用其他的KMS服务器（如&lt;a class="link" href="https://03k.org/kms.html" target="_blank" rel="noopener"
+>03k&lt;/a>）&lt;/p>
+&lt;/blockquote>
+&lt;p>更新完驱动以后回到BIOS调一下其他参数，例如内存的频率默认是设置在2133MHz的，调成我内存支持的3000MHz，还有Wake on LAN、Secure Boost等等设置都可以根据需求喜好调整。超频先不打算弄了，一方面电脑还没测试过，另一方面超频也耗电，目前没有什么需求。&lt;/p>
+&lt;h2 id="测试">测试&lt;/h2>
+&lt;p>装完系统之后就是对自己的电脑进行测试啦~看有没有达到自己预期的性能。&lt;/p>
+&lt;h3 id="烤机">烤机&lt;/h3>
+&lt;p>首先是稳定性测试，如果系统都不稳定那一切性能都是白瞎。烤机过程中一方面是观察是否出现卡死或者蓝屏，另一方面是观察硬件温度有没有超出预期。如果硬件温度太高则说明散热的设置有问题。&lt;/p>
+&lt;p>CPU烤机测试可以通过AIDA64软件进行，烤机结果如下：&lt;/p>
+&lt;p>&lt;img src="https://zyxin.xyz/blog/blog/2018-11/BrandNewRig/AIDA_Benchmark.png"
+width="778"
+height="594"
+loading="lazy"
+alt="AIDA64的CPU、内存、GPU压力测试结果"
+class="gallery-image"
+data-flex-grow="130"
+data-flex-basis="314px"
+>&lt;/p>
+&lt;p>而GPU烤机测试可以通过Furmark软件完成，这个软件就仅仅是不停地渲染，只要没有出现卡死就没问题了。&lt;/p>
+&lt;h3 id="跑分软件">跑分软件&lt;/h3>
+&lt;p>在完成基本的测试之后还可以进行其他性能的测试，如硬盘测试、网速测试等等。这里介绍一下常用的Benchmark软件，&lt;/p>
+&lt;ul>
+&lt;li>&lt;strong>CPU&lt;/strong>: CPUz, AIDA64, Cinebench&lt;/li>
+&lt;li>&lt;strong>GPU&lt;/strong>: GPUz, Furmark, 3D Mark&lt;/li>
+&lt;li>&lt;strong>硬盘&lt;/strong>: AS SSD Benchmark, CrystalDiskMark&lt;/li>
+&lt;/ul>
+&lt;p>其中3D Mark是一个比较常用的跑分软件，&lt;a class="link" href="https://www.youtube.com/watch?v=LNU2mlen3Ow" target="_blank" rel="noopener"
+>测试内容&lt;/a>比较综合，可以较为全面地反应电脑性能。下图是我这套配置的跑分结果~&lt;/p>
+&lt;p>&lt;img src="https://zyxin.xyz/blog/blog/2018-11/BrandNewRig/3DMark.png"
+width="1384"
+height="661"
+loading="lazy"
+alt="3DMark跑分"
+class="gallery-image"
+data-flex-grow="209"
+data-flex-basis="502px"
+>&lt;/p>
+&lt;blockquote>
+&lt;p>这里再贴几张硬盘跑分图，感受一下NVMe的速度~等以后有空余的硬盘，用上&lt;a class="link" href="https://www.reddit.com/r/Amd/comments/8g1qom/amd_storemi_vs_intel_smart_response_technology/" target="_blank" rel="noopener"
+>AMD StoreMI&lt;/a>黑科技以后还能更快！~
+&lt;img src="https://zyxin.xyz/blog/blog/2018-11/BrandNewRig/Drive_Benchmark.png"
+width="1237"
+height="391"
+loading="lazy"
+alt="从左到右分别是西数NVMe黑盘、海盗船SATA固态、西数5400转绿盘机械硬盘"
+class="gallery-image"
+data-flex-grow="316"
+data-flex-basis="759px"
+>
+&lt;em>（从左到右分别是西数NVMe黑盘、海盗船SATA固态、西数5400转绿盘机械硬盘）&lt;/em>&lt;/p>
+&lt;/blockquote>
+&lt;hr>
+&lt;p>以上就是装机的全过程啦~硬件的评价可以参见&lt;a class="link" href="https://pcpartpicker.com/b/rCvnTW" target="_blank" rel="noopener"
+>上文提到的我的帖子&lt;/a>~最后附上一张剁手全家福~&lt;/p>
+&lt;p>&lt;img src="https://zyxin.xyz/blog/blog/2018-11/BrandNewRig/Parts.jpg"
+width="4032"
+height="3024"
+loading="lazy"
+alt="部件全家福"
+class="gallery-image"
+data-flex-grow="133"
+data-flex-basis="320px"
+>&lt;/p>
+&lt;blockquote>
+&lt;p>后记：没忍到黑五就把电脑搭上了，估计之后看到打折都要气死了。另外，对于AMD Ryzen主机的安装可以参考&lt;a class="link" href="https://www.pcworld.com/article/3180511/components-processors/7-amd-ryzen-tips-and-tricks-to-maximize-your-pcs-performance.html" target="_blank" rel="noopener"
+>PCWorld上的一篇文章&lt;/a>。&lt;/p>
+&lt;/blockquote></description></item></channel></rss>

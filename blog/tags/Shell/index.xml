@@ -1,0 +1,418 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Shell on JacobZ</title><link>https://zyxin.xyz/blog/tags/Shell/</link><description>Recent content in Shell on JacobZ</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><lastBuildDate>Sun, 10 May 2020 00:00:00 +0000</lastBuildDate><atom:link href="https://zyxin.xyz/blog/tags/Shell/index.xml" rel="self" type="application/rss+xml"/><item><title>终端的特殊控制符</title><link>https://zyxin.xyz/blog/2020-05/TerminalControlCharacters/</link><pubDate>Sun, 10 May 2020 00:00:00 +0000</pubDate><guid>https://zyxin.xyz/blog/2020-05/TerminalControlCharacters/</guid><description>&lt;p>之前碰到过很多终端工具可以显示非常好看的进度条，或者显示丰富的颜色，甚至还有的直接可以在终端通过字符绘制UI（a.k.a. &lt;a class="link" href="https://en.wikipedia.org/wiki/Text-based_user_interface" target="_blank" rel="noopener"
+>TUI&lt;/a>），我一直都很好奇是怎么做到的。之后又知道了curses这个Python库和它的一些高层封装（例如asciimatics），然后最终在Stack Overflow里面查到了这些都是通过特殊的终端控制符来实现的。本文就介绍这些终端控制符的使用方法，他们很适合用来写一个简单无依赖的TUI。如果需要更复杂和全面的TUI功能，还是最好使用封装好的库。&lt;/p>
+&lt;h2 id="ascii-控制符">ASCII 控制符&lt;/h2>
+&lt;p>在最开始接触编程的时候，如果你学的是C，那你一定很熟悉&lt;code>\n&lt;/code>，这就是一个”换行“的转义字符，代表终端光标令起一行。有时你还会碰到&lt;code>\r&lt;/code>，这是”回车“。“回车”这个名字来源于打字机时代，在使用打字机的时候，如果你需要新起一行，那么需要的操作是：转动滚筒把纸往外抽一行，再把字车（相当与打印机的打印头）移到最左端。这两个操作的名字分别是“换行”和“回车”。因此严格来说另起一行的字符串应该是&lt;code>\r\n&lt;/code>，这也是Windows的标准，而在Unix中则简化成&lt;code>\n&lt;/code>会自动执行回车。&lt;/p>
+&lt;p>换行和回车是两个非常常用的控制字符，也是定义在了ASCII表中的控制字符。在ASCII表中还定义了其他的控制字符，列在下面了。&lt;/p>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>ASCII名字&lt;/th>
+&lt;th>ASCII码&lt;/th>
+&lt;th>printf风格转义&lt;/th>
+&lt;th>用途&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>BEL 铃声&lt;/td>
+&lt;td>0x07&lt;/td>
+&lt;td>&lt;code>\a&lt;/code>&lt;/td>
+&lt;td>哔一下（执不执行取决于终端）&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>BS 退格&lt;/td>
+&lt;td>0x08&lt;/td>
+&lt;td>&lt;code>\b&lt;/code>&lt;/td>
+&lt;td>*光标回退一格&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>ESC 退出&lt;/td>
+&lt;td>0x1B&lt;/td>
+&lt;td>&lt;code>\e&lt;/code>&lt;/td>
+&lt;td>可代表按下ESC键，不是C标准&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>FF 换页&lt;/td>
+&lt;td>0x0C&lt;/td>
+&lt;td>&lt;code>\f&lt;/code>&lt;/td>
+&lt;td>光标移到新一页&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>LF 换行&lt;/td>
+&lt;td>0x0A&lt;/td>
+&lt;td>&lt;code>\n&lt;/code>&lt;/td>
+&lt;td>光标下移一行&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>CR 回车&lt;/td>
+&lt;td>0x0D&lt;/td>
+&lt;td>&lt;code>\r&lt;/code>&lt;/td>
+&lt;td>光标回到行首&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>HT 水平制表&lt;/td>
+&lt;td>0x09&lt;/td>
+&lt;td>&lt;code>\t&lt;/code>&lt;/td>
+&lt;td>标记水平制表位（Tab键）&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>VT 垂直制表&lt;/td>
+&lt;td>0x0B&lt;/td>
+&lt;td>&lt;code>\v&lt;/code>&lt;/td>
+&lt;td>标记垂直制表位&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>NUL 空值&lt;/td>
+&lt;td>0x00&lt;/td>
+&lt;td>&lt;code>\0&lt;/code>&lt;/td>
+&lt;td>代表啥也没有，C里面终结字符串&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>-&lt;/td>
+&lt;td>-&lt;/td>
+&lt;td>**&lt;code>\c&lt;/code>&lt;/td>
+&lt;td>终止输出，基本不被支持了&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;p>*光标这里泛指各类终端的指示当前文本位置的东西，在打字机上叫“type guide”，在显示屏上里面叫“光标 cursor”，而在有些场合也叫指针。
+**这个用法貌似只在一些终端中有，我也不确定它是否有对应一个字符。在&lt;a class="link" href="http://www.gnu.org/software/coreutils/manual/html_node/printf-invocation.html" target="_blank" rel="noopener"
+>GNU的文档&lt;/a>里有简短解释。&lt;/p>
+&lt;h2 id="ansivt100-控制符串">ANSI/VT100 控制符（串）&lt;/h2>
+&lt;p>很多终端都支持彩色文字的输出，而彩色文字的表达方式通常都参考ANSI的色彩标准。而ANSI用来实现色彩显示的转义表还定义了指针控制和设备管理的功能。&lt;/p>
+&lt;p>这一类控制符实际上是个字符串，所以应该叫控制串？他们都由&lt;code>&amp;lt;ESC&amp;gt;&lt;/code>字符开头，也就是&lt;code>0x1B&lt;/code>。所以我推测实际上&lt;code>ESC&lt;/code>的双关（退出/转义）也被用到了这里哈哈。以下内容大部分来自 ANSI/VT100 Terminal Control Escape Sequences 表格，详细解释可以参考这个表格以及维基的页面。链接都放在引用部分。&lt;/p>
+&lt;blockquote>
+&lt;p>&lt;code>0x1B&lt;/code>在一些终端中会用&lt;code>^[&lt;/code>代表，因此如果你看到了&lt;code>^[[&lt;/code>那通常也都是通过这种方法转义的字符序列。&lt;/p>
+&lt;/blockquote>
+&lt;p>我把这个表中能用于bash的字符都拎出来放在下面了。以下表中的转义序列名称都是我自己翻译的，我不知道有没有统一的中文翻译hhh。&lt;/p>
+&lt;h3 id="终端设备相关">终端设备相关&lt;/h3>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>名称&lt;/th>
+&lt;th>转义字符串&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>查询设备码&lt;/td>
+&lt;td>&lt;code>&amp;lt;ESC&amp;gt;[c&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>报告设备码&lt;/td>
+&lt;td>&lt;code>&amp;lt;ESC&amp;gt;[{code}0c&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>查询光标位置&lt;/td>
+&lt;td>&lt;code>&amp;lt;ESC&amp;gt;[6n&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>报告光标位置&lt;/td>
+&lt;td>&lt;code>&amp;lt;ESC&amp;gt;[{ROW};{COLUMN}R&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>重置设备&lt;/td>
+&lt;td>&lt;code>&amp;lt;ESC&amp;gt;c&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;blockquote>
+&lt;p>可以在你的终端里输入&lt;code>printf &amp;quot;\x1b[c&amp;quot;&lt;/code>，看看会输出什么&lt;/p>
+&lt;/blockquote>
+&lt;h3 id="光标控制">光标控制&lt;/h3>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>名称&lt;/th>
+&lt;th>转义字符串&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>设置指针位置&lt;/td>
+&lt;td>&lt;code>&amp;lt;ESC&amp;gt;[{ROW};{COLUMN}H&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>指针上移&lt;/td>
+&lt;td>&lt;code>&amp;lt;ESC&amp;gt;[{COUNT}A&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>指针下移&lt;/td>
+&lt;td>&lt;code>&amp;lt;ESC&amp;gt;[{COUNT}B&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>指针前移（右移）&lt;/td>
+&lt;td>&lt;code>&amp;lt;ESC&amp;gt;[{COUNT}C&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>指针后移（左移）&lt;/td>
+&lt;td>&lt;code>&amp;lt;ESC&amp;gt;[{COUNT}D&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>保存指针位置&lt;/td>
+&lt;td>&lt;code>&amp;lt;ESC&amp;gt;[s&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>复原指针位置（到保存位置）&lt;/td>
+&lt;td>&lt;code>&amp;lt;ESC&amp;gt;[u&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>保存指针位置和属性&lt;/td>
+&lt;td>&lt;code>&amp;lt;ESC&amp;gt;7&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>复原指针位置和属性&lt;/td>
+&lt;td>&lt;code>&amp;lt;ESC&amp;gt;8&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;h3 id="滚动">滚动&lt;/h3>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>名称&lt;/th>
+&lt;th>转义字符串&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>启用滚动&lt;/td>
+&lt;td>&lt;code>&amp;lt;ESC&amp;gt;[r&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>启用指定行之间滚动&lt;/td>
+&lt;td>&lt;code>&amp;lt;ESC&amp;gt;[{START};{END}r&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>向下滚动一行&lt;/td>
+&lt;td>&lt;code>&amp;lt;ESC&amp;gt;D&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>向上滚动一行&lt;/td>
+&lt;td>&lt;code>&amp;lt;ESC&amp;gt;M&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;h3 id="制表">制表&lt;/h3>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>名称&lt;/th>
+&lt;th>转义字符串&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>设置对齐位&lt;/td>
+&lt;td>&lt;code>&amp;lt;ESC&amp;gt;H&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>清楚对齐位&lt;/td>
+&lt;td>&lt;code>&amp;lt;ESC&amp;gt;[g&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>清楚所有对齐位&lt;/td>
+&lt;td>&lt;code>&amp;lt;ESC&amp;gt;[3g&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;h3 id="清除">清除&lt;/h3>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>名称&lt;/th>
+&lt;th>转义字符串&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>清除文字到行末&lt;/td>
+&lt;td>&lt;code>&amp;lt;ESC&amp;gt;[K&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>清除文字到行首&lt;/td>
+&lt;td>&lt;code>&amp;lt;ESC&amp;gt;[1K&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>清除整行&lt;/td>
+&lt;td>&lt;code>&amp;lt;ESC&amp;gt;[2K&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>清除文字到屏幕底&lt;/td>
+&lt;td>&lt;code>&amp;lt;ESC&amp;gt;[J&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>清除文字到屏幕顶&lt;/td>
+&lt;td>&lt;code>&amp;lt;ESC&amp;gt;[1J&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>清屏&lt;/td>
+&lt;td>&lt;code>&amp;lt;ESC&amp;gt;[2J&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;h3 id="定义">定义&lt;/h3>
+&lt;ul>
+&lt;li>设置文字绑定: &lt;code>&amp;lt;ESC&amp;gt;[{key};&amp;quot;{string}&amp;quot;p&lt;/code>&lt;/li>
+&lt;/ul>
+&lt;h3 id="显示颜色属性">显示颜色属性&lt;/h3>
+&lt;ul>
+&lt;li>设置光标属性: &lt;code>&amp;lt;ESC&amp;gt;[{attr1};...;{attrn}m&lt;/code>&lt;/li>
+&lt;/ul>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>属性代码&lt;/th>
+&lt;th>属性效果&lt;/th>
+&lt;th>属性代码&lt;/th>
+&lt;th>属性效果&lt;/th>
+&lt;th>属性代码&lt;/th>
+&lt;th>属性效果&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>0&lt;/td>
+&lt;td>重置&lt;/td>
+&lt;td>30&lt;/td>
+&lt;td>前景黑&lt;/td>
+&lt;td>40&lt;/td>
+&lt;td>背景黑&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>1&lt;/td>
+&lt;td>亮&lt;/td>
+&lt;td>31&lt;/td>
+&lt;td>前景红&lt;/td>
+&lt;td>41&lt;/td>
+&lt;td>背景红&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>2&lt;/td>
+&lt;td>暗&lt;/td>
+&lt;td>32&lt;/td>
+&lt;td>前景绿&lt;/td>
+&lt;td>42&lt;/td>
+&lt;td>背景绿&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>4&lt;/td>
+&lt;td>下划线&lt;/td>
+&lt;td>33&lt;/td>
+&lt;td>前景黄&lt;/td>
+&lt;td>43&lt;/td>
+&lt;td>背景黄&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>5&lt;/td>
+&lt;td>闪烁&lt;/td>
+&lt;td>34&lt;/td>
+&lt;td>前景蓝&lt;/td>
+&lt;td>44&lt;/td>
+&lt;td>背景蓝&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>7&lt;/td>
+&lt;td>反向&lt;/td>
+&lt;td>35&lt;/td>
+&lt;td>前景紫&lt;/td>
+&lt;td>45&lt;/td>
+&lt;td>背景紫&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>8&lt;/td>
+&lt;td>隐藏&lt;/td>
+&lt;td>36&lt;/td>
+&lt;td>前景青&lt;/td>
+&lt;td>46&lt;/td>
+&lt;td>背景青&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;/td>
+&lt;td>&lt;/td>
+&lt;td>37&lt;/td>
+&lt;td>前景白&lt;/td>
+&lt;td>47&lt;/td>
+&lt;td>背景白&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;blockquote>
+&lt;h2 id="参考资料">参考资料&lt;/h2>
+&lt;p>ASCII转义符&lt;/p>
+&lt;ul>
+&lt;li>Wiki &lt;a class="link" href="https://en.wikipedia.org/wiki/Escape_sequences_in_C" target="_blank" rel="noopener"
+>Escape sequences in C&lt;/a>&lt;/li>
+&lt;li>&lt;a class="link" href="https://www.bing.com/search?q=ascii&amp;#43;table" target="_blank" rel="noopener"
+>Bing ASCII table&lt;/a>&lt;/li>
+&lt;li>&lt;a class="link" href="https://linux.die.net/man/1/printf" target="_blank" rel="noopener"
+>&lt;code>printf&lt;/code> Linux man page&lt;/a>&lt;/li>
+&lt;/ul>
+&lt;p>ANSI转移符&lt;/p>
+&lt;ul>
+&lt;li>&lt;a class="link" href="http://www.termsys.demon.co.uk/vtansi.htm" target="_blank" rel="noopener"
+>&lt;code>ANSI/VT100 Terminal Control Escape Sequences&lt;/code>&lt;/a>&lt;/li>
+&lt;li>Wiki &lt;a class="link" href="https://en.wikipedia.org/wiki/ANSI_escape_code" target="_blank" rel="noopener"
+>&lt;code>ANSI escape code&lt;/code>&lt;/a>&lt;/li>
+&lt;/ul>
+&lt;/blockquote>
+&lt;!-- http://ascii-table.com/ansi-escape-sequences-vt-100.php
+http://www.termsys.demon.co.uk/vtansi.htm --></description></item><item><title>终端（Terminal）美化与扩展</title><link>https://zyxin.xyz/blog/2019-07/BeautifyTerminal/</link><pubDate>Sat, 13 Jul 2019 00:00:00 +0000</pubDate><guid>https://zyxin.xyz/blog/2019-07/BeautifyTerminal/</guid><description>&lt;p>最近由于工作需要，和终端命令行打交道的时间越来越多了，最近便查了一下美化命令行的方法，记录在此以供查阅～另外还推荐一个网站&lt;a class="link" href="https://terminalsare.sexy/" target="_blank" rel="noopener"
+>terminalsare.sexy&lt;/a>，提供了很多与terminal美化相关的软件。&lt;/p>
+&lt;h2 id="命令提示符prompt美化">命令提示符（Prompt）美化&lt;/h2>
+&lt;p>相信不少朋友也见过如下图所示美化过的命令提示符
+&lt;img src="https://raw.github.com/b-ryan/powerline-shell/master/bash-powerline-screenshot.png"
+loading="lazy"
+alt="powerline-shell"
+>这个效果的实现方式是通过安装名为&lt;strong>Powerline&lt;/strong>的扩展程序。Powerline是一套可拓展的状态栏提示工具，可以给各种Terminal Emulator和Vim等工具增加状态栏的提示，并且十分好用～&lt;/p>
+&lt;p>Powerline有很多版本，有直接通过shell配置脚本实现的，也有通过独立程序进行显示的（如下列所示）。我选择的是原版powerline，安装方便，适用软件多，并且可以自行扩展。&lt;/p>
+&lt;ul>
+&lt;li>&lt;a class="link" href="https://github.com/powerline/powerline" target="_blank" rel="noopener"
+>&lt;strong>powerline&lt;/strong>&lt;/a>: 这应该是最初的也是最全的powerline，基于Python&lt;/li>
+&lt;li>&lt;a class="link" href="https://github.com/b-ryan/powerline-shell" target="_blank" rel="noopener"
+>&lt;strong>powerline-shell&lt;/strong>&lt;/a>: 这是针对美化shell的版本，同样基于Python，配置比上面的简单&lt;/li>
+&lt;li>&lt;a class="link" href="https://github.com/justjanne/powerline-go" target="_blank" rel="noopener"
+>&lt;strong>powerline-go&lt;/strong>&lt;/a>: 用go语言写的版本，运行更快&lt;/li>
+&lt;li>&lt;a class="link" href="https://github.com/riobard/bash-powerline" target="_blank" rel="noopener"
+>&lt;strong>bash-powerline&lt;/strong>&lt;/a>: 用bash编写的用于bash的powerline&lt;/li>
+&lt;/ul>
+&lt;p>原版powerline的安装非常简单，用&lt;code>pip&lt;/code>安装即可：&lt;code>(sudo) pip install powerline-status&lt;/code>。安装完以后&lt;a class="link" href="https://powerline.readthedocs.io/en/latest/usage.html#plugins" target="_blank" rel="noopener"
+>根据官网的教程&lt;/a>更改对应的配置文件即可～我只对bash进行了美化，因为bash是最常用的shell。使用bash的话建议&lt;a class="link" href="https://powerline.readthedocs.io/en/latest/usage/shell-prompts.html#bash-prompt" target="_blank" rel="noopener"
+>按照教程里的指示&lt;/a>，在命令行配置文件中开启daemon来提高加载速度。另外一个小技巧是，由于Python2的启动速度比Python3快，因此推荐用Python2来安装powerline。&lt;/p>
+&lt;p>安装好powerline后下一步是自定义，这部分内容在powerline的文档里也有描述，不过它的文档写的不太好。。参考powerline安装目录下的配置文件（如果用系统pip安装的话位置是在&lt;code>/usr/local/lib/python2.7/dist-packages/powerline/config_files&lt;/code>下），在用户配置目录下&lt;code>~/.config/powerline&lt;/code>新建对应的配置文件，然后修改相应的条目即可自定义配置了～比较实用的一项修改是&lt;a class="link" href="https://github.com/powerline/powerline/issues/186#issuecomment-247810572" target="_blank" rel="noopener"
+>将shell的默认theme改为&lt;code>default_leftonly&lt;/code>&lt;/a>，不增加这个改动的话不会有git状态的显示。。（并不知道是什么原理）&lt;/p>
+&lt;p>如果使用原生Ubuntu或者VSCode内置terminal的话还可能会遇到提示符乱码的原因，这是由于powerline使用了非常规的符号，因此需要安装额外的字体。一般会选择安装&lt;a class="link" href="http://nerdfonts.com/" target="_blank" rel="noopener"
+>NerdFont&lt;/a>，这是一系列打上符号补丁的字体，其中我个人比较喜欢的字体是&lt;code>DejaVu Mono Nerd&lt;/code>～这些字体还可以在&lt;a class="link" href="https://app.programmingfonts.org/" target="_blank" rel="noopener"
+>programmingfonts&lt;/a>在线预览，挑选喜欢的后将Terminal默认字体更改即可。（注：ubuntu下的查看字体列表命令是&lt;code>fc-list&lt;/code>）&lt;/p>
+&lt;h2 id="tmux安装及美化">tmux安装及美化&lt;/h2>
+&lt;p>tmux是非常著名的Terminal Multiplexer，也就是终端多开程序。很多命令行模拟器其实已经支持多标签页了，如gnome terminal和Konsole，多开的功能其实也已经得到满足了。（顺带一题，ubuntu下新开terminal窗口的默认快捷键是&lt;kbd>Ctrl&lt;/kbd>+&lt;kbd>Alt&lt;/kbd>+T，新开标签页的默认快捷键是&lt;kbd>Ctrl&lt;/kbd>+&lt;kbd>Shift&lt;/kbd>+T。）。但还需要tmux是因为需要tmux的session管理功能，这个对远程访问的时候非常有用。有时希望在服务器远端跑一个训练，开上以后就不想管了，那这时如果使用ssh的话就得一直把远程的session开着，或者运行命令后移到后台，但这时停止程序就蛋疼了。另外如果想远程开几个terminal的话也很麻烦，要开好几个ssh的窗口。有了tmux就简单了，你可以用tmux多开然后一次性detach多个session，之后再attach回来进行管理，tmux支持多个程序显示在同一个terminal里，也就不用开很多个ssh了！总之用上tmux后感觉还是很爽的，只不过tmux有一定的学习成本。&lt;/p>
+&lt;p>tmux安装也很简单，ubuntu下的话直接使用&lt;code>apt&lt;/code>安装即可。另外还可以安装&lt;a class="link" href="https://github.com/tmuxinator/tmuxinator" target="_blank" rel="noopener"
+>tmuxinator&lt;/a>来简化tmux的一些流程。上面用到的powershell也是支持tmux的，可以美化tmux的状态栏。具体安装方法&lt;a class="link" href="https://powerline.readthedocs.io/en/latest/usage/other.html#tmux-statusline" target="_blank" rel="noopener"
+>参见powerline文档&lt;/a>。另外tmux的操作方法可以去搜cheatsheet～这也有&lt;a class="link" href="https://hackernoon.com/a-gentle-introduction-to-tmux-8d784c404340" target="_blank" rel="noopener"
+>一篇博文介绍了tmux的基本操作&lt;/a>，可以参考～&lt;/p>
+&lt;h2 id="历史记录搜索">历史记录搜索&lt;/h2>
+&lt;p>著名的fish有个颇受称赞的功能是历史命令自动补全（见下图），在zsh里面也有对应的插件可以实现这个功能（&lt;a class="link" href="https://github.com/zsh-users/zsh-autosuggestions" target="_blank" rel="noopener"
+>zsh-autosuggestions&lt;/a>）。但是bash由于比较辣鸡，无法支持这样的功能，因此只能另寻它法了。。
+&lt;img src="https://spin.atomicobject.com/wp-content/uploads/20170512131543/fish-history.gif"
+loading="lazy"
+alt="fish autosuggestion"
+>&lt;/p>
+&lt;p>比较有名的方法是使用一个模糊搜索的软件&lt;a class="link" href="https://github.com/junegunn/fzf" target="_blank" rel="noopener"
+>&lt;strong>fzf&lt;/strong>&lt;/a>。这个软件提供文件、程序和命令历史的搜索，有点类似于windows下的Listary。如果配置在shell中的话可以在按下快捷键后出现一个搜索框，搜索历史命令。这个虽然没有fish的自动补全好用，但是也非常方便了～安装fzf推荐通过&lt;a class="link" href="https://github.com/junegunn/fzf#using-git" target="_blank" rel="noopener"
+>文档中的方法使用git安装&lt;/a>。安装过程中会提示你是否绑定终端快捷键，选择yes后在终端按下&lt;kbd>Ctrl&lt;/kbd>+&lt;kbd>R&lt;/kbd>就可以弹出搜索框了，非常方便～如果直接运行fzf命令的话就会进入完整的搜索界面，可以搜索文件，具体的使用方法还是参考官方文档了～&lt;/p>
+&lt;h2 id="powershell美化">Powershell美化&lt;/h2>
+&lt;p>由于Powershell不是传统的sh体系，因此目前powerline还没有官方支持powershell。这里先mark几个博客，设置好了再更新上来～&lt;/p>
+&lt;blockquote>
+&lt;ul>
+&lt;li>&lt;a class="link" href="https://github.com/JanDeDobbeleer/oh-my-posh" target="_blank" rel="noopener"
+>https://github.com/JanDeDobbeleer/oh-my-posh&lt;/a>&lt;/li>
+&lt;li>&lt;a class="link" href="https://blog.walterlv.com/post/beautify-powershell-like-zsh.html#%E5%AE%89%E8%A3%85-oh-my-posh" target="_blank" rel="noopener"
+>https://blog.walterlv.com/post/beautify-powershell-like-zsh.html#%E5%AE%89%E8%A3%85-oh-my-posh&lt;/a>&lt;/li>
+&lt;li>&lt;a class="link" href="https://gist.github.com/jchandra74/5b0c94385175c7a8d1cb39bc5157365e" target="_blank" rel="noopener"
+>https://gist.github.com/jchandra74/5b0c94385175c7a8d1cb39bc5157365e&lt;/a>&lt;/li>
+&lt;li>&lt;a class="link" href="https://dev.to/myleftshoe/comment/8b58" target="_blank" rel="noopener"
+>https://dev.to/myleftshoe/comment/8b58&lt;/a>&lt;/li>
+&lt;li>&lt;a class="link" href="https://www.reddit.com/r/archlinux/comments/45lkyj/is_new_always_better_urxvt_vs_xterm_tmux_vs/" target="_blank" rel="noopener"
+>https://www.reddit.com/r/archlinux/comments/45lkyj/is_new_always_better_urxvt_vs_xterm_tmux_vs/&lt;/a>&lt;/li>
+&lt;/ul>
+&lt;/blockquote></description></item></channel></rss>

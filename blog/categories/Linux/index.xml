@@ -1,0 +1,263 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Linux on JacobZ</title><link>https://zyxin.xyz/blog/categories/Linux/</link><description>Recent content in Linux on JacobZ</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><lastBuildDate>Wed, 31 Jul 2019 00:00:00 +0000</lastBuildDate><atom:link href="https://zyxin.xyz/blog/categories/Linux/index.xml" rel="self" type="application/rss+xml"/><item><title>折腾 KDE Neon 的配置</title><link>https://zyxin.xyz/blog/2019-07/ConfigureKdeNeon/</link><pubDate>Wed, 31 Jul 2019 00:00:00 +0000</pubDate><guid>https://zyxin.xyz/blog/2019-07/ConfigureKdeNeon/</guid><description>&lt;img src="https://zyxin.xyz/blog/2019-07/ConfigureKdeNeon/neon.png" alt="Featured image of post 折腾 KDE Neon 的配置" />&lt;p>最近我已经将KDE Neon作为主力系统之一了，Plasma桌面真的是太好用了！于是给家里的主机也装上了Neon，这篇文章就记录一下安装配置和美化的过程啦～&lt;/p>
+&lt;p>&lt;img src="https://zyxin.xyz/blog/blog/2019-07/ConfigureKdeNeon/neon.png"
+width="2560"
+height="1080"
+loading="lazy"
+alt="Plasma桌面折腾结果～"
+class="gallery-image"
+data-flex-grow="237"
+data-flex-basis="568px"
+>&lt;/p>
+&lt;h2 id="系统安装及boot设置">系统安装及Boot设置&lt;/h2>
+&lt;h3 id="双系统安装">双系统安装&lt;/h3>
+&lt;p>安装Neon还是非常简单的，直接从官网下载系统镜像，烧进U盘正常安装即可。不过由于我选择的是与Windows双系统安装，因此需要手动分区。这里要纠正一下之前[安装双系统博文中的分区方式](https://zyxin.xyz/blog/2018-09/LinuxDualSystem/。现在的Linux系统实际上只需要给根目录&lt;code>/&lt;/code>分区就可以了，&lt;code>/home&lt;/code>分区以前建议单独分区的原因是为了便于系统的更改，这样在修改系统分区之后（如重装系统）还能保留&lt;code>/home&lt;/code>底下的文件，但其实现在很多系统已经能做到重装并保留&lt;code>/home&lt;/code>分区了，这时对于我这小硬盘的笔记本来说反而导致空间利用不灵活。而交换分区&lt;code>/swap&lt;/code>也是没有必要的，交换分区的存在类似于Windows下的虚拟内存，用硬盘的一部分来虚拟内存，避免内存不足的情况。新Linux可以利用交换文件完成类似功能，因此不必专门给&lt;code>/swap&lt;/code>分区。（不过我猜专门给它分个区可能能提高性能？）。最后最关键的是不要给&lt;code>/boot&lt;/code>分区了,&lt;code>/boot&lt;/code>分区是为了保证boot文件区不被占满，以致无法正常启动。利用EFI方式启动的系统只需要有&lt;code>efi&lt;/code>分区即可，而且多个系统可以利用同一个EFI分区。因此只需告诉安装器使用EFI分区作为启动分区，关于EFI的详细信息请看后文~&lt;/p>
+&lt;blockquote>
+&lt;p>分区的时候还看到了之前的系统里有标记为&lt;code>msr&lt;/code>的分区，是Windows的预留分区，好像具体没啥用。这里贴&lt;a class="link" href="http://bbs.wuyou.net/forum.php?mod=viewthread&amp;amp;tid=374959" target="_blank" rel="noopener"
+>一篇考据文章&lt;/a>。&lt;/p>
+&lt;/blockquote>
+&lt;h3 id="refind设置">rEFind设置&lt;/h3>
+&lt;p>安装完系统后我还准备安装rEFind来替代默认的bootloader——GRUB(GRUB实在是太丑了&amp;hellip;)。由于Windows10禁掉了启动其他系统的入口，因此之前只能用GRUB。rEFind是一个更加强大的启动器，并且可自定义的部分也多～rEFind是基于UEFI的启动器，相比GRUB能支持更多的功能，甚至可以在启动阶段就加载一些驱动，这就使得rEFind可以有高清的界面哈哈哈～关于UEFI与传统BIOS的区别可以参考&lt;a class="link" href="https://wiki.manjaro.org/index.php?title=Some_basics_of_MBR_v/s_GPT_and_BIOS_v/s_UEFI" target="_blank" rel="noopener"
+>Manjaro论坛的这篇帖子&lt;/a>和&lt;a class="link" href="https://www.zhihu.com/question/36313402/answer/66947818" target="_blank" rel="noopener"
+>知乎的这篇帖子&lt;/a>。UEFI和BIOS都是主板ROM程序启动后调用的bootloader类型，当bootloader通过UEFI或者BIOS过程加载之后就会启动系统内核。而UEFI相比BIOS可以支持更大的bootloader和并行启动，是现在大部分系统采用的启动方式～&lt;/p>
+&lt;p>rEFind在Ubuntu下安装非常方便～直接用&lt;code>apt&lt;/code>安装即可。安装完重启就会发现默认进入的已经是rEFind界面了～不过默认的界面主题非常丑，也有很多多余的启动项，因此还需要稍微设置一下～设置教程网上有很多了，主题在官网和搜索引擎也都可以搜到，这里就不赘述。我的设置文件&lt;a class="link" href="https://github.com/cmpute/dotfiles/blob/master/refind/user.conf" target="_blank" rel="noopener"
+>可以在Github找到&lt;/a>～我保留了GRUB的chainload入口，避免rEFind崩了进不去系统，然后另外添加了一个直接启动Linux内核的入口。最后界面效果如下，还是很赏心悦目的～&lt;/p>
+&lt;p>{% asset_img refind.jpg rEFInd界面照片 %}&lt;/p>
+&lt;p>安装完成以后就接着&lt;a class="link" href="https://zyxin.xyz/blog/2018-09/LinuxDualSystem/" >参考之前的文章&lt;/a>继续设置就可以了。其中最必要的两个操作是把系统时间调成&lt;code>local-rtc&lt;/code>避免与Windows冲突，以及把Plasma环境中鼠标单击的行为从打开改为选择。。。&lt;/p>
+&lt;h3 id="输入法安装">输入法安装&lt;/h3>
+&lt;p>Neon安装完后默认是没有输入法的，不过反正中文输入法都是要安装&lt;a class="link" href="https://wiki.archlinux.org/index.php/fcitx" target="_blank" rel="noopener"
+>fcitx&lt;/a>的，还避免了使用ibus的冲突～fcitx的安装&lt;a class="link" href="https://blog.ctang.me/the-first-story-on-medium-8a132a1b62fe" target="_blank" rel="noopener"
+>参考这篇文章&lt;/a>即可，其中&lt;code>fcitx-qt-impanel&lt;/code>这个包可以让fcitx的状态显示在任务栏里～最近好像fcitx在开发新版本(&lt;a class="link" href="https://a-wing.top/linux/2018/08/14/fcitx5.html" target="_blank" rel="noopener"
+>fcitx5&lt;/a>)，不过目前还只有Arch linux有包可以直接用，因此也就没折腾了。&lt;/p>
+&lt;p>安装完成之后还需要让fcitx框架跟随系统在后台启动，在Ubuntu底下修改的文件是&lt;code>.xprofile&lt;/code>，而KDE桌面环境不会加载&lt;code>.xprofile&lt;/code>，而是加载&lt;code>.xsessionrc&lt;/code>，修改方式参见&lt;a class="link" href="https://wiki.archlinux.org/index.php/fcitx#Set_environment_variables_for_IM_modules" target="_blank" rel="noopener"
+>Arch Wiki&lt;/a>，最后好像还需要加&lt;code>fcitx &amp;amp;&lt;/code>来确保启动= =&lt;/p>
+&lt;blockquote>
+&lt;ul>
+&lt;li>折腾这些玩意的过程中发现&lt;a class="link" href="https://wiki.archlinux.org/index.php" target="_blank" rel="noopener"
+>Arch Wiki&lt;/a>真是个好东西啊～KDE桌面的大部分问题都可以搜到解答～&lt;/li>
+&lt;li>&lt;code>.xinitrc&lt;/code>, &lt;code>.xprofile&lt;/code>，&lt;code>.xsession&lt;/code>这些设置文件我真的是被搞蒙了。。&lt;a class="link" href="https://www.reddit.com/r/linux/comments/1p6orz/bashrc_bash_profile_inputrc_profile_xprofile/" target="_blank" rel="noopener"
+>这里有一篇帖子&lt;/a>和&lt;a class="link" href="https://unix.stackexchange.com/questions/281858/difference-between-xinitrc-xsession-and-xsessionrc/281923#281923" target="_blank" rel="noopener"
+>一篇回答&lt;/a>梳理了他们的关系，可供参考～&lt;/li>
+&lt;/ul>
+&lt;/blockquote>
+&lt;h3 id="rclone配置">rclone配置&lt;/h3>
+&lt;p>另一个必装的好东西是rclone，之前在&lt;a class="link" href="https://zyxin.xyz/blog/2019-04/LinuxRemoteSetup/" >远程桌面设置的文章&lt;/a>中有提到。由于KDE内置的GoogleDrive和OneDrive连接不太好使，还是用rclone来访问网盘吧= =。在设置好rclone之后可以通过自定义服务的方式让rclone在系统启动时自动挂载网盘到指定路径，然后在Dolphin（KDE的文件管理器）里面将这两个位置添加到左侧目录就可以啦～这样就可以直接从文件管理器访问了～具体的配置文件可以参考我的Github。&lt;/p>
+&lt;blockquote>
+&lt;ul>
+&lt;li>如果自定义服务添加到的位置是系统服务位置，那么可能会碰到权限问题，&lt;a class="link" href="https://forum.rclone.org/t/rclone-gdrive-not-mounting-permissions-or-fuse-issue/8067/2" target="_blank" rel="noopener"
+>这里有解决方法&lt;/a>&lt;/li>
+&lt;li>关于systemd的服务设置可以&lt;a class="link" href="https://wiki.archlinux.org/index.php/Systemd/User" target="_blank" rel="noopener"
+>参考Arch Wiki&lt;/a>&lt;/li>
+&lt;/ul>
+&lt;/blockquote>
+&lt;h2 id="主题设置美化">主题设置美化&lt;/h2>
+&lt;h3 id="plasma主题设置">Plasma主题设置&lt;/h3>
+&lt;p>KDE Plasma最大的优点就是流畅以及好看！不折腾一下主题真的是对不起这么好的环境了～我大概主要进行了以下修改&lt;/p>
+&lt;ul>
+&lt;li>风格选择&lt;code>Breeze Dark&lt;/code>， 透明度设置为70%左右&lt;/li>
+&lt;li>图标使用&lt;code>Papirus Dark&lt;/code>&lt;/li>
+&lt;li>使用透明桌面主题&lt;a class="link" href="https://store.kde.org/p/1170816/" target="_blank" rel="noopener"
+>&lt;code>Breeze Transparent Dark&lt;/code>&lt;/a>&lt;/li>
+&lt;li>Firefox浏览器去掉titlebar，主题设为Dark&lt;/li>
+&lt;li>添加全局菜单添加到底部
+&lt;blockquote>
+&lt;p>注意默认的Firefox去掉titlebar的话&lt;a class="link" href="https://www.reddit.com/r/kde/comments/bn2klu/firefox_csd_bug_with_kde_global_menu_plasmoid/" target="_blank" rel="noopener"
+>对全局菜单的Plasmoid支持有问题&lt;/a>&lt;/p>
+&lt;/blockquote>
+&lt;/li>
+&lt;li>fcitx主题选择Dark&lt;/li>
+&lt;li>在桌面特效中选择喜欢的窗口动画，调节窗口透明度～&lt;/li>
+&lt;/ul>
+&lt;p>剩下的换壁纸、配色主题什么的都来一遍就可以了～最后的桌面效果见标题图，还是很顺眼的～&lt;/p>
+&lt;h3 id="其他小工具">其他小工具&lt;/h3>
+&lt;h4 id="窗口附着缩放">窗口附着缩放&lt;/h4>
+&lt;p>这个KWin脚本名叫Sticky Window Snapping，真的是神器！可以让附着在一块的窗口同时进行尺寸调整！这个功能相当于Windows分屏功能的升级版，这酸爽谁用谁知道啊！～下载地址&lt;a class="link" href="https://store.kde.org/p/1112552" target="_blank" rel="noopener"
+>见KDE商城&lt;/a>，使用效果在官网有动图可以参考～还&lt;a class="link" href="https://store.kde.org/p/1112554/" target="_blank" rel="noopener"
+>有个类似的脚本&lt;/a>可以做到让窗口严格按照网格排列，不过相比之下就显然鸡肋很多了。&lt;/p>
+&lt;blockquote>
+&lt;p>这些功能的Windows替代品可以&lt;a class="link" href="https://zhuanlan.zhihu.com/p/33722847" target="_blank" rel="noopener"
+>参见少数派的文章&lt;/a>，不过貌似没有免费的软件可以做到Tilting&lt;/p>
+&lt;/blockquote>
+&lt;h4 id="redshift红移">Redshift（红移）&lt;/h4>
+&lt;p>红移是Linux底下提供“护眼模式”的软件，有点类似f.lux，这个对我们这个天天盯电脑的还是很有用啦～安装直接&lt;code>apt install redshift plasma-applet-redshift-control&lt;/code>即可，第二个软件是Redshift的Plasma插件，可以在任务栏通过它来调节红移，非常方便～安装完后应该就可以通过Plasma挂件来设置红移了，如果不能自动识别地理位置的话&lt;a class="link" href="https://wiki.archlinux.org/index.php/Redshift#Automatic_location_based_on_GPS" target="_blank" rel="noopener"
+>参考Arch Wiki中描述的geoclue工具&lt;/a>&lt;/p>
+&lt;blockquote>
+&lt;p>其他还有一些KDE下非常好用的软件，也一并列在这里了～以后用多了再专门开个文章～&lt;/p>
+&lt;ul>
+&lt;li>Kdenlive / Audacity：免费的视频/音频剪辑软件，基本够用了～&lt;/li>
+&lt;li>Meld：文件比较器&lt;/li>
+&lt;li>Remmina / KRDC：远程桌面的客户端，后者是KDE自家的，感觉比Remmina还是差点&lt;/li>
+&lt;li>VLC：视频播放器，可以部分替代PotPlayer&lt;/li>
+&lt;li>Peek / Kazam：录屏软件&lt;/li>
+&lt;li>Flameshot：截屏软件&lt;/li>
+&lt;li>Gimp：图片编辑软件，堪比Photoshop&lt;/li>
+&lt;li>Krfb / Xrdp：远程桌面的服务器&lt;/li>
+&lt;li>DeaDBeeF：音乐播放器，对cue和utf的支持非常好，可以部分替代fb2k&lt;/li>
+&lt;li>KDE Partition Manager：KDE版GParted，功能差不多而且界面美观～&lt;/li>
+&lt;li>fzf / ripgrep：模糊搜索工具&lt;/li>
+&lt;li>Golden Dict：强大的词典框架&lt;/li>
+&lt;li>KGet / aria2：下载器&lt;/li>
+&lt;li>youtube-dl：视频下载器（Python）&lt;/li>
+&lt;li>&lt;a class="link" href="http://wps-community.org/" target="_blank" rel="noopener"
+>WPS&lt;/a> / OnlyOffice：办公套装&lt;/li>
+&lt;/ul>
+&lt;/blockquote>
+&lt;!-- Reference Software List -->
+&lt;!-- https://alim0x.gitbooks.io/awesome-linux-software-zh_cn/content -->
+&lt;!-- KDE 全家桶 -->
+&lt;!-- Deepin 全家桶 -->
+&lt;!-- KDE snap全家桶 --></description></item><item><title>转投Linux发行版</title><link>https://zyxin.xyz/blog/2019-04/LinuxDistroSelection/</link><pubDate>Fri, 26 Apr 2019 15:22:02 +0000</pubDate><guid>https://zyxin.xyz/blog/2019-04/LinuxDistroSelection/</guid><description>&lt;p>由于最近工作一直在使用ROS，因此也一直在用Ubuntu。之前为了稳定性使用的是Ubuntu 16.04 LTS，而这个版本默认的桌面环境是Unity，实在是不好使，它也颇为人诟病。后来尝试了Ubuntu 18.04 LTS安装ROS Melodic，发现ROS也挺稳定的，因此18.04也用了一段时间，但是最后还是觉得不太爽，于是最终还是决定好好体验一下各种Linux选一个自己顺手的。&lt;/p>
+&lt;blockquote>
+&lt;p>这篇博客里不会贴系统的截图，因为这些在网上都可以找到，而且桌面的好看与否很大程度上取决于个人的喜好和配置结果。最好的比较方法还是自己装一个系统尝试一下&lt;/p>
+&lt;/blockquote>
+&lt;p>至于如何尝试linux，我在Windows中使用的是Hyper-V。可以非常方便地安装各种镜像，动态分配资源，最方便的是vhdx硬盘格式可以直接mount到宿主机里。Hyper-V使用一些性能较差的Linux桌面环境时会比较卡，这个时候可以&lt;a class="link" href="https://docs.microsoft.com/en-us/windows-server/remote/remote-desktop-services/rds-remotefx-vgpu" target="_blank" rel="noopener"
+>开启RemoteFX GPU（参考官方说明）&lt;/a>。注意在Win10 1809之后，Hyper-V管理器界面不提供RemoteFX的开关了，需要用Powershell命令手动开启。&lt;/p>
+&lt;h2 id="linux-distro">Linux Distro&lt;/h2>
+&lt;p>所谓的Linux发行版，对应的是一个专有的英文单词distro。个人理解，Linux Distro就是一套Linux Kernel加上外围一些必要的软件包。之前我一直不理解发行版的意思，直到学会了Python使用上Anaconda之后，才知道发行版指的就是核心程序+预装的全家桶，这个全家桶通常包含包管理器（Package manager，简称PM。如Ubuntu的apt、Anaconda的conda）、内置软件（如Linux桌面环境、Anaconda预装的Scipy）以及一套系统逻辑。&lt;/p>
+&lt;p>Linux发行版中很重要的一点便是系统的PM，这个管理器还决定了系统的更新逻辑。而不同发行版之间最大的区别，在我看来就是PM（以及软件仓库repository），因此PM的特性与相性最终会决定我是否选择这套发行版。&lt;/p>
+&lt;p>常见的桌面Linux发行版有如下这些，我可以大概描述一下他们的特点（以PM为线索）：&lt;/p>
+&lt;ul>
+&lt;li>&lt;strong>apt&lt;/strong>: Debian、Ubuntu系
+&lt;ul>
+&lt;li>依赖树严格，能保证软件之间正确的依赖关系&lt;/li>
+&lt;li>Debian和Ubuntu的软件库数量庞大，但是确实由于保守的包更新政策，它们的包比较老&lt;/li>
+&lt;li>apt的命令行使用非常直观&lt;/li>
+&lt;li>在国内，默认的仓库源下载很慢，但是国内有很多开源镜像可以使用&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>&lt;strong>pacman&lt;/strong>: Arch
+&lt;ul>
+&lt;li>滚动更新是Arch最大的特点&lt;/li>
+&lt;li>pacman没有严格的依赖树，而是类似于快照的概念，更新软件时整个软件池都会进行变动（个人理解）&lt;/li>
+&lt;li>pacman命令行参数是字母表，不便于记忆&lt;/li>
+&lt;li>Arch的官方软件仓库中软件较少，但是Arch有庞大的AUR体系，因此能够尝试到很多小软件和新版本，不过也要承担小白鼠的风险&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>&lt;strong>yum/dnf&lt;/strong>: Fedora、CentOS、Redhat等
+&lt;ul>
+&lt;li>使用方法和apt相似&lt;/li>
+&lt;li>软件仓库中的数量没有Debian和Arch多&lt;/li>
+&lt;li>包管理方便，中规中据，而且下载速度不慢&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>&lt;strong>zypper&lt;/strong>: OpenSUSE
+&lt;ul>
+&lt;li>由于OpenSUSE是真的比较小众，因此我也没有去尝试，就不妄自评论了&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>&lt;strong>emerge&lt;/strong>: Gentoo
+&lt;ul>
+&lt;li>同上，没尝试过
+严格来说，上面的这些都是包分发器，而安装软件的是包安装器（dpkg,rpm等），不过前者才是我们最经常打交道的。关于这些PM以及其软件管理哲学的分析，可以&lt;a class="link" href="https://www.zhihu.com/question/40297380" target="_blank" rel="noopener"
+>参见这个知乎问题&lt;/a>。而关于这些包管理器的一篇介绍可以&lt;a class="link" href="https://linux.cn/article-9931-1.html" target="_blank" rel="noopener"
+>参见这篇博文&lt;/a>。&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;blockquote>
+&lt;p>Arch Linux的wiki上也有一篇&lt;a class="link" href="https://wiki.archlinux.org/index.php/Arch_compared_to_other_distributions" target="_blank" rel="noopener"
+>关于发行版之间的对比&lt;/a>，这里我要吹一下Arch的wiki真的良心，还有中文版！
+&lt;a class="link" href="https://distrowatch.com/" target="_blank" rel="noopener"
+>DistroWatch&lt;/a>是一个收集了大量Linux distro的网站，可以在上面看一下流行度排名和一些评测
+Linux各发行版的演化历史可以参见&lt;a class="link" href="https://commons.wikimedia.org/wiki/File:Linux_Distribution_Timeline.svg" target="_blank" rel="noopener"
+>Wiki的历史图&lt;/a>或者&lt;a class="link" href="https://distrowatch.com/dwres.php?resource=family-tree" target="_blank" rel="noopener"
+>DistroWatch的图表&lt;/a>&lt;/p>
+&lt;/blockquote>
+&lt;h2 id="桌面环境">桌面环境&lt;/h2>
+&lt;p>桌面环境是最终选择哪一个发行版的决定者。选择Ubuntu、Arch等只能给你决定好大方向，而最后在众多系统中作出选择的标准之一便是桌面环境。常见的桌面环境有Gnome、KDE Plasma、XFCE、LXQt等。现在众多的发行版的主要区别其实也就是PM和桌面环境的区别：&lt;/p>
+&lt;ul>
+&lt;li>Ubuntu 16.04: Ubuntu + Unity&lt;/li>
+&lt;li>Ubuntu 18.04: Ubuntu + Gnome&lt;/li>
+&lt;li>KUbuntu: Ubuntu + KDE&lt;/li>
+&lt;li>XUbuntu: Ubuntu + XFCE&lt;/li>
+&lt;li>MX Linux: Debian + XFCE&lt;/li>
+&lt;li>Linux Mint: Ubuntu + Cinammon/Gnome&lt;/li>
+&lt;li>Manjaro: Arch + KDE&lt;/li>
+&lt;li>Deepin: Debian + Deepin&lt;/li>
+&lt;li>&amp;hellip;&lt;/li>
+&lt;/ul>
+&lt;p>而这些桌面环境的特点，个人感觉如下：&lt;/p>
+&lt;ul>
+&lt;li>Gnome(w/ gdm): 基于GTK开发，默认界面比较好看，但是灵活程度不够。虽然有Gnome Tweak，但是插件很少&lt;/li>
+&lt;li>KDE Plasma(w/ sddm): 基于QT开发，非常灵活，而且Plasma5默认就非常好看！占用资源也比Gnome小。&lt;/li>
+&lt;li>Unity(w/ lightdm): 别说了，换吧&lt;/li>
+&lt;li>Xfce: 听人说很不错，但是我认为比较丑&lt;/li>
+&lt;li>LXQt(w/ sddm): 适合低配环境，也不太好看&lt;/li>
+&lt;/ul>
+&lt;h2 id="个人选择">个人选择&lt;/h2>
+&lt;p>&lt;strong>Arch&lt;/strong>?: 在我了解Linux distro的过程中，在各种论坛、知乎问题上都有人安利Arch linux。Arch虽好，而且可以体验更新的快感，但是我本身没有太多的时间去折腾系统，或者追寻潮流，因此还是更倾向于Debian体系。同时由于我有使用ROS的需求，因此Ubuntu还是我的第一选择。&lt;/p>
+&lt;p>&lt;strong>商业主导 or 社区主导&lt;/strong>: 有人说Ubuntu由于是Canonical家的产品，会有商业倾向，服从公司利益。这个情况确实存在，但是就体验上来说和Arch、Fedora等等社区主导的系统并没有太多区别，因此这个并不会是决定我选择的因素。&lt;/p>
+&lt;p>&lt;strong>Gnome or KDE&lt;/strong>: 相比于GTK，我更喜欢Qt这套框架。另外KDE也有别人上传的很多插件和桌面（在KDE store上)，非常棒，因此我最后选择的是KDE～&lt;/p>
+&lt;p>综上所述，我最后决定使用KDE Neon作为平常使用的发行版，双系统安装Ubuntu 18.04作为开发系统。之后会写一篇博客来介绍KDE的折腾记录～&lt;/p></description></item><item><title>给Linux（Ubuntu 16.04/18.04）配置远程访问环境</title><link>https://zyxin.xyz/blog/2019-04/LinuxRemoteSetup/</link><pubDate>Tue, 02 Apr 2019 20:47:07 +0000</pubDate><guid>https://zyxin.xyz/blog/2019-04/LinuxRemoteSetup/</guid><description>&lt;p>年后给实验室装了一台小服务器，安装了Ubuntu系统，这篇博客记录一下给Ubuntu配置远程访问的设置过程。&lt;/p>
+&lt;blockquote>
+&lt;p>虽然服务器是一台GPU服务器，但是出于简便考虑没有在服务器上安装虚拟化环境，有需要安装LXD或者Docker的朋友可以参考这几篇博客：&lt;a class="link" href="https://blog.csdn.net/weixin_42749767/article/details/83720831" target="_blank" rel="noopener"
+>实验室GPU服务器共享方案&lt;/a>、&lt;a class="link" href="https://feelncut.com/2018/05/03/145.html" target="_blank" rel="noopener"
+>搭建多人共用的GPU服务器&lt;/a>、&lt;a class="link" href="https://zhuanlan.zhihu.com/p/25710517" target="_blank" rel="noopener"
+>为实验室建立公用GPU服务器&lt;/a>、&lt;a class="link" href="https://shenxiaohai.me/2018/12/03/gpu-server-lab/" target="_blank" rel="noopener"
+>搭建实验室公共GPU服务器&lt;/a>&lt;/p>
+&lt;/blockquote>
+&lt;h2 id="ssh设置">SSH设置&lt;/h2>
+&lt;p>远程连接最方便并且最稳定的就是SSH了，安装好SSH之后就基本可以远程操作服务器。SSH的安装非常简单，Ubuntu下通过apt安装即可：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="line">&lt;span class="cl">sudo apt install openssh-server
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>安装完重启后，SSH服务就会自动运行了。客户端方面，Ubuntu默认提供SSH支持，而Windows在1809之后也内置了OpenSSH，在系统附加功能中打开开关后，通过cmd即可调用。如果系统版本较老则可以使用XShell。&lt;/p>
+&lt;h3 id="sftp设置---利用rclone">SFTP设置 - 利用rclone&lt;/h3>
+&lt;p>上面安装命令会顺带安装上SFTP客户端。SFTP可以看作加密的FTP协议，可以用来远程访问服务器的文件。SFTP现在已经受到广泛的支持，例如Android上的Solid Explorer就内置了SFTP访问功能。&lt;/p>
+&lt;p>这里介绍一个可以把远程文件挂载到本地的软件——rclone。安装rclone可以从官网下载二进制文件直接拷贝安装，或者下载打包好的deb文件，也可以使用snap进行安装。安装完成之后使用&lt;code>rclone config&lt;/code>添加SFTP服务器，然后就可以&lt;code>rclone mount&lt;/code>进行挂载。此外还可以使用RcloneBrowser等GUI进行更加直接的操作。&lt;/p>
+&lt;blockquote>
+&lt;p>Tip: 如果你是在Ubuntu上安装RcloneBrowser的话，可以通过修改&lt;code>/usr/share/applications/rclone-browser.desktop&lt;/code>文件来修改图标。（原来的图标实在太丑了）&lt;/p>
+&lt;/blockquote>
+&lt;h2 id="远程桌面设置">远程桌面设置&lt;/h2>
+&lt;p>远程桌面的设置就比较麻烦了，这里的远程桌面服务选择xrdp，关于xrdp，vnc等等服务的比较网上都有。由于最开始安装的是Gnome Ubuntu16.04，因此遇到了很多坑，最后配完远程桌面时显卡驱动崩了，因此最后换到了Ubuntu18.04。因此如果需要远程桌面的朋友可以考虑升级到Ubuntu18.04。&lt;/p>
+&lt;p>为了使用上Gnome桌面，最初参考的是一篇&lt;a class="link" href="https://www.hiroom2.com/2016/05/24/ubuntu-16-04-remote-connect-to-gnome-classic-desktop-with-vnc-xrdp/" target="_blank" rel="noopener"
+>在Ubuntu16.04上配置xrdp访问Unity桌面的博客&lt;/a>，最后安装完确实是可以完成访问的，并且如果碰到远程登陆之后提示需要新建color profile的话&lt;a class="link" href="http://c-nergy.be/blog/?p=10372" target="_blank" rel="noopener"
+>可以通过这个博客解决&lt;/a>。但最后由于安装完xserver-xorg后显卡驱动崩了，换用了18.04。&lt;/p>
+&lt;p>在18.04下安装xrdp就简单多了，xrdp版本较新，也不需要安装tigervnc。具体教程还是&lt;a class="link" href="https://www.hiroom2.com/2016/05/24/ubuntu-16-04-remote-connect-to-gnome-classic-desktop-with-vnc-xrdp/" target="_blank" rel="noopener"
+>参考了这篇博客&lt;/a>，大概步骤就是&lt;/p>
+&lt;ol>
+&lt;li>安装&lt;code>xrdp&lt;/code>和&lt;code>xserver-xorg&lt;/code>。需要先安装的&lt;code>xserver-xorg&lt;/code>的原因参见&lt;a class="link" href="https://c-nergy.be/blog/?p=13390" target="_blank" rel="noopener"
+>这篇博客&lt;/a>。
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">apt install xserver-xorg-core xsrever-xorg-input-all
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">apt install xrdp
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;/li>
+&lt;/ol>
+&lt;blockquote>
+&lt;p>如果你安装了Nvidia驱动的话NV还提供定制版的&lt;code>nvidia-xserver-xorg&lt;/code>，也可以通过apt直接安装。安装NV驱动和安装xrdp最好连续进行，避免安装完其他东西之后回头来发现要重装（亲身教训= =）&lt;/p>
+&lt;/blockquote>
+&lt;ol start="2">
+&lt;li>添加&lt;code>echo [session] &amp;gt; ~/.xsession&lt;/code>到&lt;code>/etc/xrdp/startwm.sh&lt;/code>文件里。这里的&lt;code>[session]&lt;/code>内容需要从&lt;code>/usr/share/xsessions&lt;/code>里的桌面环境文件中拷贝出来，例如如果想远程桌面环境运行Gnome3，那么就把&lt;code>[session]&lt;/code>替换成&lt;code>gnome-session --session=gnome&lt;/code>（这行命令就是从&lt;code>/usr/share/xsessions/gnome.desktop&lt;/code>文件中提取出来的）&lt;/li>
+&lt;li>修复一些小问题。例如上文提到的color profile问题可以通过&lt;a class="link" href="http://c-nergy.be/blog/?p=12073" target="_blank" rel="noopener"
+>这篇很详细的博客提到的方法进行解决&lt;/a>。&lt;/li>
+&lt;/ol>
+&lt;p>然后在使用xrdp的时候你可能会碰到一些问题，这里记录一些常见问题的解决方法&lt;/p>
+&lt;ul>
+&lt;li>远程用户在home路径下会挂在一个叫&lt;code>thinclient_drives&lt;/code>的文件夹: 在&lt;code>/etc/xrdp/sesman.ini&lt;/code>中的&lt;code>Chansrv&lt;/code>部分里将FuseMountName改为别的名字（例如&lt;code>.thinclient_drives&lt;/code>）。这个文件夹的作用是实现远程文件拷贝的功能。&lt;/li>
+&lt;/ul>
+&lt;h2 id="x11-forwarding">X11 Forwarding&lt;/h2>
+&lt;p>X11转发是Linux的一种实现远程图形界面的方法，它基于X11窗口协议，类似于Windows对远程GDI的实现。设置好X11以后便可以在ssh中运行远程带有图形界面的程序了～它相比xrdp更好配置，但是使用范围没有xrdp广，因为它只支持程序级别的图形界面，而不是桌面级别的。其设置方法也很简单，在服务器端的&lt;code>/etc/ssh/sshd_config&lt;/code>中将&lt;code>X11Forwarding&lt;/code>选项设为yes即可。在客户端则取决于平台，在Linux平台由于系统界面就是基于X11的（Wayland除外），因此直接使用&lt;code>ssh -X&lt;/code>命令连接服务器就能支持X11转发，而在Windows上则需要额外安装X11服务器，著名的有Vcxsrv, X410等。这里推荐使用&lt;code>MobaXTerm&lt;/code>，这个SSH客户端自带X11服务器，开箱可用，并且性能不错！&lt;/p>
+&lt;h2 id="静态ip">静态IP&lt;/h2>
+&lt;p>如果想要稳定地连接服务器，还需要给服务器配置静态IP。由于我是在大学校园内，静态IP需要申请。我们的网管要求关闭SSH的远程root登陆，以及关闭不必要的服务，此外还推荐服务器用户使用rsakey登陆SSH。这些要求有利于保护服务器安全，因此也推荐在有需要的情况下完成这些操作。&lt;/p>
+&lt;hr>
+&lt;p>以上就是给Ubuntu服务器配置远程桌面的主要步骤，步骤不多但是比较花时间。文中提到的几个博客的网站有提供不少的Linux设置教程，可以供读者参考。&lt;/p>
+&lt;blockquote>
+&lt;p>其他参考阅读：&lt;/p>
+&lt;ul>
+&lt;li>&lt;a class="link" href="https://www.cnblogs.com/nrm1/p/10219269.html" target="_blank" rel="noopener"
+>含Nvidia驱动的远程环境配置&lt;/a>&lt;/li>
+&lt;li>&lt;a class="link" href="http://www.cnblogs.com/ilanni/p/4587171.html" target="_blank" rel="noopener"
+>一些xrdp原理的解释&lt;/a>&lt;/li>
+&lt;/ul>
+&lt;/blockquote></description></item></channel></rss>

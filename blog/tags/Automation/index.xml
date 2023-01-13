@@ -1,0 +1,2160 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Automation on JacobZ</title><link>https://zyxin.xyz/blog/tags/Automation/</link><description>Recent content in Automation on JacobZ</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><lastBuildDate>Wed, 16 Dec 2020 00:00:00 +0000</lastBuildDate><atom:link href="https://zyxin.xyz/blog/tags/Automation/index.xml" rel="self" type="application/rss+xml"/><item><title>Minecraft 1.12建服及侦测器BUD</title><link>https://zyxin.xyz/blog/2020-12/MCBud112/</link><pubDate>Wed, 16 Dec 2020 00:00:00 +0000</pubDate><guid>https://zyxin.xyz/blog/2020-12/MCBud112/</guid><description>&lt;p>进来给实验室的服务器上装了个Minecraft服务器，给大家闲来无事上来种种菜，顺便体验一下新版本的特性。之前最高只玩过1.8，现在虽然更新到1.16了，但是听说很多Mod都还是只支持到1.12，所以就搭了1.12的服务器。基岩版的MC（Win10自带的那个）虽然性能很好，但是由于不购买就没法玩，所以考虑到大家肯定最开始都不想买，以及那个开服好像很麻烦，就还是搭了Java的服务器。&lt;/p>
+&lt;h2 id="一分钟上手minecraft开服">一分钟上手Minecraft开服&lt;/h2>
+&lt;p>以前玩Minecraft的时候都觉得开服务器好麻烦，要知道各种各样的配置方法，因此很佩服服主管理这些东西。直到有一天我搜到了这个：&lt;a class="link" href="https://github.com/itzg/docker-minecraft-server" target="_blank" rel="noopener"
+>docker-minecraft-server&lt;/a>，瞬间感觉一键开服不是梦了！这个repo把Minecraft的服务器版本以及Bukkit/Spigot服务器端Mod框架（可以理解成服务器上的Forge）都嵌进去了，简直不要太方便。数据也是从host的硬盘里mount进去的，因此如果你的服务器要转移或者备份也很方便。有了这个，开服只需要一行命令（假设你服务器上有docker）&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="line">&lt;span class="cl">docker run -d -p 25565:25565 --name mc -e &lt;span class="nv">EULA&lt;/span>&lt;span class="o">=&lt;/span>TRUE itzg/minecraft-server
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>由于可以设置的环境变量非常多，因此我后来把配置都写到了docker-compose文件里面，这样修改设置后启动服务器就更简单了～目前我的设置如下：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-yaml" data-lang="yaml">&lt;span class="line">&lt;span class="cl">&lt;span class="nt">version&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="s1">&amp;#39;3.8&amp;#39;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="nt">services&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">minecraft&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">image&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="l">itzg/minecraft-server&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">ports&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>- &lt;span class="s2">&amp;#34;25565:25565&amp;#34;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">volumes&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>- &lt;span class="s2">&amp;#34;/home/jacobz/Minecraft/docker-data:/data&amp;#34;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">environment&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">MEMORY&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="l">4G&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">EULA&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="s2">&amp;#34;TRUE&amp;#34;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">VERSION&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="m">1.12.2&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">ENABLE_AUTOPAUSE&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="s2">&amp;#34;TRUE&amp;#34;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="c"># OVERRIDE_SERVER_PROPERTIES: &amp;#34;TRUE&amp;#34;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">MAX_TICK_TIME&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="s2">&amp;#34;-1&amp;#34;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">ONLINE_MODE&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="s2">&amp;#34;FALSE&amp;#34;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">TZ&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="l">US/Eastern&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">DIFFICULTY&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="l">easy&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">TYPE&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="l">BUKKIT&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">OPS&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="l">cmpute&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">restart&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="l">always&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 id="侦测器单片bud">侦测器单片BUD&lt;/h2>
+&lt;p>在服务器上玩了几天，最终还是想搭一个自动农场来解决温饱问题。再不去骗村民的情况下，最方便的食物我觉得就是南瓜饼了，它的原料（鸡蛋、糖、南瓜）都是非常好自动化的。因此我就想着顺便琢磨一下有侦测器之后自动农场有没有什么更方便的方法。甘蔗机在&lt;a class="link" href="https://zyxin.xyz/blog/2017-08/MCTowerSugarcane/" >我以前甘蔗机的博文&lt;/a>里面有写到，侦测器搭甘蔗机的效率不如传统的BUD，因此主要可以改动的就是在南瓜机上了。感觉应该不是很难，因此我本地琢磨了一会，弄出来两种利用侦测器的单片BUD：&lt;/p>
+&lt;table>
+&lt;tr>
+&lt;th>上置型&lt;/th>
+&lt;th>下置型&lt;/th>
+&lt;tr>
+&lt;tr>&lt;td>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">{% minecraft 侧视图 %}
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|----活塞+沙子版本|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|rd-$|sand|rr-$e1|st|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|obs-n|pi-n|ts-$|rd-$|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|O|pi-w|rd-$|st|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|st|st|st|st|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|----粘性活塞版本|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|rd-$|st|rr-$e1|st|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|obs-n|sp-n|ts-$|rd-$|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|O|pi-w|rd-$|st|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|st|st|st|st|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">{% endminecraft %}
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;pre>&lt;code>&amp;lt;/td&amp;gt;&amp;lt;td&amp;gt;
+&lt;/code>&lt;/pre>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">{% minecraft 侧视图 %}
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|----活塞+沙子版本|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">| |rd-$ |pi-e|O |-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|rd-$|ts-$ | |obs-s|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|st |rr-$w1|sand|rd-$ |-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|st |st |pi-n|st |-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|----粘性活塞版本|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">| |rd-$ |pi-e|O |-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|rd-$|ts-$ | |obs-s|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|st |rr-$w1|st |rd-$ |-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|st |st |sp-n|st |-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">{% endminecraft %}
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;pre>&lt;code>&amp;lt;/td&amp;gt;&amp;lt;tr&amp;gt;
+&lt;/code>&lt;/pre>
+&lt;/table>
+&lt;p>上图中O代表检测更新的地方，可以看见上置型的结构比下置的要稍微精简一点点，并且由于南瓜只能生成在泥土上，因此我最后使用了上置型的方法搭了自动南瓜机。对比&lt;a class="link" href="https://zyxin.xyz/blog/2017-08/MCTowerPumpkin/" >我之前传统BUD的南瓜机方案&lt;/a>，只需要把这个结构横着堆叠一下就行，在南瓜机上面有了侦测器确实可以大大减小粘性活塞的使用。不过由于这个结构比之前的方案宽度多了一格，因此没一层可能只能容纳两排南瓜了，因此如果要更密集的堆叠可能需要考虑改进这个结构。&lt;/p></description></item><item><title>Minecraft - 集成养鸡场</title><link>https://zyxin.xyz/blog/2017-08/MCChickenFarm/</link><pubDate>Thu, 31 Aug 2017 00:00:00 +0000</pubDate><guid>https://zyxin.xyz/blog/2017-08/MCChickenFarm/</guid><description>&lt;p>养鸡大概是Minecraft里面最省事的养殖业了，只要有鸡蛋就能砸出小鸡，只要有小鸡就能生鸡蛋。不像牵个牛一样还得奔袭万里，甚至遇见夜里把自己埋一晚第二天牛就不见的尴尬。养鸡尽管可以很简单，但是最爽的还是做一个完全自动的养鸡场，砸鸡蛋捡鸡蛋甚至杀鸡都不用自己亲自动手，这是坠吼的！&lt;/p>
+&lt;p>一个全能型的全自动的养鸡场大概分为如下几个模块：自动收集、鸡蛋传递系统、自动鸡蛋发射器、自动杀鸡器等，下面挨个介绍一下每一个模块的红石结构，以及最终的完整集成结构。&lt;/p>
+&lt;h2 id="自动收集">自动收集&lt;/h2>
+&lt;p>自动收集是养鸡场最基本的功能。养鸡场的典型建法是把鸡困在一个格子内，然后在鸡的脚底放上下半砖，下方放上漏斗收集鸡蛋。使用半砖的目除了防止鸡跑出来以外，是为了在杀鸡时让成熟的鸡被杀掉而小鸡不被影响到。这是因为小鸡的碰撞箱高度小于等于半格。&lt;del>因此只要它不乱跳就不会被杀&lt;/del>&lt;/p>
+&lt;p>典型的鸡圈的结构如下图&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">{% minecraft 俯视图 %}
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|ab|C|ab|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|glass|slab|glass|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||ho-$n||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">{% endminecraft %}
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>玻璃用来观察鸡的情况，C处就是鸡所在的地方，可以往这个地方砸鸡蛋。这样的结构在后文就简称鸡圈了。&lt;/p>
+&lt;h2 id="鸡蛋传递系统">鸡蛋传递系统&lt;/h2>
+&lt;p>鸡蛋传递系统在鸡场里起到的作用是，将鸡生出来的鸡蛋传送到发射器中自动砸成小鸡。由于砸小鸡需要在鸡圈的上方，因此需要一个将物品向上传递的系统。由于漏斗不能向上放置，因此需要别的方法来实现这个目的。&lt;/p>
+&lt;p>向上传递物品有两种方式，一种是利用投掷器能向容器里传递物品的特性，另一种是利用方块会把物品“挤”到最顶端的特性。由于养鸡场砸鸡蛋只需要向上传递3格，因此也就以3格为例，传递更高的方案可以同理搭建出来。&lt;/p>
+&lt;h3 id="投掷器塔">投掷器塔&lt;/h3>
+&lt;p>投掷器按照向上发射的方向摆成塔，然后通过红石信号依次激活他们即可做到向上传递。具体结构如下：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;span class="lnt">25
+&lt;/span>&lt;span class="lnt">26
+&lt;/span>&lt;span class="lnt">27
+&lt;/span>&lt;span class="lnt">28
+&lt;/span>&lt;span class="lnt">29
+&lt;/span>&lt;span class="lnt">30
+&lt;/span>&lt;span class="lnt">31
+&lt;/span>&lt;span class="lnt">32
+&lt;/span>&lt;span class="lnt">33
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">{% minecraft 俯视图 %}
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|----|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|ts|rd-ew|rd-ew|rt-e|ab|rd|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|rd-ns|rr-s1|ab|ab|rd-!|ab|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|rd-ns|dr-u|ho-w|st|st|st|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|ab|rc-s|ab|ab|rr-n1!|ab|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||ab|rt-w!|rd-ew!|rd-nw!||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|----|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|rd-se|ts||ab|rr-e2|ab|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||st|st|st|st|st|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||dr-u||←|←|←|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|rt-!|st|st|st|st|st|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|----|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||rd-sw|||||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||rr-s2|||||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||dr-u|||||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|ab||||||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|----|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|||||||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|||||||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||dr-u|st|st|st|st|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|rt||||||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|----|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|||||||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||st|st|st|st|st|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||dr-u|→|→|→|→|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|ab|ab|st|st|st|st|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|----|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|||||||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|||||||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|||||||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|rd-ew|rd-ew|||||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">{% endminecraft %}
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>这种方案成本较高，但重在噪声小。&lt;/p>
+&lt;p>平滑的石头代表与红石无关的方块，箭头指的方向是物品移动的方向。物品的移动可以通过流水（部分方块就是为流水设计的），也可以通过漏斗管道来移动（可以去掉一些方块），但是会进一步提高成本。&lt;/p>
+&lt;h3 id="方块挤压">方块挤压&lt;/h3>
+&lt;p>如果将九宫格中周围八格都放上石头，终中间丢一个物品，那么在往中间放上石头后物品会被挤压而浮到玻璃上面。利用方块的这个特性就可以制作一个向上传递的机构。结构如下：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">{% minecraft 俯视图 %}
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|----|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||sp-u|sp-u|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||rr-n4|rr-n2|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|----|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||ab|ab|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|----|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|ab|ab|ab|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|ab|U|←|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|ab|ab|ab|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|----Level4 ~ Level(n-1)|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|ab|ab|ab|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|ab|ab|ab|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|ab|ab|ab|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|----Leveln|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|ab|ab|ab|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|ab|U|→|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|ab|ab|ab|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">{% endminecraft %}
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>这个方案看起来很没有技术含量，但确实是最简单省事，并且最省材料的方案。同样的，箭头代表物品移动的方向，U为物品上行的地方。比较器需要通入周期信号以不停地传输物品，如果用水流移动物品周期最好为1s（10Tick）左右，而如果是漏斗管道+投掷器则可以短一点。&lt;/p>
+&lt;blockquote>
+&lt;p>需要注意的是，收集鸡蛋和收集杀鸡的产物都通过同一个漏斗，因此其实在鸡蛋传递系统之前应该还要加一个物品分流装置。物品分流通过活塞实现比较麻烦，因此一般是通过改变水的流向来改变。改变水流方向十分简单，在这里就不叙述了。&lt;/p>
+&lt;/blockquote>
+&lt;h2 id="自动发射器">自动发射器&lt;/h2>
+&lt;p>自动发射器把收集到的鸡蛋砸到鸡圈里，生出新的小鸡，进行可持续发展。这个自动发射装置的原理我在[小麦塔教程]({{ ref &amp;ldquo;MCTowerWheat&amp;rdquo; }})中的漏斗转移装置中有讲到，只需要用比较器获取容器中是否含有物品，再接上高频时钟即可。这里也略过了。&lt;/p>
+&lt;h2 id="自动杀鸡器">自动杀鸡器&lt;/h2>
+&lt;p>杀死鸡有两种方法，一种是用实心方块填充鸡圈，使得鸡窒息而死，另一种则是利用岩浆烧死鸡。自动杀鸡的装置需要在养鸡之前就设计好，不然后加就比较麻烦。&lt;/p>
+&lt;h3 id="窒息">窒息&lt;/h3>
+&lt;p>使鸡窒息的操作非常简单，只需要用一个粘性活塞将实心方块推到上文提到的鸡圈结构中的C位置即可使鸡窒息而死。因此只需要一个开关、一个活塞、一个方块，或者多加一个自动复位的计时器，就可以实现这个功能了~&lt;/p>
+&lt;p>窒息杀死的鸡会掉落生鸡肉和羽毛。&lt;/p>
+&lt;h3 id="岩浆烧死">岩浆烧死&lt;/h3>
+&lt;p>岩浆烧死稍微麻烦一点，因为岩浆不能一直放在鸡圈里，而是需要杀鸡的时候才放出来。这个可以通过发射器来实现，当发射器中有一个岩浆桶的时候，给发射器一个信号它就能喷出一格岩浆，再给一次信号即可收回。而杀鸡时需要在喷出岩浆后立即收回，否则可能会把杀鸡的收获物都烧掉。这个需要通过脉冲信号来实现。&lt;/p>
+&lt;p>脉冲发生器对发射器以及投掷器非常有用，因为经常会出现需要让发射电路迅速复位的情况。此外，脉冲发生器还是大量数字电路的组成部分，产生触发信号。&lt;/p>
+&lt;p>脉冲发生器的基本结构在&lt;a class="link" href="https://minecraft-zh.gamepedia.com/%E8%84%89%E5%86%B2%E7%94%B5%E8%B7%AF" target="_blank" rel="noopener"
+>MCWiki里有明确讲到&lt;/a>，如果需要产生单次脉冲，可以采用最简单的断路器脉冲发生器。但是由于我们不仅要喷出岩浆还要立即收回，因此需要使用两个时间间隔很密的脉冲发生器来激活两次。（理论上来说，使用开关+双边沿触发器也可以达到收放岩浆的效果，但是为了迅速收回岩浆，最好还是使用两个脉冲发生器）&lt;/p>
+&lt;p>一种比较廉价的双脉冲发生器的方案如下：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;span class="lnt">7
+&lt;/span>&lt;span class="lnt">8
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">{% minecraft 俯视图 %}
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|----|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|pi-u|ab|ab|ab|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|ab|pi-u|ab|ab|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|----|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|sand|rr-e1|rd-ew|→|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|rd+S|sand|rr-e3|→|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">{% endminecraft %}
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>激活S处的红石后（最简单的方法是按钮），箭头所指的方向就能输出两次间隔很短的脉冲信号。如果连上发射器的话就可以做到岩浆的发射与立即收回。&lt;/p>
+&lt;p>岩浆杀死的鸡会掉落熟鸡肉，能够省去后序烧鸡的步骤。不过由于村民交易时会需要生鸡肉，因此两种方法最好都加到鸡场中去。&lt;/p>
+&lt;h2 id="集成结构">集成结构&lt;/h2>
+&lt;p>有了上面这些部件以后，就可以集成出一个全自动养鸡场啦~布线的方案有很多，这里就不细讲了，大概的流程是：&lt;/p>
+&lt;ul>
+&lt;li>自动收集 → 分流 → 储物/鸡蛋上行 → 自动投掷鸡蛋&lt;/li>
+&lt;li>一个按钮连接粘性活塞控制窒息法杀鸡获得生鸡肉&lt;/li>
+&lt;li>一个按钮连接发射器控制岩浆杀鸡获得熟鸡肉&lt;/li>
+&lt;/ul>
+&lt;p>另一点是鸡圈的布置：鸡圈的C格上方用来砸鸡蛋，左右分别是活塞+实心方块和发射器，用来杀鸡，底部用漏斗收集。这样就能有效利用鸡圈的空间了。&lt;/p>
+&lt;blockquote>
+&lt;p>其实这个自动鸡场还有进一步改进的地方，比如最近参观dxsc的鸡场就看到了可以用一个按钮控制自由繁殖/自动杀鸡，这就更加方便了~不过本文中这样的一个鸡场已经完全够用啦~&lt;/p>
+&lt;/blockquote></description></item><item><title>Minecraft - 刷雪机</title><link>https://zyxin.xyz/blog/2017-08/MCSnowMachine/</link><pubDate>Sun, 27 Aug 2017 11:28:55 +0000</pubDate><guid>https://zyxin.xyz/blog/2017-08/MCSnowMachine/</guid><description>&lt;p>雪块在Minecraft里面是不错的建筑材料，材质好看，并且来源容易。不过如果有个刷雪机的话还是能够大大提高出产速度的。刷雪机有很多种版本，其中在纯净服务器能用的目前我知道的只有半自动的刷雪机，全自动的大多利用的是某种BUG，并且在之后的版本就被修复了。&lt;/p>
+&lt;p>刷雪机的基本原理是雪傀儡会在脚底下生成雪（除在沙漠等群系下除外），并且除掉雪以后会立即重新生成。这就给刷雪提供了来源。收集雪球的原理全自动版本有两种，一种是1.5之前可用的活塞推动雪傀儡&lt;del>下体&lt;/del>的雪，雪被破坏后会直接生成雪球。另一种是1.5之后很多教程里提到的用水冲雪即可生成雪球。但实际上后一种是Forge的Bug，&lt;strong>纯净的Minecraft用水冲雪是无法生成雪球的&lt;/strong>。因此据我所知，在1.5之后Minecraft里没有自动刷雪的可能了，因此只能手动刷雪了。&lt;/p>
+&lt;p>虽然理论上只要把雪傀儡困住即可开始刷雪，但是这样很容易伤到雪傀儡，并且挖雪角度比较小。这里介绍一个比较方便的刷雪方案，并且如果使用Forge的话，就可以立即改造为全自动的刷雪机。这个方案的核心是站在灵魂沙上的雪傀儡可以在相邻的低一格的方块上生成雪，这是因为灵魂沙的碰撞箱比较特殊，会让在其上的实体下沉两个像素。&lt;/p>
+&lt;h2 id="困雪傀儡">困雪傀儡&lt;/h2>
+&lt;p>刷雪机最基础的一步是困住雪傀儡，虽然困住雪傀儡很容易，但是由于方案的需要，我们要把雪傀儡捆在两个或者四个方块中间的位置，来让灵魂沙相邻的低一格方块上能够生成雪。因此最好是放在四格的中心，能够生成三格雪。&lt;/p>
+&lt;p>这个方案的困雪傀儡可以分为如下几步：&lt;/p>
+&lt;ol>
+&lt;li>
+&lt;p>在第二格高搭建一个3x3的空心栅栏围墙&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>把栅栏围墙中间的地面换成灵魂沙，并在其上用两个雪块和南瓜造一个雪傀儡&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>在雪傀儡头顶放一个活塞和一个栅栏，栅栏在活塞下方，并准备好红石信号（红石块或方块+拉杆）&lt;/p>
+&lt;p>&lt;img src="https://zyxin.xyz/blog/blog/2017-08/MCSnowMachine/snowgolem_with_fence.jpg"
+width="552"
+height="705"
+loading="lazy"
+alt="被围困的雪傀儡"
+class="gallery-image"
+data-flex-grow="78"
+data-flex-basis="187px"
+>&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>用雪球把雪傀儡打到一个角落&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>激活活塞，把栅栏推进中间&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>把多余的栅栏打掉&lt;/p>
+&lt;/li>
+&lt;/ol>
+&lt;p>&lt;img src="https://zyxin.xyz/blog/blog/2017-08/MCSnowMachine/snowgolem_with_fence_in.jpg"
+width="830"
+height="467"
+loading="lazy"
+alt="困好的雪傀儡|去掉多余的栅栏"
+class="gallery-image"
+data-flex-grow="177"
+data-flex-basis="426px"
+>&lt;/p>
+&lt;p>这样困住的雪傀儡一方面会在地上三格产生雪，另外头顶其实是被栅栏封住的，因此下雨不会影响到它。&lt;/p>
+&lt;h2 id="刷雪设置">刷雪设置&lt;/h2>
+&lt;p>困好傀儡后在周围稍稍改动一下就能很方便地进行刷雪了。首先需要把雪傀儡相邻的四格地面方块，除了灵魂沙以外的三个都打掉，然后&lt;strong>把雪傀儡脚底的雪打掉&lt;/strong>。此时就会发现低一层的三格表面已经可以生成雪了。这样其实就已经可以愉快地刷雪啦~&lt;/p>
+&lt;p>&lt;img src="https://zyxin.xyz/blog/blog/2017-08/MCSnowMachine/snowgolem_low.jpg"
+width="412"
+height="544"
+loading="lazy"
+alt="雪傀儡在相邻的三格表面产雪"
+class="gallery-image"
+data-flex-grow="75"
+data-flex-basis="181px"
+>&lt;/p>
+&lt;p>但是这样刷雪的时候由于雪球堆叠数目少，并且合成雪块又需求比较大，会经常碰见背包拾满的情况，因此可以增加一个物品收集系统。最直接方便的就是把相邻三格换成漏斗做地面，直接就能收集。另外一种是把三格做成水道封起来，然后在一端用发射器放水，另一端用漏斗接收即可。然后将发射器连上周期为8tick的时钟就可以自动冲雪了。这样不仅节省材料，而且&lt;strong>在有Forge的情况下就是一个自动刷雪机&lt;/strong>~&lt;/p>
+&lt;p>&lt;img src="https://zyxin.xyz/blog/blog/2017-08/MCSnowMachine/snow_machine.jpg"
+width="895"
+height="680"
+loading="lazy"
+alt="完成版的刷雪机"
+class="gallery-image"
+data-flex-grow="131"
+data-flex-basis="315px"
+>&lt;/p></description></item><item><title>Minecraft - 刷铁轨&amp;刷石机</title><link>https://zyxin.xyz/blog/2017-08/MCTrailAndStone/</link><pubDate>Sun, 27 Aug 2017 00:00:00 +0000</pubDate><guid>https://zyxin.xyz/blog/2017-08/MCTrailAndStone/</guid><description>&lt;p>铁轨是自动化设备的另一大功臣，充能铁轨作为长距离自动运输最重要的手段，成本比较高，因此在最开始玩MC的时候根本就没怎么造铁轨。。但后面进了服务器后发现可以刷铁轨！顿时打开了新世界的大门，不仅用铁轨搭建高空交通站，欣赏雨林、针叶林风景、还能抓村民回来当苦工~2333因此在这里介绍一下刷铁机的造法。&lt;/p>
+&lt;p>此外，因为如果把铁轨搭建在地面上的话经常会受到怪物的干扰，因此一般会选择把铁轨搭在地下或者空中。而我个人比较喜欢空中铁轨，能看风景，而搭建空中铁轨就需要耗费大量耗材。出于成本和稳定性考虑铁路路基一般选择石头而不是雪块或者其他更难刷的材料，因此会需要大量的石头。这里也顺便把刷石机介绍一下了~&lt;/p>
+&lt;p>PS: 本文所有结构都是我之前在各种教程中看到的，非原创，这里只是整理一下。&lt;/p>
+&lt;h2 id="刷铁轨">刷铁轨&lt;/h2>
+&lt;p>刷铁轨的原理是利用MC在高频推动铁轨时产生的判定BUG，因此这些原理很有可能在将来有会被禁掉。&lt;del>不过总有大佬能发现这样的BUG哈哈&lt;/del>刷铁轨机能够刷全种类铁轨：普通铁轨、充能铁轨、激活铁轨、感应铁轨，因此非常实用！不过唯一需要注意的是由于使用了高频信号，在服务器上运行时不要常开。&lt;/p>
+&lt;h3 id="19-版本前">1.9 版本前&lt;/h3>
+&lt;p>在1.9之前，通常利用的刷铁轨机是两个错位对置的活塞，这是一个半自动机构，需要手动放置铁轨。具体结构如下：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;span class="lnt">7
+&lt;/span>&lt;span class="lnt">8
+&lt;/span>&lt;span class="lnt">9
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">{% minecraft 俯视图 %}
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|----Level1|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|ab|ab|ab|ab||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|↑||ab+R||ab|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|||||↑|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|----Level2|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|sp-e|ra-ns||ra-ew||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|||||sp-w|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">{% endminecraft %}
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>这个结构中，铁轨的朝向不限，箭头代表高频时钟信号输入（两个活塞要连同一个信号）。用法是当开启高频时钟输入以后，在R处不停放置你想刷的铁轨，即可获得两倍的铁轨。&lt;/p>
+&lt;h3 id="19-版本后">1.9 版本后&lt;/h3>
+&lt;p>1.9以及1.9之后，这个BUG被修复了。现在可以使用的刷铁轨机是另一种方案，结构如下：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">{% minecraft 侧视图 %}
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||R|sl|sp-w||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|ra-$eu|sl|sl|ab|←|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|obsidian|A|A|||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">{% endminecraft %}
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>其中R处放上想刷的铁轨，箭头代表高频时钟信号输入（貌似周期要在2tick以上），A处要留成空气（避免粘液块粘上其他东西，该装置粘液块的其他方向上也不能有方块）。这里使用黑曜石的目的是防止此方块被粘液块带走，这是这个刷铁轨机的关键。&lt;/p>
+&lt;blockquote>
+&lt;p>关于高频时钟信号的设计见&lt;a class="link" href="https://zyxin.xyz/blog/2017-08/MCHfOscillation/" >我的另一篇文章&lt;/a>&lt;/p>
+&lt;/blockquote>
+&lt;h2 id="刷石机">刷石机&lt;/h2>
+&lt;p>刷石机的基本原理是&lt;strong>流动&lt;/strong>的岩浆与的&lt;strong>流动的&lt;/strong>水相遇会生成石头（水可以是静止水，但是生产效率没有流动水高）。这是游戏本身的设定，因此刷石机在版本更新后基本上不会有太大的变化。用这个原理直接就能造出很简单的刷石机，只需要用一个活塞+时钟信号推走石头即可（要注意不能直接在岩浆与水交汇处挖石头，因为这样很有可能石头就被岩浆烧掉了。最合适的时钟间隔是10tick）。不过这里介绍一种利用BUD生成一列石头的方案，能够更加方便的刷石头。&lt;/p>
+&lt;p>这里的BUD采用&lt;a class="link" href="https://zyxin.xyz/blog/2017-08/MCTowerRedstone/" >红石基础&lt;/a>中的下落物BUD（因为试了一下别的BUD好象不太行）。刷石机结构示意图如下：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;span class="lnt">25
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">{% minecraft 俯视图 %}
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|----Level0|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||||||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||ab||||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||ab||||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|----Level1|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||ab||||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|ab||ab|ab||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||ab||||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|----Level2|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||pi-s|dirt|dirt||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|sp-u|st+G|wa|wa|dirt|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||st|dirt|dirt||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||st||||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|----Level3|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|ab|dirt| |dirt||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|gs|lv+S|dirt|wa+S|dirt|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|ab|dirt| |dirt||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|----Level4|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|rd-!|||||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|sand|dirt||dirt||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|rr-n1!|||||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|ab|||||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|le-n!|||||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">{% endminecraft %}
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>其中标S的是岩浆源和水源，G是生成石头的地方，石头会沿着G往下一直生成，直到活塞推不动为止（13格）。方案中的泥土是为了封闭岩浆和水。相比采用时钟电路的方案，这个方案有一点不好是活塞推不动以后需要重置设备，重置只需要在挖掉石头以后，在活塞周围放置方块使BUD更新即可。&lt;/p>
+&lt;hr>
+&lt;blockquote>
+&lt;p>Tips:&lt;/p>
+&lt;ul>
+&lt;li>在Minecraft里面铺设长距离铁路一般是刷感应铁轨和充能铁轨，然后按照1感应铁轨+3充能铁轨的配置来铺，这样能够让矿车自动保持高速，并且省下很多红石材料。&lt;/li>
+&lt;li>长距离旅行的话可以使用另一种结构：&lt;strong>冰路&lt;/strong>。就是用冰铺路，并在离地三格高的位置铺方块顶。玩家在冰上行走时边疾行边跳能获得非常快的速度。&lt;/li>
+&lt;/ul>
+&lt;/blockquote></description></item><item><title>Minecraft - 集成作物塔 - 可可豆</title><link>https://zyxin.xyz/blog/2017-08/MCTowerCocoa/</link><pubDate>Sat, 26 Aug 2017 00:00:00 +0000</pubDate><guid>https://zyxin.xyz/blog/2017-08/MCTowerCocoa/</guid><description>&lt;p>可可豆是一种染料，可以种在&lt;strong>丛林木&lt;/strong>的树干上。可可豆由于需求量真心比较低，因此其实没有自动化的必要，一般用量比较大的地方是用作建筑材料的原料，如果是地毯那么手动栽培+羊毛种植其实就够了，而如果是硬化粘土（陶瓦）则直接可以从黏土山挖到。不过由于可可豆种植比较容易集成进作物塔，因此我也把结构放在这里吧~&lt;/p>
+&lt;p>由于可可豆是先种植再生长的，因此无法使用BUD来自动化（除非暴力使用长周期时钟，如阳光传感器），只有半自动的结构。可可豆的收集有两种方法，水流式和活塞式。&lt;/p>
+&lt;h2 id="基本布置">基本布置&lt;/h2>
+&lt;p>两种方法的种植布置方式是一样的，只是收集方式不同，因此把布置方式与底部的水流收集先讲一下。按照作物塔的尺寸，考虑到走道和水流收集，从林木可以种成3排，每一排9格宽，高度不限，但为了便于种植，4格高比较合适。&lt;/p>
+&lt;p>布置的俯视图如下：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;span class="lnt">25
+&lt;/span>&lt;span class="lnt">26
+&lt;/span>&lt;span class="lnt">27
+&lt;/span>&lt;span class="lnt">28
+&lt;/span>&lt;span class="lnt">29
+&lt;/span>&lt;span class="lnt">30
+&lt;/span>&lt;span class="lnt">31
+&lt;/span>&lt;span class="lnt">32
+&lt;/span>&lt;span class="lnt">33
+&lt;/span>&lt;span class="lnt">34
+&lt;/span>&lt;span class="lnt">35
+&lt;/span>&lt;span class="lnt">36
+&lt;/span>&lt;span class="lnt">37
+&lt;/span>&lt;span class="lnt">38
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">{% minecraft 俯视图 %}
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|----Level1|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||||ab|ab| |ab|ab||||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||||ab|ab| |ab|ab||||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||||ab|ab| |ab|ab||||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||||ab|ab| |ab|ab||||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||||ab|ab|ab |ab|ab||||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||||ab|ab|si-n+P|ab|ab||||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||||ab|ab|ab |ab|ab||||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||||ab|ab| |ab|ab||||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||||ab|ab| |ab|ab||||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||||ab|ab| |ab|ab||||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||||ab|ab| |ab|ab||||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|----Level2|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||ab|ab|wa|wa|ab|wa|wa|ab|ab||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||ab|ab|wa|wa|ab|wa|wa|ab|ab||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||ab|ab|wa|wa|ab|wa|wa|ab|ab||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||ab|ab|wa|wa|ab|wa|wa|ab|ab||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||ab|ab|wa|wa|ab|wa|wa|ab|ab||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||ab|ab|wa|wa|wa|wa|wa|ab|ab||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||ab|ab|wa|wa|ab|wa|wa|ab|ab||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||ab|ab|wa|wa|ab|wa|wa|ab|ab||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||ab|ab|wa|wa|ab|wa|wa|ab|ab||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||ab|ab|wa|wa|ab|wa|wa|ab|ab||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||ab|ab|wa|wa|ab|wa|wa|ab|ab||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|----Level3|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|st|wa|wa ||fg-ns!| |fg-ns!||wa |wa|st|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|st|wa|ab+S||fg-ns!|ab+S|fg-ns!||ab+S|wa|st|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|st|wa|ab+S||fg-ns!|ab+S|fg-ns!||ab+S|wa|st|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|st|wa|ab+S||fg-ns!|ab+S|fg-ns!||ab+S|wa|st|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|st|wa|ab+S||fg-ns!|ab+S|fg-ns!||ab+S|wa|st|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|st|wa+O|ab+S|| | | ||ab+S|wa+O|st|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|st|wa|ab+S||fg-ns!|ab+S|fg-ns!||ab+S|wa|st|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|st|wa|ab+S||fg-ns!|ab+S|fg-ns!||ab+S|wa|st|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|st|wa|ab+S||fg-ns!|ab+S|fg-ns!||ab+S|wa|st|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|st|wa|ab+S||fg-ns!|ab+S|fg-ns!||ab+S|wa|st|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|st|wa|wa ||fg-ns!| |fg-ns!||wa |wa|st|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">{% endminecraft %}
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>O代表水源，S代表此处为从林木种植处（一共三排），P为作物塔管道出口。左右的平整石头代表走道，中间的两排栅栏门也是起走道作用，便于在其中播种可可豆。当需要播种时可以把栅栏门关上，播种完毕后把栅栏门打开，便于可可豆下落。栅栏门也可以换成活板门。不过实测站在边上是可以播种到里面的，因此这个栅栏门不是必须的。&lt;/p>
+&lt;p>由于下文提到的可可豆种植结构可能会使作物塔管道被遮住，因此又可能需要额外的水流转移绕开遮挡。以及由于本文的红石设计难度不大，并且有额外的一圈供铺设红石，因此与上下层的红石连接，以及半自动设备中开关信号的接收在这里就略去了。&lt;/p>
+&lt;h2 id="水流式">水流式&lt;/h2>
+&lt;p>水流式的一排可可豆种植结构如图：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;span class="lnt">25
+&lt;/span>&lt;span class="lnt">26
+&lt;/span>&lt;span class="lnt">27
+&lt;/span>&lt;span class="lnt">28
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">{% minecraft 侧视图 %}
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|----无红石信号|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||||ab|wa|ab||||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||||pi-e!|pe-e|ab||||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|||||ab+lighter+B|||||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||||| ab |||||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||||ab||ab||||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|||ab||||ab|||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||ab||||||ab||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|Ow-$|Ow-$|Ow-$|Ow-$||Ow-$|Ow-$|Ow-$|Ow-$|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|Ow-$|Ow-$|Ow-$|Ow-$||Ow-$|Ow-$|Ow-$|Ow-$|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|ellipsis-ns|ellipsis-ns|ellipsis-ns|ellipsis-ns||ellipsis-ns|ellipsis-ns|ellipsis-ns|ellipsis-ns|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|Ow-$|Ow-$|Ow-$|Ow-$||Ow-$|Ow-$|Ow-$|Ow-$|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|Ow-$|Ow-$|Ow-$|Ow-$||Ow-$|Ow-$|Ow-$|Ow-$|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|----有红石信号|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||||ab|wa|ab||||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||||pi-e!|pe-e|ab||||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||||rt-$e!+lighter|ab+lighter+B|||||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|||||ab+rt-$n|||||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||||ab|rt-$!|ab||||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|||ab||ab||ab|||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||ab|||rt-$|||ab||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|Ow-$|Ow-$|Ow-$|Ow-$|ab|Ow-$|Ow-$|Ow-$|Ow-$|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|Ow-$|Ow-$|Ow-$|Ow-$|rt-$!|Ow-$|Ow-$|Ow-$|Ow-$|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|ellipsis-ns|ellipsis-ns|ellipsis-ns|ellipsis-ns|ellipsis-ns|ellipsis-ns|ellipsis-ns|ellipsis-ns|ellipsis-ns|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|Ow-$|Ow-$|Ow-$|Ow-$|ab|Ow-$|Ow-$|Ow-$|Ow-$|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|Ow-$|Ow-$|Ow-$|Ow-$|rt-$!|Ow-$|Ow-$|Ow-$|Ow-$|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">{% endminecraft %}
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>顶端较亮的B方块是在指这一个平面前后两个都有一个方块，以限制水在这一格只能向左右流下去&lt;/p>
+&lt;p>当种在树干上的可可豆成熟之后可以switch红石灯，然后水则会顺着几个砖块流下，使得每一列从林木都能被水冲刷到，种在上面的可可豆即可被冲刷掉。&lt;/p>
+&lt;p>可以看出该方案好在结构简单，成本十分低廉。但缺点是整体过高，并且水流下落和收回的时间均较慢。&lt;/p>
+&lt;h2 id="活塞式">活塞式&lt;/h2>
+&lt;p>活塞式的设计就是通过对称的活塞把从林木“晃”一下，使得可可豆掉落。&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;span class="lnt">7
+&lt;/span>&lt;span class="lnt">8
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">{% minecraft 正视图 %}
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|----正面|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|ellipsis-ns|ellipsis-ns|ellipsis-ns|ellipsis-ns|ellipsis-ns|ellipsis-ns|ellipsis-ns||ellipsis-ns|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|pi-e|Ow-$|Ow-$|Ow-$|Ow-$|Ow-$|Ow-$||pi-w|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|pi-e|Ow-$|Ow-$|Ow-$|Ow-$|Ow-$|Ow-$||pi-w|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|pi-e|Ow-$|Ow-$|Ow-$|Ow-$|Ow-$|Ow-$||pi-w|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|pi-e|Ow-$|Ow-$|Ow-$|Ow-$|Ow-$|Ow-$||pi-w|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">{% endminecraft %}
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>侧面的活塞红石布线如下&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">{% minecraft 侧视图 %}
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|----后面|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|||rd-$!||rd-$!|||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|pi-d|rd-$!|ts-$|pi-d|ts-$|rd-$!|pi-d|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|pi-d|ts-$|rd-$!|pi-d|rd-$!|ts-$|pi-d|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|pi-d|rd-$!|ts-$|pi-d|ts-$|rd-$!|pi-d|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|pi-d|ts-$|rd-$!|pi-d|rd-$!|ts-$|pi-d|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|wa-$2|wa-$1|ts-$| |ts-$|wa-$1|wa-$2|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|----前面|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||||||||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||||||||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||||||||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||||rd-$!||||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|||rd-$!|ab|rd-$!|||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|||ab |ab|ab |||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">{% endminecraft %}
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>只需将传入本层的红石信号引到侧面就行。在三排之间穿行的方法，一种是从活塞与木头间的空格通过，另一种就是可以单独用一排栅栏门替换从林木，造一个通道出来。&lt;/p>
+&lt;hr>
+&lt;p>可可豆的自动农场之前在服务器上没有搭建过，这个实在本地试验出来的，尺寸和作物塔是可以对上的，敬请参考~&lt;/p></description></item><item><title>Minecraft - 集成作物塔 - 甘蔗</title><link>https://zyxin.xyz/blog/2017-08/MCTowerSugarcane/</link><pubDate>Wed, 23 Aug 2017 00:00:00 +0000</pubDate><guid>https://zyxin.xyz/blog/2017-08/MCTowerSugarcane/</guid><description>&lt;p>甘蔗机是一个在早期就能搭建起来的复杂自动设备。甘蔗在水边很容易就能找到，并且生长会产生新方块，因此甘蔗机只需要一个BUD和一堆活塞。如果使用普通活塞制作BUD的话，就能够在挖到铁块之后立即建造出来。&lt;/p>
+&lt;p>一般如果独立造甘蔗机的话会并排造，而在作物塔内还要考虑到收集的方便，并对尺寸进行了一定的压缩。BUD使用的是在[红石基础](https://zyxin.xyz/blog/2017-08/MCTowerRedstone/中的粘性活塞+火把结构（当然，也可以使用别的BUD结构），然后通过活塞阵列进行扩增。当甘蔗生长时立刻被活塞推掉变成掉落实体，然后流水收集即可。&lt;/p>
+&lt;p>话不多说，直接上结构。一排甘蔗机的结构如下：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;span class="lnt">25
+&lt;/span>&lt;span class="lnt">26
+&lt;/span>&lt;span class="lnt">27
+&lt;/span>&lt;span class="lnt">28
+&lt;/span>&lt;span class="lnt">29
+&lt;/span>&lt;span class="lnt">30
+&lt;/span>&lt;span class="lnt">31
+&lt;/span>&lt;span class="lnt">32
+&lt;/span>&lt;span class="lnt">33
+&lt;/span>&lt;span class="lnt">34
+&lt;/span>&lt;span class="lnt">35
+&lt;/span>&lt;span class="lnt">36
+&lt;/span>&lt;span class="lnt">37
+&lt;/span>&lt;span class="lnt">38
+&lt;/span>&lt;span class="lnt">39
+&lt;/span>&lt;span class="lnt">40
+&lt;/span>&lt;span class="lnt">41
+&lt;/span>&lt;span class="lnt">42
+&lt;/span>&lt;span class="lnt">43
+&lt;/span>&lt;span class="lnt">44
+&lt;/span>&lt;span class="lnt">45
+&lt;/span>&lt;span class="lnt">46
+&lt;/span>&lt;span class="lnt">47
+&lt;/span>&lt;span class="lnt">48
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">{% minecraft 俯视图 %}
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|----Level0|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||||||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||ab||||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||ab||||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||ab||||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||ab||||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||ellipsis-ns||||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|----Level1|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|ab|ab|ab|||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|ab|wa+O|dirt|||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|ab|wa|dirt|||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|ab|wa|dirt|||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|ab|wa|dirt|||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|ellipsis-ns|ellipsis-ns|ellipsis-ns|||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|----Level2|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|ab|ab|ab|||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|ab||S|ab||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|ab||S|ab||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|ab||S|ab||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|ab||S|ab||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|ellipsis-ns||ellipsis-ns|ellipsis-ns||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|----Level3|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|ab|ab|pe-u|||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||ib-ns||pi-w||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||ib-ns||pi-w||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||ib-ns||pi-w||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||ib-ns||pi-w||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||ellipsis-ns||ellipsis-ns||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|----Level4|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|ab|ab|ab|ab|ab|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|||||ab|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|||||ab|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|||||ab|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|||||ab|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|||||ellipsis-ns|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|----Level5|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|ab|rr-w1||rd-ew!|rd-sw!|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|||||rd-ns!|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|||||rd-ns!|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|||||rd-ns!|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|||||rd-ns!|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|||||ellipsis-ns|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|----Level6|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|rd-ew|ab|ab|rt-w!||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|----Level7|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||rd-ew|rd-ew|||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">{% endminecraft %}
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>O是水源方块，S的位置种上甘蔗。这个结构里面有很多多余的方块，有些是为了便于爬上去建造，另一些是为了保证甘蔗不被弹到别的地方。可以适当去掉其中的一些。栅栏的作用一是防止误落水中，二是限制甘蔗掉落的位置，保证甘蔗能够掉落到水中。&lt;/p>
+&lt;p>将几列这样的结构并排放置即可得到作物塔中的甘蔗层。具体的密排方式如下：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt"> 10
+&lt;/span>&lt;span class="lnt"> 11
+&lt;/span>&lt;span class="lnt"> 12
+&lt;/span>&lt;span class="lnt"> 13
+&lt;/span>&lt;span class="lnt"> 14
+&lt;/span>&lt;span class="lnt"> 15
+&lt;/span>&lt;span class="lnt"> 16
+&lt;/span>&lt;span class="lnt"> 17
+&lt;/span>&lt;span class="lnt"> 18
+&lt;/span>&lt;span class="lnt"> 19
+&lt;/span>&lt;span class="lnt"> 20
+&lt;/span>&lt;span class="lnt"> 21
+&lt;/span>&lt;span class="lnt"> 22
+&lt;/span>&lt;span class="lnt"> 23
+&lt;/span>&lt;span class="lnt"> 24
+&lt;/span>&lt;span class="lnt"> 25
+&lt;/span>&lt;span class="lnt"> 26
+&lt;/span>&lt;span class="lnt"> 27
+&lt;/span>&lt;span class="lnt"> 28
+&lt;/span>&lt;span class="lnt"> 29
+&lt;/span>&lt;span class="lnt"> 30
+&lt;/span>&lt;span class="lnt"> 31
+&lt;/span>&lt;span class="lnt"> 32
+&lt;/span>&lt;span class="lnt"> 33
+&lt;/span>&lt;span class="lnt"> 34
+&lt;/span>&lt;span class="lnt"> 35
+&lt;/span>&lt;span class="lnt"> 36
+&lt;/span>&lt;span class="lnt"> 37
+&lt;/span>&lt;span class="lnt"> 38
+&lt;/span>&lt;span class="lnt"> 39
+&lt;/span>&lt;span class="lnt"> 40
+&lt;/span>&lt;span class="lnt"> 41
+&lt;/span>&lt;span class="lnt"> 42
+&lt;/span>&lt;span class="lnt"> 43
+&lt;/span>&lt;span class="lnt"> 44
+&lt;/span>&lt;span class="lnt"> 45
+&lt;/span>&lt;span class="lnt"> 46
+&lt;/span>&lt;span class="lnt"> 47
+&lt;/span>&lt;span class="lnt"> 48
+&lt;/span>&lt;span class="lnt"> 49
+&lt;/span>&lt;span class="lnt"> 50
+&lt;/span>&lt;span class="lnt"> 51
+&lt;/span>&lt;span class="lnt"> 52
+&lt;/span>&lt;span class="lnt"> 53
+&lt;/span>&lt;span class="lnt"> 54
+&lt;/span>&lt;span class="lnt"> 55
+&lt;/span>&lt;span class="lnt"> 56
+&lt;/span>&lt;span class="lnt"> 57
+&lt;/span>&lt;span class="lnt"> 58
+&lt;/span>&lt;span class="lnt"> 59
+&lt;/span>&lt;span class="lnt"> 60
+&lt;/span>&lt;span class="lnt"> 61
+&lt;/span>&lt;span class="lnt"> 62
+&lt;/span>&lt;span class="lnt"> 63
+&lt;/span>&lt;span class="lnt"> 64
+&lt;/span>&lt;span class="lnt"> 65
+&lt;/span>&lt;span class="lnt"> 66
+&lt;/span>&lt;span class="lnt"> 67
+&lt;/span>&lt;span class="lnt"> 68
+&lt;/span>&lt;span class="lnt"> 69
+&lt;/span>&lt;span class="lnt"> 70
+&lt;/span>&lt;span class="lnt"> 71
+&lt;/span>&lt;span class="lnt"> 72
+&lt;/span>&lt;span class="lnt"> 73
+&lt;/span>&lt;span class="lnt"> 74
+&lt;/span>&lt;span class="lnt"> 75
+&lt;/span>&lt;span class="lnt"> 76
+&lt;/span>&lt;span class="lnt"> 77
+&lt;/span>&lt;span class="lnt"> 78
+&lt;/span>&lt;span class="lnt"> 79
+&lt;/span>&lt;span class="lnt"> 80
+&lt;/span>&lt;span class="lnt"> 81
+&lt;/span>&lt;span class="lnt"> 82
+&lt;/span>&lt;span class="lnt"> 83
+&lt;/span>&lt;span class="lnt"> 84
+&lt;/span>&lt;span class="lnt"> 85
+&lt;/span>&lt;span class="lnt"> 86
+&lt;/span>&lt;span class="lnt"> 87
+&lt;/span>&lt;span class="lnt"> 88
+&lt;/span>&lt;span class="lnt"> 89
+&lt;/span>&lt;span class="lnt"> 90
+&lt;/span>&lt;span class="lnt"> 91
+&lt;/span>&lt;span class="lnt"> 92
+&lt;/span>&lt;span class="lnt"> 93
+&lt;/span>&lt;span class="lnt"> 94
+&lt;/span>&lt;span class="lnt"> 95
+&lt;/span>&lt;span class="lnt"> 96
+&lt;/span>&lt;span class="lnt"> 97
+&lt;/span>&lt;span class="lnt"> 98
+&lt;/span>&lt;span class="lnt"> 99
+&lt;/span>&lt;span class="lnt">100
+&lt;/span>&lt;span class="lnt">101
+&lt;/span>&lt;span class="lnt">102
+&lt;/span>&lt;span class="lnt">103
+&lt;/span>&lt;span class="lnt">104
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">{% minecraft 俯视图 %}
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|----Level0|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||||||||||||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||||||||||||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||||||||||||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||||||||||||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||||||||||||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||||||||||||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||||||||||||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||||||||||||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||||||||||||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||ab|ab|ab|ab|ab|ab|ab|ab|||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||||||||||||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|----Level1|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||||||||||||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||ab|||ab|||ab||||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||ab|||ab|||ab||||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||ab|||ab|||ab||||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||ab|||ab|||ab||||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||ab|||ab|||ab||||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||ab|||ab|||ab||||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||ab|||ab|||ab||||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||ab|ab|ab|ab|ab|ab|ab|ab|ab||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|ab|wa+O|wa|wa|wa|wa|wa|wa|wa|P||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||ab|ab|ab|ab|ab|ab|ab|ab|ab||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|----Level2|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|ab|ab|ab|ab|ab|ab|ab|ab|ab|st|st|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|ab|wa+O|dirt|ab|wa+O|dirt|ab|wa+O|dirt||st|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|ab|wa|dirt|ab|wa|dirt|ab|wa|dirt||st|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|ab|wa|dirt|ab|wa|dirt|ab|wa|dirt||st|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|ab|wa|dirt|ab|wa|dirt|ab|wa|dirt||st|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|ab|wa|dirt|ab|wa|dirt|ab|wa|dirt||st|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|ab|wa|dirt|ab|wa|dirt|ab|wa|dirt||st|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|ab|wa|dirt|ab|wa|dirt|ab|wa|dirt||st|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|ab|wa|dirt|ab|wa|dirt|ab|wa|dirt||st|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|ab||||||||||st|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|st|st|st|st|st|st|st|st|st|st|st|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|----Level3|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|ab|ab|ab|ab|ab|ab|ab|ab|ab|||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|ab||S|ab||S|ab||S|ab||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|ab||S|ab||S|ab||S|ab||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|ab||S|ab||S|ab||S|ab||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|ab||S|ab||S|ab||S|ab||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|ab||S|ab||S|ab||S|ab||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|ab||S|ab||S|ab||S|ab||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|ab||S|ab||S|ab||S|ab||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|ab||S|ab||S|ab||S|ab||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|ab||ab|||ab|||ab|||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|----Level4|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|||pe-u||||||pe-u|||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||ib-ns||pi-w|ib-ns||pi-w|ib-ns||pi-w||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||ib-ns||pi-w|ib-ns||pi-w|ib-ns||pi-w||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||ib-ns||pi-w|ib-ns||pi-w|ib-ns||pi-w||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||ib-ns||pi-w|ib-ns||pi-w|ib-ns||pi-w||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||ib-ns||pi-w|ib-ns||pi-w|ib-ns||pi-w||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||ib-ns||pi-w|ib-ns||pi-w|ib-ns||pi-w||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||ib-ns||pi-w|ib-ns||pi-w|ib-ns||pi-w||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||ib-ns||pi-w|ib-ns||pi-w|ib-ns||pi-w||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||ib-ns|||ib-ns|pe-u||ib-ns|||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|----Level5|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|ab|ab|ab|ab|ab||ab|ab|ab|ab|ab|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|||||ab|||ab|||ab|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|||||ab|||ab|||ab|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|||||ab|||ab|||ab|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|||||ab|||ab|||ab|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|||||ab|||ab|||ab|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|||||ab|||ab|||ab|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|||||ab|||ab|||ab|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|||||ab|||ab|||ab|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||||ab|ab|ab|ab|ab||||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|----Level6|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|ab|rr-w1||rd-ew!|rd-sw!||ab|rr-w1||rd-ew!|rd-sw!|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|||||rd-ns!|||rd-ns!|||rd-ns!|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|||||rd-ns!|||rd-ns!|||rd-ns!|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|||||rd-ns!|||rd-ns!|||rd-ns!|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|||||rd-ns!|||rd-ns!|||rd-ns!|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|||||rd-ns!|||rd-ns!|||rd-ns!|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|||||rd-ns!|||rd-ns!|||rd-ns!|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|||||rd-ns!|||rd-ns!|||rd-ns!|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|||||rd-ns!|||rd-ns!|||rd-ns!|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||||ab|rr-w1||rd-ew!|rd-nw!|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|----Level7|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|rd-ew|ab|ab|rt-w!|||rd-ew|ab|ab|rt-w!||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||||||||||||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||||||||||||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||||||||||||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||||||||||||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||||||||||||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||||||||||||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||||||||||||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||||||||||||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||||rd-ew|ab|ab|rt-w!||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|----Level8|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||rd-ew|rd-ew|||||rd-ew|rd-ew|rt-w!||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||||||||||||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||||||||||||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||||||||||||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||||||||||||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||||||||||||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||||||||||||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||||||||||||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||||||||||||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|||||rd-ew|rd-ew|||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">{% endminecraft %}
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>按照惯例，O为水源，S种甘蔗，平整石头代表走道，P代表作物塔管道。&lt;/p>
+&lt;p>这个方案在底层的密度非常大，两排甘蔗机刚好可以在BUD的中继器处分开，不产生干扰（红石信号强度不足以锁定中继器）。可以看出甘蔗田由于BUD的存在，高度比之前的几种都要高（相互叠加的情况下Level0和Level8是不能重合的，因此实际要占9层），并且高层的空间利用率比较低。不过空间什么的应该不会缺吧2333~。&lt;/p>
+&lt;p>如果有侦测器的话应该能把高度压缩不少，但是成本应该会有一定上升。&lt;/p>
+&lt;p>右下角有一缺口，这个位置就是作物通道的位置，上层的作物可以流到这一格进入管道向下传递。不过由于甘蔗层的管道在角落上，因此如果要与管道在中间的层（如小麦塔）相连，则需要像&lt;a class="link" href="https://zyxin.xyz/blog/2017-08/MCTowerCactus/" >上一篇&lt;/a>所写的转移装置来转移位置。&lt;/p></description></item><item><title>Minecraft - 集成作物塔 - 南瓜&amp;西瓜</title><link>https://zyxin.xyz/blog/2017-08/MCTowerPumpkin/</link><pubDate>Wed, 23 Aug 2017 00:00:00 +0000</pubDate><guid>https://zyxin.xyz/blog/2017-08/MCTowerPumpkin/</guid><description>&lt;p>南瓜和西瓜都是需要先长出茎，茎成熟之后则会在周围四个生成南瓜或西瓜。由于这两种作物的生成是在四周生成的，因此BUD的排列比较Tricky。&lt;/p>
+&lt;p>我使用的BUD结构仍然是在&lt;a class="link" href="https://zyxin.xyz/blog/2017-08/MCTowerRedstone/" >红石基础&lt;/a>中的粘性活塞+火把结构。南瓜茎需要交替种植，在交替的泥土之间会生成南瓜，用BUD检测它然后用活塞推掉即可。&lt;/p>
+&lt;p>自动南瓜的基本单元是一个BUD+一个南瓜可能生成的格子，因此不考虑布线的情况下暴力堆叠即可。但是在这个自动塔中由于尺寸的限制，需要一定的规划~&lt;/p>
+&lt;p>直接上结构示意图：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;span class="lnt">25
+&lt;/span>&lt;span class="lnt">26
+&lt;/span>&lt;span class="lnt">27
+&lt;/span>&lt;span class="lnt">28
+&lt;/span>&lt;span class="lnt">29
+&lt;/span>&lt;span class="lnt">30
+&lt;/span>&lt;span class="lnt">31
+&lt;/span>&lt;span class="lnt">32
+&lt;/span>&lt;span class="lnt">33
+&lt;/span>&lt;span class="lnt">34
+&lt;/span>&lt;span class="lnt">35
+&lt;/span>&lt;span class="lnt">36
+&lt;/span>&lt;span class="lnt">37
+&lt;/span>&lt;span class="lnt">38
+&lt;/span>&lt;span class="lnt">39
+&lt;/span>&lt;span class="lnt">40
+&lt;/span>&lt;span class="lnt">41
+&lt;/span>&lt;span class="lnt">42
+&lt;/span>&lt;span class="lnt">43
+&lt;/span>&lt;span class="lnt">44
+&lt;/span>&lt;span class="lnt">45
+&lt;/span>&lt;span class="lnt">46
+&lt;/span>&lt;span class="lnt">47
+&lt;/span>&lt;span class="lnt">48
+&lt;/span>&lt;span class="lnt">49
+&lt;/span>&lt;span class="lnt">50
+&lt;/span>&lt;span class="lnt">51
+&lt;/span>&lt;span class="lnt">52
+&lt;/span>&lt;span class="lnt">53
+&lt;/span>&lt;span class="lnt">54
+&lt;/span>&lt;span class="lnt">55
+&lt;/span>&lt;span class="lnt">56
+&lt;/span>&lt;span class="lnt">57
+&lt;/span>&lt;span class="lnt">58
+&lt;/span>&lt;span class="lnt">59
+&lt;/span>&lt;span class="lnt">60
+&lt;/span>&lt;span class="lnt">61
+&lt;/span>&lt;span class="lnt">62
+&lt;/span>&lt;span class="lnt">63
+&lt;/span>&lt;span class="lnt">64
+&lt;/span>&lt;span class="lnt">65
+&lt;/span>&lt;span class="lnt">66
+&lt;/span>&lt;span class="lnt">67
+&lt;/span>&lt;span class="lnt">68
+&lt;/span>&lt;span class="lnt">69
+&lt;/span>&lt;span class="lnt">70
+&lt;/span>&lt;span class="lnt">71
+&lt;/span>&lt;span class="lnt">72
+&lt;/span>&lt;span class="lnt">73
+&lt;/span>&lt;span class="lnt">74
+&lt;/span>&lt;span class="lnt">75
+&lt;/span>&lt;span class="lnt">76
+&lt;/span>&lt;span class="lnt">77
+&lt;/span>&lt;span class="lnt">78
+&lt;/span>&lt;span class="lnt">79
+&lt;/span>&lt;span class="lnt">80
+&lt;/span>&lt;span class="lnt">81
+&lt;/span>&lt;span class="lnt">82
+&lt;/span>&lt;span class="lnt">83
+&lt;/span>&lt;span class="lnt">84
+&lt;/span>&lt;span class="lnt">85
+&lt;/span>&lt;span class="lnt">86
+&lt;/span>&lt;span class="lnt">87
+&lt;/span>&lt;span class="lnt">88
+&lt;/span>&lt;span class="lnt">89
+&lt;/span>&lt;span class="lnt">90
+&lt;/span>&lt;span class="lnt">91
+&lt;/span>&lt;span class="lnt">92
+&lt;/span>&lt;span class="lnt">93
+&lt;/span>&lt;span class="lnt">94
+&lt;/span>&lt;span class="lnt">95
+&lt;/span>&lt;span class="lnt">96
+&lt;/span>&lt;span class="lnt">97
+&lt;/span>&lt;span class="lnt">98
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">{% minecraft 俯视图 %}
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|----Level0|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||||||||||||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||||||||||||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||||||||||||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||||||||||||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||||||||||||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||||||||||||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||||||||||||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||||||||||||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||||||||||||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||ab|ab|ab|ab|ab|ab|ab|ab|||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||||||||||||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|----Level1|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||||||||||||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|||ab|||st|||ab|||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|||ab|||st|||ab|||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|||ab|||st|||ab|||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|||ab|||st|||ab|||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|||ab|||st|||ab|||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|||ab|||st|||ab|||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|||ab|||st|||ab|||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||ab|ab|ab|ab|ab|ab|ab|ab|ab||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|ab|wa+O|wa|wa|wa|wa|wa|wa|wa|P||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||ab|ab|ab|ab|ab|ab|ab|ab|ab||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|----Level2|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|st|st|st|st|st|st|st|st|st|st|st|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|ab|dirt|wa+O|fa|ab||ab|dirt|wa+O|fa|ab|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|ab|fa|wa|dirt|ab|ts|ab|fa|wa|dirt|ab|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|ab|dirt|wa|fa|ab|ts|ab|dirt|wa|fa|ab|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|ab|fa|wa|dirt|ab|ts|ab|fa|wa|dirt|ab|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|ab|dirt|wa|fa|ab|ts|ab|dirt|wa|fa|ab|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|ab|fa|wa|dirt|ab|ts|ab|fa|wa|dirt|ab|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|ab|dirt|wa|fa|ab|ts|ab|dirt|wa|fa|ab|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|ab|fa|wa|dirt|ab| |ab|fa|wa|dirt|ab|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|st||||||||||st|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|st|st|st|st|st|st|st|st|st|st|st|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|----Level3|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||||||||||||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|pi-e||ib-ns|S|gs||pi-e||ib-ns|S|gs|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|gs|S|ib-ns||pi-w||gs|S|ib-ns||pi-w|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|pi-e||ib-ns|S|gs||pi-e||ib-ns|S|gs|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|gs|S|ib-ns||pi-w||gs|S|ib-ns||pi-w|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|pi-e||ib-ns|S|gs||pi-e||ib-ns|S|gs|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|gs|S|ib-ns||pi-w||gs|S|ib-ns||pi-w|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|pi-e||ib-ns|S|gs||pi-e||ib-ns|S|gs|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|gs|S|ib-ns||pi-w||gs|S|ib-ns||pi-w|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|----Level4|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||||||||||||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||sp-u||||||sp-u||||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||||pe-u||||||sp-u||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||sp-u||||||sp-u||||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||||sp-u||||||sp-u||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||sp-u||||||sp-u||||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||||sp-u||||||sp-u||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||sp-u||||||sp-u||||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||||sp-u||||||sp-u||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|----Level5|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||||||||||||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|ab|ab|ab||||ab|ab|ab|||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|||ab|ab|ab||||ab|ab|ab|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|ab|ab|ab||||ab|ab|ab|||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|||ab|ab|ab||||ab|ab|ab|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|ab|ab|ab||||ab|ab|ab|||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|||ab|ab|ab||||ab|ab|ab|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|ab|ab|ab||||ab|ab|ab|||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|||ab|ab|ab||||ab|ab|ab|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|----Level6|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||||||||||||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|rd-!||rr-e1|ab|||rd-!||rr-e1|ab||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||ab|rr-w1||rd-!|||ab|rr-w1||rd-!|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|rd-!||rr-e1|ab|||rd-!||rr-e1|ab||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||ab|rr-w1||rd-!|||ab|rr-w1||rd-!|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|rd-!||rr-e1|ab|||rd-!||rr-e1|ab||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||ab|rr-w1||rd-!|||ab|rr-w1||rd-!|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|rd-!||rr-e1|ab|||rd-!||rr-e1|ab||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||ab|rr-w1||rd-!|||ab|rr-w1||rd-!|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|----Level7|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||||||||||||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|rt-e!|ab|ab|rd-ew|||rt-e!|ab|ab|rd-ew||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||rd-ew|ab|ab|rt-w!|||rd-ew|ab|ab|rt-w!|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|rt-e!|ab|ab|rd-ew|||rt-e!|ab|ab|rd-ew||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||rd-ew|ab|ab|rt-w!|||rd-ew|ab|ab|rt-w!|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|rt-e!|ab|ab|rd-ew|||rt-e!|ab|ab|rd-ew||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||rd-ew|ab|ab|rt-w!|||rd-ew|ab|ab|rt-w!|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|rt-e!|ab|ab|rd-ew|||rt-e!|ab|ab|rd-ew||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||rd-ew|ab|ab|rt-w!|||rd-ew|ab|ab|rt-w!|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|----Level8|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||||||||||||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||rd-ew|rd-ew|||||rd-ew|rd-ew|||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|||rd-ew|rd-ew|||||rd-ew|rd-ew||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||rd-ew|rd-ew|||||rd-ew|rd-ew|||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|||rd-ew|rd-ew|||||rd-ew|rd-ew||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||rd-ew|rd-ew|||||rd-ew|rd-ew|||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|||rd-ew|rd-ew|||||rd-ew|rd-ew||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||rd-ew|rd-ew|||||rd-ew|rd-ew|||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|||rd-ew|rd-ew|||||rd-ew|rd-ew||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">{% endminecraft %}
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>O是水源，S种南瓜或西瓜种子，平整的石头是走道，P是作物塔管道。上面的萤石可以换成南瓜灯，是用来&lt;strong>照明的&lt;/strong>，当然也可以用其他的方块，只要保证南瓜不生成在这个格子即可。水流方向也可以左右对调。&lt;/p>
+&lt;p>这个方案资源开销特别大，粘性活塞和中继器都很多，在前期可能不太吃得消，但重在特别整齐o(*￣▽￣*)ゞ。整个机构净高有8层，堆叠时Level0和Level8是可以重合的。&lt;/p>
+&lt;hr>
+&lt;p>到这为止，我在服务器上搭的作物塔层已经全部介绍完了~下面还会介绍一些没有在服务器上搭的作物层以及一些新版本的作物。&lt;/p></description></item><item><title>Minecraft - 集成作物塔 - 仙人掌&amp;鸡蛋</title><link>https://zyxin.xyz/blog/2017-08/MCTowerCactus/</link><pubDate>Tue, 22 Aug 2017 00:00:00 +0000</pubDate><guid>https://zyxin.xyz/blog/2017-08/MCTowerCactus/</guid><description>&lt;h2 id="仙人掌">仙人掌&lt;/h2>
+&lt;p>仙人掌收获的基本原理是，当仙人掌方块被生成时，如果周围方块内有物体，那么仙人掌方块会变成实体掉落。（周围有方块时仙人掌方块无法被放置，但是如果先放置仙人掌后放置其他方块，则仙人掌会掉落）&lt;/p>
+&lt;p>因此常见的仙人掌农场会把仙人掌间隔着交叉种植，并在空隙上放上栅栏来使仙人掌掉落。具体结构如下：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;span class="lnt">25
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">{% minecraft 侧视图 %}
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|----侧视图|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||||ib-ns||ib-ns||ib-ns||ib-ns||||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|||cactus-$||cactus-$||cactus-$||cactus-$||cactus-$|||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|||sand||sand||sand||sand||sand|||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|st||ab||ab||ab||ab||ab||st|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||slab+ts-$|wa+O|wa-$7|wa-$6|wa-$5|wa-$4|wa-$5|wa-$6|wa-$7|wa+O|slab||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|||ab|ab|ab|ab|ab|ab|ab|ab|ab|||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">{% endminecraft %}
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">{% minecraft 俯视图 %}
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|----俯视图|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|st|st|st|st|st|st|st|st|st|st|st|st|st|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|st|ts+S|ts+S|ts+S|ts+S|ts+S|ts+S|ts+S|ts+S|ts+S|ts+S|ts+S|st|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|st|ts+S|sand+cactus+O|wa+rd-!|sand+cactus|wa+rd-!|sand+cactus|wa+rd-!|sand+cactus|wa+rd-!|sand+cactus+O|ts+S|st|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|st|ts+S|wa+rd-!|sand+cactus|wa+rd-!|sand+cactus|wa+rd-!|sand+cactus|wa+rd-!|sand+cactus|wa+rd-!|ts+S|st|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|st|ts+S|sand+cactus|wa+rd-!|sand+cactus|wa+rd-!|sand+cactus|wa+rd-!|sand+cactus|wa+rd-!|sand+cactus|ts+S|st|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|st|ts+S|wa+rd-!|sand+cactus|wa+rd-!|sand+cactus|wa+rd-!|sand+cactus|wa+rd-!|sand+cactus|wa+rd-!|ts+S|st|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|st|ts+S|sand+cactus|wa+rd-!|sand+cactus|wa+rd-!|P|wa+rd-!|sand+cactus|wa+rd-!|sand+cactus|ts+S|st|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|st|ts+S|wa+rd-!|sand+cactus|wa+rd-!|sand+cactus|wa+rd-!|sand+cactus|wa+rd-!|sand+cactus|wa+rd-!|ts+S|st|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|st|ts+S|sand+cactus|wa+rd-!|sand+cactus|wa+rd-!|sand+cactus|wa+rd-!|sand+cactus|wa+rd-!|sand+cactus|ts+S|st|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|st|ts+S|wa+rd-!|sand+cactus|wa+rd-!|sand+cactus|wa+rd-!|sand+cactus|wa+rd-!|sand+cactus|wa+rd-!|ts+S|st|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|st|ts|sand+cactus+O|wa+rd-!|sand+cactus|wa+rd-!|sand+cactus|wa+rd-!|sand+cactus|wa+rd-!|sand+cactus+O|ts+S|st|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|st|ts+S|ts+S|ts+S|ts+S|ts+S|ts+S|ts+S|ts+S|ts+S|ts+S|ts+S|st|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|st|st|st|st|st|st|st|st|st|st|st|st|st|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">{% endminecraft %}
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>上面的示意图中，O代表水源，S代表下半砖，P代表作物塔管道。铁栅栏可以用木栅栏代替，俯视图的红石代表栅栏的位置。没有标记S的砖块用作台阶，周围的石头代表走廊。这个方案中栅栏有浪费，最节省的方案中，栅栏所影响的方块是不相互重叠的。不过为了美观和插火把的需要，本文中还是在全部缝隙中插入了栅栏。&lt;/p>
+&lt;p>被栅栏破坏的仙人掌方块会掉入到下面流动的水中，最终被四角水源产生的水流冲到中间的通道，掉落下去而被收集，简单有效。唯一不足就是仙人掌掉落的方向随机，可能会掉到其他仙人掌上而被破坏，或者掉落到走廊上而无法收集。&lt;/p>
+&lt;h2 id="鸡蛋">鸡蛋&lt;/h2>
+&lt;p>鸡会以一定间隔自动生蛋，因此非常省事，只需要把它们养起来就可以啦233。有一种更为复杂的鸡圈，除了收集鸡蛋外还可以自动杀鸡、烤鸡和生小鸡，这个会在后面的文章中讲到。&lt;/p>
+&lt;p>在作物塔中养鸡可以直接用一池水把鸡圈养着，鸡生出的鸡蛋可以直接掉入下方进行收集。该层的剖面如下：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">{% minecraft 侧视图 %}
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|----中部|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||ab||||||||||ab||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|st|ab||||||||||ab|st|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||ab|wa|wa|wa|wa|wa|wa|wa|wa|wa|ab||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||ab|fg-$ew!|fg-$ew!|fg-$ew!|fg-$ew!|fg-$ew!|fg-$ew!|fg-$ew!|fg-$ew!|fg-$ew!|ab||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||ab|wa-$4|wa-$3|wa-$2|wa-$1|P|wa-$1|wa-$2|wa-$3|wa-$4|ab||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|||ab|ab|ab|ab||ab|ab|ab|ab|||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|----边上|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||ab||||||||||ab||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|st|ab||||||||||ab|st|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||ab|wa|wa|wa|wa|wa|wa|wa|wa|wa|ab||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||ab|fg-$ew!|fg-$ew!|fg-$ew!|fg-$ew!|fg-$ew!|fg-$ew!|fg-$ew!|fg-$ew!|fg-$ew!|ab||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||ab|wa+O|wa-$7|wa-$6|wa-$5|wa-$4|wa-$5|wa-$6|wa-$7|wa+O|ab||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|||ab|ab|ab|ab|ab|ab|ab|ab|ab|||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">{% endminecraft %}
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>收集方法类似于上面的仙人掌，是利用四角水源把鸡蛋冲到中间。这个方案中上层每一歌水的下方都有一个&lt;strong>打开的栅栏门&lt;/strong>来阻隔水，同时不阻挡方块的下落。用告示牌可以达到相似的效果，但是告示牌阵列是依附于一个初始方块的，如果那个方块被破坏，那么所有告示牌都会被破坏。这样很不稳定，而栅栏门则没有这个问题。&lt;/p>
+&lt;p>使用时向池子里打鸡蛋，或者把鸡从外面赶进来即可。另外一个需要注意的是水面到池边需要&lt;strong>至少两格的高度差&lt;/strong>，否则鸡可能会从池子里扑腾出来。&lt;/p>
+&lt;hr>
+&lt;blockquote>
+&lt;h2 id="tips">Tips&lt;/h2>
+&lt;p>这两种农场都是四角水源，因此可以用于通道转移，将角落的通道掉落下来的物品冲到中间继续下落（南瓜和甘蔗会从角落下落）。&lt;/p>
+&lt;/blockquote>
+&lt;p>非常简单的两层农场。下面会写使用了BUD的农场，会比较复杂。&lt;/p></description></item><item><title>Minecraft - 集成作物塔 - 小麦</title><link>https://zyxin.xyz/blog/2017-08/MCTowerWheat/</link><pubDate>Tue, 22 Aug 2017 00:00:00 +0000</pubDate><guid>https://zyxin.xyz/blog/2017-08/MCTowerWheat/</guid><description>&lt;p>小麦塔的原理非常简单，也是大部分生存玩家最先考虑的自动设施。小麦塔不仅仅可以种&lt;strong>小麦&lt;/strong>，还可以种&lt;strong>土豆&lt;/strong>、&lt;strong>胡萝卜&lt;/strong>，甚至&lt;strong>地狱疣&lt;/strong>，以及1.9进入PC版的&lt;strong>甜菜&lt;/strong>。&lt;/p>
+&lt;p>在作物塔中的小麦层有两种，一种是半自动的，一种是全自动的~还有一种&lt;a class="link" href="https://www.baidu.com/link?url=empBD1QmwvUrtpwHx_d8MHgY1dh81Ye6yHEYeTvKY-s-D30Ui54MZXnVBbk9J7Cv&amp;amp;wd=&amp;amp;eqid=908f4a640000b1050000000459976271" target="_blank" rel="noopener"
+>1x1的刷小麦机&lt;/a>，靠大量骨粉来催熟，速度超群，在有刷小白的刷怪塔后可以建造这样的小麦机，也属于半自动的，同样适用上述作物，就不放在这里讲了。&lt;/p>
+&lt;h1 id="半自动小麦塔">半自动小麦塔&lt;/h1>
+&lt;p>半自动小麦塔的功能是自动收割，但是不能自动播种，因此每次收割完毕后需要人工播种。半自动小麦塔的结构如下：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;span class="lnt">25
+&lt;/span>&lt;span class="lnt">26
+&lt;/span>&lt;span class="lnt">27
+&lt;/span>&lt;span class="lnt">28
+&lt;/span>&lt;span class="lnt">29
+&lt;/span>&lt;span class="lnt">30
+&lt;/span>&lt;span class="lnt">31
+&lt;/span>&lt;span class="lnt">32
+&lt;/span>&lt;span class="lnt">33
+&lt;/span>&lt;span class="lnt">34
+&lt;/span>&lt;span class="lnt">35
+&lt;/span>&lt;span class="lnt">36
+&lt;/span>&lt;span class="lnt">37
+&lt;/span>&lt;span class="lnt">38
+&lt;/span>&lt;span class="lnt">39
+&lt;/span>&lt;span class="lnt">40
+&lt;/span>&lt;span class="lnt">41
+&lt;/span>&lt;span class="lnt">42
+&lt;/span>&lt;span class="lnt">43
+&lt;/span>&lt;span class="lnt">44
+&lt;/span>&lt;span class="lnt">45
+&lt;/span>&lt;span class="lnt">46
+&lt;/span>&lt;span class="lnt">47
+&lt;/span>&lt;span class="lnt">48
+&lt;/span>&lt;span class="lnt">49
+&lt;/span>&lt;span class="lnt">50
+&lt;/span>&lt;span class="lnt">51
+&lt;/span>&lt;span class="lnt">52
+&lt;/span>&lt;span class="lnt">53
+&lt;/span>&lt;span class="lnt">54
+&lt;/span>&lt;span class="lnt">55
+&lt;/span>&lt;span class="lnt">56
+&lt;/span>&lt;span class="lnt">57
+&lt;/span>&lt;span class="lnt">58
+&lt;/span>&lt;span class="lnt">59
+&lt;/span>&lt;span class="lnt">60
+&lt;/span>&lt;span class="lnt">61
+&lt;/span>&lt;span class="lnt">62
+&lt;/span>&lt;span class="lnt">63
+&lt;/span>&lt;span class="lnt">64
+&lt;/span>&lt;span class="lnt">65
+&lt;/span>&lt;span class="lnt">66
+&lt;/span>&lt;span class="lnt">67
+&lt;/span>&lt;span class="lnt">68
+&lt;/span>&lt;span class="lnt">69
+&lt;/span>&lt;span class="lnt">70
+&lt;/span>&lt;span class="lnt">71
+&lt;/span>&lt;span class="lnt">72
+&lt;/span>&lt;span class="lnt">73
+&lt;/span>&lt;span class="lnt">74
+&lt;/span>&lt;span class="lnt">75
+&lt;/span>&lt;span class="lnt">76
+&lt;/span>&lt;span class="lnt">77
+&lt;/span>&lt;span class="lnt">78
+&lt;/span>&lt;span class="lnt">79
+&lt;/span>&lt;span class="lnt">80
+&lt;/span>&lt;span class="lnt">81
+&lt;/span>&lt;span class="lnt">82
+&lt;/span>&lt;span class="lnt">83
+&lt;/span>&lt;span class="lnt">84
+&lt;/span>&lt;span class="lnt">85
+&lt;/span>&lt;span class="lnt">86
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">{% minecraft 俯视图 %}
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|----Level0|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|||||||rt-!+darker|||||||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||||||||||||||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||||||||||||||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||||||||||||||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||||||||||||||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|||||| |dirt| ||||||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||||||dirt|si-n+P|dirt||||||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|||||| |dirt| ||||||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||||||||||||||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||||||||||||||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||||||||||||||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||||||||||||||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||||||||||||||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|----Level1|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|||||||st|||||||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||||||||||||||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|||fa|fa|fa|fa|fa|fa|fa|fa|fa||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|||fa|fa|fa|fa|fa|fa|fa|fa|fa||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|||fa|fa|fa|fa|fa|fa|fa|fa|fa||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|||fa|fa|fa|fa|fa|fa|fa|fa|fa||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|||fa|fa|fa|fa|wa|fa|fa|fa|fa||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|||fa|fa|fa|fa|fa|fa|fa|fa|fa||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|||fa|fa|fa|fa|fa|fa|fa|fa|fa||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|||fa|fa|fa|fa|fa|fa|fa|fa|fa||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|||fa|fa|fa|fa|fa|fa|fa|fa|fa||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||||||||||||||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||||||||||||||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|----Level2|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|||||||rt|||||||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||ts+S|ts+S|ts+S|ts+S|ts+S|ts+S|ts+S|ts+S|ts+S|ts+S|ts+S||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||ts+S||||||||||ts+S||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||ts+S||||||||||ts+S||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||ts+S||||||||||ts+S||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||ts+S||||||||||ts+S||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||ts+S||||||||||ts+S||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||ts+S||||||||||ts+S||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||ts+S||||||||||ts+S||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||ts+S||||||||||ts+S||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||ts+S||||||||||ts+S||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||ts+S|ts+S|ts+S|ts+S|ts+S|ts |ts+S|ts+S|ts+S|ts+S|ts+S||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||||||||||||||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|----Level3|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|st|st|st|st|st|st|st|st|st|st|st|st|st|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|st| | |||||||| | |st|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|st|pi-e!|pe-e||||||||pe-w|pi-w!|st|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|st| | |||||||| | |st|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|st| | |||||||| | |st|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|st| | |||||||| | |st|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|st| | |||||||| | |st|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|st| | |||||||| | |st|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|st| | |||||||| | |st|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|st| | |||||||| | |st|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|st|pi-e!|pe-e||||||||pe-w|pi-w!|st|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|st| | |||||||| | |st|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|st|st|st|st|st|st|st|st|st|st|st|st|st|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|----Level4|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|||||||rt-!|||||||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||ts|ts|ts|ts|ts |ts |ts |ts|ts|ts|ts||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||ts|wa|ts| | | | | |ts|wa|ts||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||ts|ts| | | | | | | |ts|ts||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||ts| | | | | | | | | |ts||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||ts| | | | |dirt+lighter| | | | |ts||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||ts| | | |dirt+lighter|si-n |dirt+lighter| | | |ts||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||ts| | | | |dirt+lighter| | | | |ts||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||ts| | | | | | | | | |ts||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||ts|ts| | | | | | | |ts|ts||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||ts|wa|ts| | | | | |ts|wa|ts||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|| |ts| | | | | | | |ts| ||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||||||||||||||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|----Level1&amp;#39; (上一层)|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|||||||st+lighter|||||||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||rd-se!|rd-ew!|rd-ew!|rd-ew!|rd-ew!|rd-new!|rd-ew!|rd-ew!|rd-ew!|rd-ew!|rd-sw!||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||rd-ns!|fa+lighter|fa+lighter|fa+lighter|fa+lighter|fa+lighter|fa+lighter|fa+lighter|fa+lighter|fa+lighter|rd-ns!||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||rd-ns!|fa+lighter|fa+lighter|fa+lighter|fa+lighter|fa+lighter|fa+lighter|fa+lighter|fa+lighter|fa+lighter|rd-ns!||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||rd-ns!|fa+lighter|fa+lighter|fa+lighter|fa+lighter|fa+lighter|fa+lighter|fa+lighter|fa+lighter|fa+lighter|rd-ns!||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||rd-ns!|fa+lighter|fa+lighter|fa+lighter|fa+lighter|fa+lighter|fa+lighter|fa+lighter|fa+lighter|fa+lighter|rd-ns!||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||rd-ns!|fa+lighter|fa+lighter|fa+lighter|fa+lighter|wa+lighter|fa+lighter|fa+lighter|fa+lighter|fa+lighter|rd-ns!||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||rd-ns!|fa+lighter|fa+lighter|fa+lighter|fa+lighter|fa+lighter|fa+lighter|fa+lighter|fa+lighter|fa+lighter|rd-ns!||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||rd-ns!|fa+lighter|fa+lighter|fa+lighter|fa+lighter|fa+lighter|fa+lighter|fa+lighter|fa+lighter|fa+lighter|rd-ns!||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||rd-ns!|fa+lighter|fa+lighter|fa+lighter|fa+lighter|fa+lighter|fa+lighter|fa+lighter|fa+lighter|fa+lighter|rd-ns!||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||rd-ns!|fa+lighter|fa+lighter|fa+lighter|fa+lighter|fa+lighter|fa+lighter|fa+lighter|fa+lighter|fa+lighter|rd-ns!||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||||||||||||||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||||||||||||||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">{% endminecraft %}
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>图示说明：&lt;/p>
+&lt;ul>
+&lt;li>P代表作物塔管道出口，上层以及本层的作物通过该出口落向下一层。&lt;/li>
+&lt;li>严格来说小麦塔只有四层高，在叠加的时候，第0层是可以与下一层重合的。&lt;/li>
+&lt;li>第0层的四个泥土只有放告示牌的是必须的，其他的都可以不要，放在这只是为了对称，以及可以插下一层的火把~~&lt;/li>
+&lt;li>第3层周围的石头代表走道。&lt;/li>
+&lt;li>标为S的半砖是下半砖，第2层唯一一个上半砖可以作为台阶，用来跳上走道&lt;/li>
+&lt;li>最顶层Level1&amp;rsquo;其实是上一层的Level1。&lt;/li>
+&lt;/ul>
+&lt;p>小麦塔中间的泥土9x9的尺寸是由一格水可以灌溉周围四格以内的耕地所决定的。&lt;/p>
+&lt;p>收割的原理非常简单，当信号切换后，活塞不再激活，活塞头收回，水下流，把小麦冲到中间的水源里。之后小麦会掉落下去或者被漏斗收集。中间的告示牌用来阻挡水下流。红石信号通过示意图上端的红石火把向上传递，小麦塔四层的高度可以保证它可以正确累加而信号没有错误。&lt;/p>
+&lt;h1 id="全自动小麦塔">全自动小麦塔&lt;/h1>
+&lt;p>村民农场也称全自动小麦农场，顾名思义完全不需要人为操作，会自动产生作物。这个方案实现全自动是靠村民&lt;del>用爱发电&lt;/del>。村民会自动照顾作物，并且村民在一定情况下会向其他农民扔作物，利用这个特性就可以从村民手里骗吃的了2333。更棒的一点是村民在仍作物时会自动用小麦合成面包，这样连合成的时间都能省啦~&lt;/p>
+&lt;p>不过由于需要村民，因此找到村庄是前提条件，并且还要花大力气把村民运到家里（一般是通过矿车捕获村民，然后通过下界铁路运送回来）。但其实只要有两个村民就能开始繁殖，然后就一劳永逸了~&lt;/p>
+&lt;p>村民小麦塔的结构如下&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;span class="lnt">25
+&lt;/span>&lt;span class="lnt">26
+&lt;/span>&lt;span class="lnt">27
+&lt;/span>&lt;span class="lnt">28
+&lt;/span>&lt;span class="lnt">29
+&lt;/span>&lt;span class="lnt">30
+&lt;/span>&lt;span class="lnt">31
+&lt;/span>&lt;span class="lnt">32
+&lt;/span>&lt;span class="lnt">33
+&lt;/span>&lt;span class="lnt">34
+&lt;/span>&lt;span class="lnt">35
+&lt;/span>&lt;span class="lnt">36
+&lt;/span>&lt;span class="lnt">37
+&lt;/span>&lt;span class="lnt">38
+&lt;/span>&lt;span class="lnt">39
+&lt;/span>&lt;span class="lnt">40
+&lt;/span>&lt;span class="lnt">41
+&lt;/span>&lt;span class="lnt">42
+&lt;/span>&lt;span class="lnt">43
+&lt;/span>&lt;span class="lnt">44
+&lt;/span>&lt;span class="lnt">45
+&lt;/span>&lt;span class="lnt">46
+&lt;/span>&lt;span class="lnt">47
+&lt;/span>&lt;span class="lnt">48
+&lt;/span>&lt;span class="lnt">49
+&lt;/span>&lt;span class="lnt">50
+&lt;/span>&lt;span class="lnt">51
+&lt;/span>&lt;span class="lnt">52
+&lt;/span>&lt;span class="lnt">53
+&lt;/span>&lt;span class="lnt">54
+&lt;/span>&lt;span class="lnt">55
+&lt;/span>&lt;span class="lnt">56
+&lt;/span>&lt;span class="lnt">57
+&lt;/span>&lt;span class="lnt">58
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">{% minecraft 俯视图 %}
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|----Level0|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||||||||||||||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||||||||||||||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||||||||||||||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||||||||||||||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||||||||||||||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||||||||||||||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||||||||||||||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||||||||ab||||||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||||||||||||||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||||||||||||||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||||||||||||||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||||||||||||||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||||||||||||||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|----Level1|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||||||||||||||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||||||||st||||||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||||||||st||||||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||||fa |fa |fa |fa |fa |fa |fa |fa |fa ||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||||fa |fa |fa |fa |fa |fa |fa |fa |fa ||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||||fa |fa |fa |fa |fa |fa |fa |fa |fa ||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||||fa |fa |fa |fa |fa |fa |fa |fa |fa ||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||||fa |fa |fa |fa |wa |fa |fa |fa |fa ||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||||fa |fa |fa |fa |fa |fa |fa |fa |fa ||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||||fa |fa |fa |fa |fa |fa |fa |fa |fa ||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|||ho-d|fa |fa |fa |fa |fa |fa |fa |fa |fa ||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||st|ho-n|ho-w|fa|fa|fa|fa |fa |fa |fa |fa ||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||||||||||||||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|----Level2|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||||||||||||||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|||||||ab|fg-ew|ab|||||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|||ab|ab|ab|ab|ab|fg-ew|ab|ab|ab|ab|ab|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|||ab||||| |||||ab|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|||ab||||| |||||ab|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|||ab||||| |||||ab|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|||ab||||| |||||ab|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|||ab||||| |||||ab|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|||ab||||| |||||ab|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|||ab||||| |||||ab|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||ab|ho-d||||| |||||ab|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|ab|V|ab||||| |||||ab|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||ab|ab|ab|ab|ab|ab|ab |ab|ab|ab|ab|ab|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|----Level3|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||||||||||||||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||||||||||||||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|||ab|ab|ab|ab|ab||ab|ab|ab|ab|ab|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|||ab||||| |||||ab|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|||ab||||| |||||ab|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|||ab||||| |||||ab|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|||ab||||| |||||ab|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|||ab|||||ab+lighter |||||ab|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|||ab||||| |||||ab|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|||ab||||| |||||ab|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||ab|ho-d||||| |||||ab|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|ab|V|ab||||| |||||ab|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||ab|ab|ab|ab|ab|ab|ab |ab|ab|ab|ab|ab|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">{% endminecraft %}
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>标注V的地方需要囚禁一个&lt;strong>身上没有作物的农民&lt;/strong>进去（比如刚出生的），此外还要在&lt;strong>农田区域内放另一个农民&lt;/strong>。可以看到村民农场比水流农场要矮一层，更加紧凑了。不过由于是用漏斗收集作物，因此物品的传输需要使用漏斗管道。&lt;/p>
+&lt;p>这个作物塔的原理是，村民会主动照料周围一定范围内的耕地，并且当它发现附近（可以穿透方块）有农民身上没有什么作物的话它可能会把作物扔给较穷的农民。因此我们只要保证一个一直很穷的农民在吸引他扔食物即可~~~~简直是地主剥削~~。两个栅栏门的作用是便于出入并防止农民跑出来。&lt;/p>
+&lt;h2 id="漏斗转移装置">漏斗转移装置&lt;/h2>
+&lt;p>由于村民农场的收集方式为漏斗，如果要与下层的水流收集的作物层叠加的话需要把漏斗中的物品转移到水流中。转移可以使用一个自动喷射装置，如下所示：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">{% minecraft 俯视图 %}
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|rd-se!|rd-ew!|rd-sew!|dirt+darker+rd-ew!|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|rd-ne!|rr-w1!|rs-w! |dr-s |-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">{% endminecraft %}
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>其中泥土上的红石比其他红石要高一层（即在发射器上表面那一层）。比较器是否激活都可以。将漏斗管道的出口接到发射器中，发射器会自动把物品喷射到指定方向。将发射器出口放一个水流，即可完成漏斗管道到水流收集的过渡。&lt;/p>
+&lt;p>自动喷射的原理是当发射器中有物品时，发射器会从后端向比较器输入信号，激活比较器自身构成的时钟电路。时钟电路再通过图中的泥土块激活发射器。只要发射器中有物品，时钟电路便会一直运行，直到将物品清空。&lt;/p>
+&lt;p>&lt;img src="https://zyxin.xyz/blog/blog/2017-08/MCTowerWheat/mc_wheat_auto.png"
+width="1366"
+height="705"
+loading="lazy"
+alt="村民农场"
+class="gallery-image"
+data-flex-grow="193"
+data-flex-basis="465px"
+>&lt;/p>
+&lt;hr></description></item><item><title>Minecraft - 集成作物塔 - 红石基础</title><link>https://zyxin.xyz/blog/2017-08/MCTowerRedstone/</link><pubDate>Mon, 21 Aug 2017 00:00:00 +0000</pubDate><guid>https://zyxin.xyz/blog/2017-08/MCTowerRedstone/</guid><description>&lt;h2 id="bud">BUD&lt;/h2>
+&lt;p>&lt;a class="link" href="https://minecraft-zh.gamepedia.com/%E6%95%99%E7%A8%8B/%E6%96%B9%E5%9D%97%E6%9B%B4%E6%96%B0%E6%84%9F%E5%BA%94%E5%99%A8" target="_blank" rel="noopener"
+>&lt;strong>方块更新感应器（Block Update Detector, BUD）&lt;/strong>&lt;/a>是Minecraft中绝大部分自动设备的部件，它能够检测方块的更新并产生一次脉冲。因此掌握方块更新是制造自动设备的必备技能~&lt;/p>
+&lt;p>不过让我郁闷的是，1.11中引入了一个萌萌的方块叫做&lt;a class="link" href="https://minecraft-zh.gamepedia.com/%E4%BE%A6%E6%B5%8B%E5%99%A8" target="_blank" rel="noopener"
+>&lt;strong>侦测器&lt;/strong>&lt;/a>，能起到类似BUD的效果。不过由于侦测器的检测范围比BUD小，以及BUD有&lt;strong>感应器与执行器可以用同一个方块&lt;/strong>的优点，灵活性高，因此部分场合还是需要BUD上场，然而对于作物塔中作物生长的检测来说，侦测器其实已经完全足够了。（原本Tricky的方法被官方支持应该是件好事，然而我还是无法避免地感到郁闷。。）&lt;/p>
+&lt;p>BUD的基本原理是将红石电路置于一种本应不稳定的状态（即通过不同的方式推导线路状态能得到不同的结果），此时电路中的一些处于“叠加态”的结构会停止对电路的变化产生反应（其中本应产生反应的方块即为&lt;strong>感应器&lt;/strong>，一般为活塞），而当感应器周围方块有更新时，电路会重新运行而使得结构被改变且重新复原（之后又会停止反应），这个过程可以产生红石信号。&lt;/p>
+&lt;p>BUD的一种替代是高频时钟电路，通过不断地暴力尝试而产生类似BUD的效果。替代的前提条件是没有方块更新时，电路信号不会产生额外的破坏。有些情况下，方块更新地过于频繁，使得更新方块本身也成为了BUD开关，或者BUD电路的执行器和感应器产生冲突，这时就只能使用高频信号了（e.g. 刷石机）。&lt;/p>
+&lt;p>BUD的实现方式很多，一般会根据密排和材料的需要选择对应的BUD。BUD通常需要粘性活塞或者活塞加下落物使得电路复位。下面介绍几种我常用的BUD形式（由于活塞激活的方式较多，因此BUD结构的灵活性很大，每种方案都可以有很多放置方法，只展示其中最便于描述的一种）：&lt;/p>
+&lt;h3 id="粘性活塞--红石火把">粘性活塞 + 红石火把&lt;/h3>
+&lt;p>&lt;i id="bud_example"/>&lt;/i>&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">{% minecraft 侧视图 %}
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|----基本式|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">| |rd-$ |rd-$ | |-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|rd-$ |AB |AB |rt-$w! |-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|AB |rr-$w1 | |rd-$! |-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">| |AB |AB |AB |-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">| | |sp-n | |-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|----扩增式|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">| |rd-$ |rd-$ | |-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|rd-$ |AB |AB |rt-$w! |-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|AB |rr-$w1 | |rd-$! |-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">| |AB |AB |AB |-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">| | |sp-n | |-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">| | | |sp-w |-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">{% endminecraft %}
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>在活塞四周产生的方块更新会被感应到（在扩增式中两个活塞都能起感应作用）。如果活塞用普通活塞，而用沙子作为活塞上方的方块的话，这个电路就会变成高频时钟电路。&lt;/p>
+&lt;p>这个装置的BUD原理是，中间一层右端激活的红石会使得下方的方块充能，活塞被激活（活塞激活的范围可以参考wiki&lt;a class="link" href="https://minecraft-zh.gamepedia.com/%E6%B4%BB%E5%A1%9E#.E5.85.85.E8.83.BD" target="_blank" rel="noopener"
+>活塞页面&lt;/a>和&lt;a class="link" href="https://minecraft-zh.gamepedia.com/File:Activation_by_piston_connectivity.png" target="_blank" rel="noopener"
+>红石页面&lt;/a>）活塞激活后会推动上方方块，方块被右端红石充能，使得中间层左侧的电路被充能，这会导致红石火把熄灭，导致中间一层右端激活的红石不再被充能而熄灭。电路产生了矛盾进入不稳定状态，产生了BUD效果。&lt;/p>
+&lt;h3 id="粘性活塞--容器">(粘性)活塞 + 容器&lt;/h3>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">{% minecraft 侧视图 %}
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|----后部|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">| | |rd-$! |rd-$! |-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|rd-$! |rr-$e1!|AB |AB |-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|AB |AB | | |-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|----前部|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">| | | | |-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|AB |rc-$w! |AB |fu-$s |-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|AB |AB |sp-n |pi-u |-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">{% endminecraft %}
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>这个BUD方案的好处在于结构精简。左边的活塞是粘性活塞（可以换成普通活塞+下落物），两个活塞都是感受器。容器可以是任何可以产生信号的容器，熔炉、箱子、漏斗都可以，需要在容器中放至少一个物品使得其可以产生信号。该BUD的原理是容器产生的信号通过比较器与中继器的放大，连接到活塞上方方块的背后。本来在这种情况下活塞是被激活了的，会推动上方方块，但是如果上方方块被推动就会导致信号截断，不能传导到背后，这就形成了BUD开关，原理与上个方案相似。&lt;/p>
+&lt;p>中继器在这个结构中起到的作用是延长信号（因为比较器产生的信号可能很弱），但通过调节它的刻度也能够调节BUD复位的速度。&lt;/p>
+&lt;a id="bud_example2"/>
+&lt;p>&lt;img src="https://zyxin.xyz/blog/blog/2017-08/MCTowerRedstone/mc_bud_sugarcane.jpg"
+width="763"
+height="370"
+loading="lazy"
+alt="一种利用BUD制造的自动甘蔗机"
+class="gallery-image"
+data-flex-grow="206"
+data-flex-basis="494px"
+>&lt;/p>
+&lt;p>相比&lt;a class="link" href="https://minecraft-zh.gamepedia.com/File:Sugar_Cane_with_Observer.png" target="_blank" rel="noopener"
+>利用侦测器制造的自动甘蔗机&lt;/a>，BUD方案可以在甘蔗生长出第二格时立即首歌，并且可以通过BUD的延长来精简体积。&lt;/p>
+&lt;h3 id="活塞--红石块">活塞 + 红石块&lt;/h3>
+&lt;p>由于粘性活塞较难获得（&lt;del>单机玩根本就找不到史莱姆好吗&lt;/del>），因此再介绍一种替代方案。“粘性”在电路中的作用是让截断方块复位，因此可以通两个活塞对置来实现复位。下面就是一种普通活塞与红石块结合产生BUD的方案：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;span class="lnt">7
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">{% minecraft 侧视图 %}
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|rd-$ |AB |pi-s | |-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|AB |rr-$e1 | | |-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">| |AB |br |rd-$! |-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">| | |AB |AB |-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">| | |pi-n | |-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">{% endminecraft %}
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>同样，在这个电路中活塞是感应器。&lt;/p>
+&lt;h3 id="粘性活塞--下落物">粘性活塞 + 下落物&lt;/h3>
+&lt;p>如果要使用下落物（沙子、沙砾）来做BUD的话，仍然需要粘性活塞来复位。相比于其他BUD方案，使用下落物的特点在于BUD反应很快，但是复位较慢（下落速度较慢）。一种典型的结构如下&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">{% minecraft 侧视图 %}
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|rd-$!|sand|rr-$w1!|ab|le-$w!|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|ab |gs |ab | | |-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">| |sp-n| | | |-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">{% endminecraft %}
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>沙子代表下落物（还可以是沙砾），萤石代表不充能的透明方块（还可以是玻璃、海晶灯等）。这个方案还有个特点是体积小，但是噪音会比较大233&lt;/p>
+&lt;h3 id="bud的扩增延长">BUD的扩增（延长）&lt;/h3>
+&lt;p>在前面的BUD方案中提到了BUD的扩增，这是一种非常实用的设计。这里的BUD扩增指的是&lt;strong>感应器的增加与延长&lt;/strong>，而不仅仅是红石线路的延长。&lt;/p>
+&lt;p>搭建好基础的BUD后，可以在感应器（一般是活塞）周围再放置一个活塞，并让活塞可以被BUD电路的执行器一段激活（例如&lt;a class="link" href="#bud_example1" >第一个BUD例子&lt;/a>和&lt;a class="link" href="#bud_example2" >第二个BUD例子&lt;/a>所示）。这种情况下，新加入的活塞受BUD电路的激活本应推动&lt;del>空气&lt;/del>，但活塞的动作会导致基础BUD的感应器周围产生更新（出现了活塞头），导致BUD电路中断，这样就可以让新活塞也成为了BUD的一部分。&lt;/p>
+&lt;p>&lt;img src="https://zyxin.xyz/blog/blog/2017-08/MCTowerRedstone/mc_bud_expand.jpg"
+width="634"
+height="614"
+loading="lazy"
+alt="向两个方向延长的BUD结构"
+class="gallery-image"
+data-flex-grow="103"
+data-flex-basis="247px"
+>&lt;/p>
+&lt;p>再用示意图举一个双排扩增BUD的例子：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;span class="lnt">25
+&lt;/span>&lt;span class="lnt">26
+&lt;/span>&lt;span class="lnt">27
+&lt;/span>&lt;span class="lnt">28
+&lt;/span>&lt;span class="lnt">29
+&lt;/span>&lt;span class="lnt">30
+&lt;/span>&lt;span class="lnt">31
+&lt;/span>&lt;span class="lnt">32
+&lt;/span>&lt;span class="lnt">33
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">{% minecraft 俯视图 %}
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|----Level1|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||||||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||pi-s|pi-s|pi-s||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|pi-n||||pi-u|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|pi-w|||pi-n||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|pi-w|||pi-w||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|pi-w|||pi-w||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|ellipsis-ns|||ellipsis-ns||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|----Level2|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||||||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||||||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||ab|ab|ab|ab|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||ab|||ab|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||ab|||ab|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||ab|||ab|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||ellipsis-ns|||ellipsis-ns|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|----Level3|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||||||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|||||ab|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||rd-se!|rd-ew!|rd-ew!|br|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||rd-ns!|||rd-ns!|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||rd-ns!|||rd-ns!|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||rd-ns!|||rd-ns!|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">||ellipsis-ns|||ellipsis-ns|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|----Level4|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|||||ab|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|||||rr-n1|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|----Level5|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|||||rd|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|||||ab|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|||||pi-d|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">{% endminecraft %}
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>这个技巧是BUD优于侦测器的特点之一，因此在之后的文章中作物塔的自动收割还是通过BUD实现（&lt;del>其实是因为之前没玩过1.9以后的版本&lt;/del>），不过改成侦测器的话应该也不会太难，并且也可以降低电路复杂度。&lt;/p>
+&lt;h2 id="红石布线">红石布线&lt;/h2>
+&lt;p>红石电路之所以困难，原因之一是布线非常麻烦，由于Minecraft是方块化的，因此布置红石有一定的限制，不像&lt;del>Altium&lt;/del>之类的那样方便。这里也简单介绍一下红石布线的技巧。&lt;/p>
+&lt;h3 id="信号向上传递">信号向上传递&lt;/h3>
+&lt;p>&lt;em>&lt;a class="link" href="https://minecraft-zh.gamepedia.com/%E7%BA%A2%E7%9F%B3%E7%94%B5%E8%B7%AF#.E4.BC.A0.E8.BE.93.E7.94.B5.E8.B7.AF]" target="_blank" rel="noopener"
+>参见Wiki纵向传输页面&lt;/a>&lt;/em>&lt;/p>
+&lt;p>作物塔很高，如果使用半自动设备，并且希望在底部操作开关的话就会遇到红石信号向上传递的问题。此外在布置红石电路的时候也会遇到向上传递的需求。&lt;/p>
+&lt;p>信号纵向传递主要有以下几种方式：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;span class="lnt">25
+&lt;/span>&lt;span class="lnt">26
+&lt;/span>&lt;span class="lnt">27
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">{% minecraft 侧视图 %}
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|----阶梯式|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|rd-$! | | |-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|AB |rd-$! | |-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">| |AB |rd-$! |-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">| | |AB |-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|----红石火把（向上）|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">| |rt-$ | |-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">| |AB | |-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">| |rt-$! | |-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">| |AB | |-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|----红石火把（向下）|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|AB |rt-$w! | |-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">| |rd-$! | |-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|rt-$e |AB | |-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|rd-$ | | |-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|----半砖|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">| |rd-$! | |-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|rd-$! |ts-$ | |-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|ts-$ |rd-$! | |-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|rd-$! |ts-$ | |-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|----萤石|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">| |rd-$! | |-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|rd-$! |gs | |-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|gs |rd-$! | |-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">| |gs | |-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">{% endminecraft %}
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>原理是半砖和萤石可以交叉向上连接红石而不阻隔信号，红石火把能充能上方或下方的方块。红石火把传递的方案有一个限制就是纵向传递&lt;strong>会使信号交替改变&lt;/strong>（红石火把相当于非门），因此如果要保持信号不变的话需要使红石火把的层数为奇数。&lt;/p>
+&lt;p>这里面最常用的方法是半砖电路和红石火把，廉价并且占地小。&lt;/p>
+&lt;h3 id="密集布线">密集布线&lt;/h3>
+&lt;p>在集成化的过程中，密集布线经常会让人头疼。如何使红石电路占地最小并且隔离其他电路的影响是集成的关键。布线据我所知没有一个统一的方法，但是有如下一些要点：&lt;/p>
+&lt;ul>
+&lt;li>在斜交叉时不透明方块会阻断线路，透明方块不会
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;span class="lnt">7
+&lt;/span>&lt;span class="lnt">8
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">{% minecraft 侧视图 %}
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|----不连通|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|rd-$ |AB |-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|AB |rd-$! |-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|----连通|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|rd-$! |glass |-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|AB |rd-$! |-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">{% endminecraft %}
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;/li>
+&lt;li>注意避免红石在规划外的地方出现上下两层相连的情况&lt;/li>
+&lt;li>当两条不同的红石线路并排时使用继电器可以将两条线路隔离&lt;/li>
+&lt;li>在集成自动机构时，尽量使得红石机构位于一个平面内，这样有利于机构的密排，密排时适当错位避免以错误的红石连接。&lt;/li>
+&lt;/ul>
+&lt;h2 id="作物塔后处理">作物塔后处理&lt;/h2>
+&lt;h3 id="物品分类">物品分类&lt;/h3>
+&lt;p>在我的作物塔中，所有作物都是水流汇集后通过一个漏斗收集的，如果仅仅放在一个箱子里会比较乱，不利于取用（如果你有MOD就当我没说）。因此在最后接一个分类系统是不错的选择。&lt;/p>
+&lt;p>物品分类系统有很多的实现方式，在这里介绍非常朴素而古老的一种，利用漏斗的信号控制来使得漏斗中的物体保持一定的量，再利用漏斗只能叠加同类物品来进行分类。&lt;/p>
+&lt;p>基本原理是漏斗中每1/3组物品会输出1个信号强度，以及如果漏斗五格都有物品，漏斗只会吸收它所含有的物品类型。因此可以通过占位物品实现分类，输出信号控制开关，避免占位物品也被吸收走。&lt;/p>
+&lt;p>具体的结构如下：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;span class="lnt">7
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">{% minecraft 侧视图 %}
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|----单层分类器截面|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|S |ho-$s | | | |-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|C |ho-$d |AB |rc-$e! |AB |-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|ch-$ |ho-$w | |ts-$ |rd-$! |-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">| |rt-$e! |AB |rd-$! |AB |-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">{% endminecraft %}
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>其中S漏斗是物品收集管道，C是分类装置。C漏斗需要在其中预先放置好需要分类的物品和占位物品。例如如果要分类仙人掌，用木棍作为占位物品，则可以放置成如下样式&lt;/p>
+&lt;p>&lt;img src="https://zyxin.xyz/blog/blog/2017-08/MCTowerRedstone/mc_filter.png"
+width="187"
+height="45"
+loading="lazy"
+alt="物品分类摆放样式"
+class="gallery-image"
+data-flex-grow="415"
+data-flex-basis="997px"
+>&lt;/p>
+&lt;p>当S漏斗有物品通过时，物品会优先向下漏。如果是仙人掌，那么就会漏进C与原有的仙人掌叠加，如果不是，由于占位物品的存在则无法漏入（除非通过的物品是占位物品）。这就实现了分类功能。而红石电路能够保证C漏斗中物品数少于1/3组时不继续下漏，能够保护占位物品不被漏掉。&lt;/p>
+&lt;p>C漏斗中，第一格放上需要分类的物品，一个即可，剩下四格放占位物品（什么都可以），但总量不要超过1/3组。占位物品越多，漏斗中残余的分类物品（这里是仙人掌）就越少。但如果少到没有了，那这个分类器也就失效了。&lt;/p>
+&lt;h3 id="物品自动搬运">物品自动搬运&lt;/h3>
+&lt;p>当物品从作物塔中收集下来以后，如果作物塔离储存物资的地方比较远，可以通过物品搬运系统来进行自动转移。一般这种功能是通过&lt;em>运输矿车&lt;/em>来实现的。具体的红石设计&lt;a class="link" href="https://minecraft-zh.gamepedia.com/%E6%95%99%E7%A8%8B/%E7%9F%BF%E8%BD%A6%E5%82%A8%E5%AD%98" target="_blank" rel="noopener"
+>在Wiki里面讲的已经很清楚了&lt;/a>，这里就不再赘述~&lt;/p>
+&lt;h3 id="物品下漏限制">物品下漏限制&lt;/h3>
+&lt;p>这个功能是个小trick。当漏斗管道接上熔炉进行燃烧的时候，如果漏斗管道中的物品生产较慢，则会导致熔炉中的燃料极大浪费。这个时候可以通过限制物品下漏来使得进入熔炉中的物品不会太少。&lt;/p>
+&lt;p>下面这个装置可以实现当物品数量达到23以后才会继续下漏：（该方案仅支持可烧制的物品，如果混入不可烧制的物品则会无效）&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">{% minecraft 俯视图 %}
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|----|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|rd-se!|rd-ew!|rr-w1!|rd-ew!|rd-ew!|rd-sw!|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|rr-s1!|rr-w1|rd-ew|||rd-ns!|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|ab|ab|ab|ab|ab|rd-ns!|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|ho-d|rc-e|rd-sew|rr-e1|ab|rr-n1!|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|||rd-ne|rr-e1|ab|rt-w!|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|----|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|||||||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|||rt-s||||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|rd-ew!|rd-ew!|ab|rd-ew|rd-sw|ab|-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|S||||rt||-
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">{% endminecraft %}
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>选取数字23是因为这是它在&lt;a class="link" href="https://minecraft-zh.gamepedia.com/%E7%BA%A2%E7%9F%B3%E6%AF%94%E8%BE%83%E5%99%A8#.E5.AE.B9.E5.99.A8" target="_blank" rel="noopener"
+>比较器产生的信号阶梯&lt;/a>中物品数量较少时最接近8的倍数，因此能够较好地节省煤炭。（当漏斗中有2组又32个物品时刚好可以产生8格信号，但是这会使得红石线路体积增大，并且增长物品处理周期，因此还是选用了23个物品产生2格信号的方案。）当然，如果使用别的燃料的话可以针对性地延长从比较器到中继器中间的红石，就可以挑选最省燃料的下落限制值了。（各种燃料一次能烧多少个物品&lt;a class="link" href="https://minecraft-zh.gamepedia.com/%E7%83%A7%E7%82%BC#.E7.87.83.E6.96.99.E6.95.88.E7.8E.87" target="_blank" rel="noopener"
+>见Wiki&lt;/a>）&lt;/p>
+&lt;hr>
+&lt;p>以上就是在作物塔中使用到的基本红石原理，如果看不太懂没关系，作物塔搭出来就能慢慢理解了233~接下来就会介绍作物塔的详细构造了。&lt;/p></description></item><item><title>Minecraft - 集成作物塔</title><link>https://zyxin.xyz/blog/2017-08/MCTower/</link><pubDate>Fri, 18 Aug 2017 00:00:00 +0000</pubDate><guid>https://zyxin.xyz/blog/2017-08/MCTower/</guid><description>&lt;p>在烟花服里面，我在雪地的基地里造了一个全自动多作物塔，基本上能自动刷的作物我都塞进了一个塔里hhh，非常实用。为了美观以及统一，这个塔的尺寸按照一般的小麦塔设计成了9x9，周围再加一层红石布线、一层走道是13x13，如果再算上围墙则一共占地是15x15。层数不限，每一层的作物有很多选择，可以随意按需累加~&lt;/p>
+&lt;p>这个作物塔在纯净生存里非常实用，并且空间紧凑。但如果你加了别的Mod可能会有更优的方案。有了自动作物塔，不仅吃喝不愁，还能和村民进行大波交易（滑稽）~&lt;/p>
+&lt;p>作物塔中每类作物塔层的收集口主要有两类，一类是在正中间，另一类是在9x9的一角，因此两类作物层最好分类累加，中间通过一层水流转移接口的位置。水流层就不专门写了，非常简单，如果转移有困难可以考虑造两层水。另外，半自动与全自动的层也最好分开，半自动层位于底层可以便于红石布线，并且方便操作开关。由于所有作物都从同一个口流下，因此在收集端可以接一个物品分类系统，这样就能愉快地刷作物了。（不过需要注意的是区块加载器无法让作物生长，想要刷作物只能在附近挂机，&lt;a class="link" href="https://tieba.baidu.com/p/3522130680#62864157641" target="_blank" rel="noopener"
+>见该贴&lt;/a>）&lt;/p>
+&lt;p>在服务器我的作物塔垒了十几层，高度已经突破200，上去看看风景也是不错的~作物塔本来是裸露的，后面觉得太丑于是给它加了个外墙，由于羊毛比较廉价，就随便弄了一个圣诞棍外形，但这么高的作物塔其实弄个大型像素图也是可以的~&lt;/p>
+&lt;p>当初在服务器里我的塔长这样：&lt;/p>
+&lt;p>&lt;img src="https://zyxin.xyz/blog/blog/2017-08/MCTower/mc_tower_expose.png"
+width="1366"
+height="705"
+loading="lazy"
+alt="未建成时裸露的作物塔"
+class="gallery-image"
+data-flex-grow="193"
+data-flex-basis="465px"
+>
+&lt;img src="https://zyxin.xyz/blog/blog/2017-08/MCTower/mc_tower_sealed.png"
+width="1316"
+height="700"
+loading="lazy"
+alt="作物塔外壳 | 简陋的物品收集系统"
+class="gallery-image"
+data-flex-grow="188"
+data-flex-basis="451px"
+>&lt;/p>
+&lt;p>接下来几篇文章就会写不同作物层的搭法~&lt;/p></description></item></channel></rss>

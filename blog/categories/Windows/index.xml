@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Windows on JacobZ</title><link>https://zyxin.xyz/blog/categories/Windows/</link><description>Recent content in Windows on JacobZ</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><lastBuildDate>Mon, 28 Jan 2019 00:00:00 +0000</lastBuildDate><atom:link href="https://zyxin.xyz/blog/categories/Windows/index.xml" rel="self" type="application/rss+xml"/><item><title>Windows远程桌面设置</title><link>https://zyxin.xyz/blog/2019-01/WindowsRemoteDesktop/</link><pubDate>Mon, 28 Jan 2019 00:00:00 +0000</pubDate><guid>https://zyxin.xyz/blog/2019-01/WindowsRemoteDesktop/</guid><description>&lt;p>搭了一台主机之后由于随身带的Surface性能不够，自然产生了远程桌面的需求。这也是便携办公的一种不错的解决方法：随身带着一个上网本，需要办公时远程连接到主机即可~Windows平台的远程桌面软件除了Windows自带的以外还有&lt;a class="link" href="https://chrome.google.com/webstore/detail/chrome-remote-desktop/gbchcmhmhahfdphkhkmpfmihenigjmpp" target="_blank" rel="noopener"
+>Chrome远程桌面&lt;/a>、&lt;a class="link" href="https://www.teamviewer.com" target="_blank" rel="noopener"
+>TeamViewer&lt;/a>等软件。不过Windows远程体验最好的还是系统内置的客户端~本文介绍一下Windows自带远程桌面的配置与使用。&lt;/p>
+&lt;h2 id="远程桌面的使用">远程桌面的使用&lt;/h2>
+&lt;p>先介绍一下远程桌面的使用，现在假设你已经有一台设置好的远程主机。Windows很早开始就有系统内置的远程桌面客户端，在开始菜单中搜索“Remote Desktop Connection”或者“远程桌面连接”即可。在弹出的窗口中，“计算机”一栏填写远程主机的IP地址或者域名。如果出现连接不上的情况可以先Ping一下远程主机检查网络问题。&lt;/p>
+&lt;p>Windows远程桌面不仅支持Windows平台，还支持其他主流平台（MacOS）以及移动平台（iOS、Android）等等，在相应的引用商店搜索“Microsoft Remote Desktop”引用即可，连接方式也很简单，输入地址或域名，在必要的情况下输入用户名密码即可。连接上远程桌面后，系统分辨率和DPI会自动调整，你还可以在设置中将声卡、USB等设备投射到远程桌面上。&lt;/p>
+&lt;h2 id="远程桌面服务的搭设">远程桌面服务的搭设&lt;/h2>
+&lt;p>远程桌面的使用非常简单，但是服务器的搭建就没那么容易了。基本原理是主机需要向客户端开放远程桌面协议（Remote Desktop Protocal）所需的3389接口，并且在本地开启远程桌面服务，然后通过RDP进行连接。因此设置主要有两个步骤：&lt;/p>
+&lt;ul>
+&lt;li>打开服务：在Windows10中只需在设置-&amp;gt;系统-&amp;gt;远程桌面选项卡中开启远程连接的开关即可，而在早期Windows中可能需要通过本地策略管理器开启远程连接的服务。&lt;/li>
+&lt;li>端口设置：在打开服务之后主机的3389端口就已经开放，但是要使得客户端能连接到主机还需要完成路由设置。如果你的主机是在IPv4局域网中，而你想通过外网远程连接这个主机，你需要在局域网网关上设置端口转发（NAT Forwarding），将外部的3389端口映射到主机的3389端口。为了方便端口转发，你可能还需要给主机设置静态局域网IP，以避免重新设置转发的必要~
+在完成以上两步后就可以尝试通过客户端连接主机了~&lt;/li>
+&lt;/ul>
+&lt;h2 id="多用户远程桌面">多用户远程桌面&lt;/h2>
+&lt;p>Windows个人版本系统默认只支持单一用户与单一会话，意思是用户A与用户B不能同时远程连接这个主机。多用户的支持名义上只有Windows Server才提供，但其实Windows内核是支持多用户的，只是被锁住了，因此就有相应的破解方法啦~&lt;/p>
+&lt;p>&lt;a class="link" href="https://github.com/stascorp/rdpwrap" target="_blank" rel="noopener"
+>Github上的开源工具RDPWrap&lt;/a>可以激活RDP的多用户多会话支持，使用也非常简单，下载Release压缩包之后运行&lt;code>install.bat&lt;/code>即可安装，其他文件的使用方法也有在Readme中有描述~&lt;/p>
+&lt;hr>
+&lt;p>以上便是Windows远程桌面的设置方法了~有两点小提醒：&lt;/p>
+&lt;blockquote>
+&lt;ol>
+&lt;li>3389端口曾经是远程攻击的重要缺口之一，虽然目前Windows的防御做的已经很好了，但如果不适用远程服务的时候还是把3389端口关闭比较保险。&lt;/li>
+&lt;li>RDPWarp本身是不被微软承认的，虽然&lt;a class="link" href="https://github.com/stascorp/rdpwrap/issues/26" target="_blank" rel="noopener"
+>貌似它本身没有违反Windows的使用条例&lt;/a>，但仍建议不要在商用服务器上使用。&lt;/li>
+&lt;/ol>
+&lt;/blockquote>
+&lt;blockquote>
+&lt;h2 id="参考资料">参考资料：&lt;/h2>
+&lt;ul>
+&lt;li>&lt;a class="link" href="https://docs.microsoft.com/en-us/windows-server/remote/remote-desktop-services/clients/windows" target="_blank" rel="noopener"
+>微软官方说明&lt;/a>&lt;/li>
+&lt;/ul>
+&lt;/blockquote></description></item></channel></rss>

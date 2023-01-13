@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Server on JacobZ</title><link>https://zyxin.xyz/blog/tags/Server/</link><description>Recent content in Server on JacobZ</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><lastBuildDate>Tue, 02 Apr 2019 20:47:07 +0000</lastBuildDate><atom:link href="https://zyxin.xyz/blog/tags/Server/index.xml" rel="self" type="application/rss+xml"/><item><title>给Linux（Ubuntu 16.04/18.04）配置远程访问环境</title><link>https://zyxin.xyz/blog/2019-04/LinuxRemoteSetup/</link><pubDate>Tue, 02 Apr 2019 20:47:07 +0000</pubDate><guid>https://zyxin.xyz/blog/2019-04/LinuxRemoteSetup/</guid><description>&lt;p>年后给实验室装了一台小服务器，安装了Ubuntu系统，这篇博客记录一下给Ubuntu配置远程访问的设置过程。&lt;/p>
+&lt;blockquote>
+&lt;p>虽然服务器是一台GPU服务器，但是出于简便考虑没有在服务器上安装虚拟化环境，有需要安装LXD或者Docker的朋友可以参考这几篇博客：&lt;a class="link" href="https://blog.csdn.net/weixin_42749767/article/details/83720831" target="_blank" rel="noopener"
+>实验室GPU服务器共享方案&lt;/a>、&lt;a class="link" href="https://feelncut.com/2018/05/03/145.html" target="_blank" rel="noopener"
+>搭建多人共用的GPU服务器&lt;/a>、&lt;a class="link" href="https://zhuanlan.zhihu.com/p/25710517" target="_blank" rel="noopener"
+>为实验室建立公用GPU服务器&lt;/a>、&lt;a class="link" href="https://shenxiaohai.me/2018/12/03/gpu-server-lab/" target="_blank" rel="noopener"
+>搭建实验室公共GPU服务器&lt;/a>&lt;/p>
+&lt;/blockquote>
+&lt;h2 id="ssh设置">SSH设置&lt;/h2>
+&lt;p>远程连接最方便并且最稳定的就是SSH了，安装好SSH之后就基本可以远程操作服务器。SSH的安装非常简单，Ubuntu下通过apt安装即可：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="line">&lt;span class="cl">sudo apt install openssh-server
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>安装完重启后，SSH服务就会自动运行了。客户端方面，Ubuntu默认提供SSH支持，而Windows在1809之后也内置了OpenSSH，在系统附加功能中打开开关后，通过cmd即可调用。如果系统版本较老则可以使用XShell。&lt;/p>
+&lt;h3 id="sftp设置---利用rclone">SFTP设置 - 利用rclone&lt;/h3>
+&lt;p>上面安装命令会顺带安装上SFTP客户端。SFTP可以看作加密的FTP协议，可以用来远程访问服务器的文件。SFTP现在已经受到广泛的支持，例如Android上的Solid Explorer就内置了SFTP访问功能。&lt;/p>
+&lt;p>这里介绍一个可以把远程文件挂载到本地的软件——rclone。安装rclone可以从官网下载二进制文件直接拷贝安装，或者下载打包好的deb文件，也可以使用snap进行安装。安装完成之后使用&lt;code>rclone config&lt;/code>添加SFTP服务器，然后就可以&lt;code>rclone mount&lt;/code>进行挂载。此外还可以使用RcloneBrowser等GUI进行更加直接的操作。&lt;/p>
+&lt;blockquote>
+&lt;p>Tip: 如果你是在Ubuntu上安装RcloneBrowser的话，可以通过修改&lt;code>/usr/share/applications/rclone-browser.desktop&lt;/code>文件来修改图标。（原来的图标实在太丑了）&lt;/p>
+&lt;/blockquote>
+&lt;h2 id="远程桌面设置">远程桌面设置&lt;/h2>
+&lt;p>远程桌面的设置就比较麻烦了，这里的远程桌面服务选择xrdp，关于xrdp，vnc等等服务的比较网上都有。由于最开始安装的是Gnome Ubuntu16.04，因此遇到了很多坑，最后配完远程桌面时显卡驱动崩了，因此最后换到了Ubuntu18.04。因此如果需要远程桌面的朋友可以考虑升级到Ubuntu18.04。&lt;/p>
+&lt;p>为了使用上Gnome桌面，最初参考的是一篇&lt;a class="link" href="https://www.hiroom2.com/2016/05/24/ubuntu-16-04-remote-connect-to-gnome-classic-desktop-with-vnc-xrdp/" target="_blank" rel="noopener"
+>在Ubuntu16.04上配置xrdp访问Unity桌面的博客&lt;/a>，最后安装完确实是可以完成访问的，并且如果碰到远程登陆之后提示需要新建color profile的话&lt;a class="link" href="http://c-nergy.be/blog/?p=10372" target="_blank" rel="noopener"
+>可以通过这个博客解决&lt;/a>。但最后由于安装完xserver-xorg后显卡驱动崩了，换用了18.04。&lt;/p>
+&lt;p>在18.04下安装xrdp就简单多了，xrdp版本较新，也不需要安装tigervnc。具体教程还是&lt;a class="link" href="https://www.hiroom2.com/2016/05/24/ubuntu-16-04-remote-connect-to-gnome-classic-desktop-with-vnc-xrdp/" target="_blank" rel="noopener"
+>参考了这篇博客&lt;/a>，大概步骤就是&lt;/p>
+&lt;ol>
+&lt;li>安装&lt;code>xrdp&lt;/code>和&lt;code>xserver-xorg&lt;/code>。需要先安装的&lt;code>xserver-xorg&lt;/code>的原因参见&lt;a class="link" href="https://c-nergy.be/blog/?p=13390" target="_blank" rel="noopener"
+>这篇博客&lt;/a>。
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">apt install xserver-xorg-core xsrever-xorg-input-all
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">apt install xrdp
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;/li>
+&lt;/ol>
+&lt;blockquote>
+&lt;p>如果你安装了Nvidia驱动的话NV还提供定制版的&lt;code>nvidia-xserver-xorg&lt;/code>，也可以通过apt直接安装。安装NV驱动和安装xrdp最好连续进行，避免安装完其他东西之后回头来发现要重装（亲身教训= =）&lt;/p>
+&lt;/blockquote>
+&lt;ol start="2">
+&lt;li>添加&lt;code>echo [session] &amp;gt; ~/.xsession&lt;/code>到&lt;code>/etc/xrdp/startwm.sh&lt;/code>文件里。这里的&lt;code>[session]&lt;/code>内容需要从&lt;code>/usr/share/xsessions&lt;/code>里的桌面环境文件中拷贝出来，例如如果想远程桌面环境运行Gnome3，那么就把&lt;code>[session]&lt;/code>替换成&lt;code>gnome-session --session=gnome&lt;/code>（这行命令就是从&lt;code>/usr/share/xsessions/gnome.desktop&lt;/code>文件中提取出来的）&lt;/li>
+&lt;li>修复一些小问题。例如上文提到的color profile问题可以通过&lt;a class="link" href="http://c-nergy.be/blog/?p=12073" target="_blank" rel="noopener"
+>这篇很详细的博客提到的方法进行解决&lt;/a>。&lt;/li>
+&lt;/ol>
+&lt;p>然后在使用xrdp的时候你可能会碰到一些问题，这里记录一些常见问题的解决方法&lt;/p>
+&lt;ul>
+&lt;li>远程用户在home路径下会挂在一个叫&lt;code>thinclient_drives&lt;/code>的文件夹: 在&lt;code>/etc/xrdp/sesman.ini&lt;/code>中的&lt;code>Chansrv&lt;/code>部分里将FuseMountName改为别的名字（例如&lt;code>.thinclient_drives&lt;/code>）。这个文件夹的作用是实现远程文件拷贝的功能。&lt;/li>
+&lt;/ul>
+&lt;h2 id="x11-forwarding">X11 Forwarding&lt;/h2>
+&lt;p>X11转发是Linux的一种实现远程图形界面的方法，它基于X11窗口协议，类似于Windows对远程GDI的实现。设置好X11以后便可以在ssh中运行远程带有图形界面的程序了～它相比xrdp更好配置，但是使用范围没有xrdp广，因为它只支持程序级别的图形界面，而不是桌面级别的。其设置方法也很简单，在服务器端的&lt;code>/etc/ssh/sshd_config&lt;/code>中将&lt;code>X11Forwarding&lt;/code>选项设为yes即可。在客户端则取决于平台，在Linux平台由于系统界面就是基于X11的（Wayland除外），因此直接使用&lt;code>ssh -X&lt;/code>命令连接服务器就能支持X11转发，而在Windows上则需要额外安装X11服务器，著名的有Vcxsrv, X410等。这里推荐使用&lt;code>MobaXTerm&lt;/code>，这个SSH客户端自带X11服务器，开箱可用，并且性能不错！&lt;/p>
+&lt;h2 id="静态ip">静态IP&lt;/h2>
+&lt;p>如果想要稳定地连接服务器，还需要给服务器配置静态IP。由于我是在大学校园内，静态IP需要申请。我们的网管要求关闭SSH的远程root登陆，以及关闭不必要的服务，此外还推荐服务器用户使用rsakey登陆SSH。这些要求有利于保护服务器安全，因此也推荐在有需要的情况下完成这些操作。&lt;/p>
+&lt;hr>
+&lt;p>以上就是给Ubuntu服务器配置远程桌面的主要步骤，步骤不多但是比较花时间。文中提到的几个博客的网站有提供不少的Linux设置教程，可以供读者参考。&lt;/p>
+&lt;blockquote>
+&lt;p>其他参考阅读：&lt;/p>
+&lt;ul>
+&lt;li>&lt;a class="link" href="https://www.cnblogs.com/nrm1/p/10219269.html" target="_blank" rel="noopener"
+>含Nvidia驱动的远程环境配置&lt;/a>&lt;/li>
+&lt;li>&lt;a class="link" href="http://www.cnblogs.com/ilanni/p/4587171.html" target="_blank" rel="noopener"
+>一些xrdp原理的解释&lt;/a>&lt;/li>
+&lt;/ul>
+&lt;/blockquote></description></item></channel></rss>

@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>C/C++ on JacobZ</title><link>https://zyxin.xyz/blog/en/tags/C/C++/</link><description>Recent content in C/C++ on JacobZ</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><atom:link href="https://zyxin.xyz/blog/en/tags/C/C++/index.xml" rel="self" type="application/rss+xml"/><item><title>The Pitfall Of Long Double</title><link>https://zyxin.xyz/blog/en/1-01/ThePitfallOfLongDouble/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://zyxin.xyz/blog/en/1-01/ThePitfallOfLongDouble/</guid><description>&lt;p>{% note default %}&lt;/p>
+&lt;h2 id="preface">Preface&lt;/h2>
+&lt;p>This article is a repost, originally written by David on the Prelert&amp;rsquo;s website. The original article is now only &lt;a class="link" href="https://web.archive.org/web/20170422155137/http://info.prelert.com/blog/author/david" target="_blank" rel="noopener"
+>accessible on WebArchive&lt;/a>.&lt;/p>
+&lt;p>I found this article when I&amp;rsquo;m searching for the reason why Rust doesn&amp;rsquo;t have a corresponding type for &lt;code>long double&lt;/code> in C/C++, which have caused some interoperability issues (see &lt;a class="link" href="https://immunant.com/blog/2019/11/rust2020/#:~:text=long%20doubletypes%20in%20C%20are%20specified%20as%20being,with%20C%20code%2C%20Rust%20needs%20to%20support%20long" target="_blank" rel="noopener"
+>here&lt;/a> and &lt;a class="link" href="https://github.com/rust-lang/rust-bindgen/issues/1549" target="_blank" rel="noopener"
+>here&lt;/a>). On the contrary, the languages Zig and the newly born Carbon both support &lt;code>f16&lt;/code> and &lt;code>f128&lt;/code> types (Zig also supports &lt;code>f80&lt;/code> and Carbon also supports &lt;code>bfloat16&lt;/code>). But that&amp;rsquo;s not suprising because they all aim to provide max interoperability with C/C++. This article might explain some of the reason why Rust doesn&amp;rsquo;t support float types with higher precision.
+{% endnote %}&lt;/p>
+&lt;h2 id="contents">Contents&lt;/h2>
+&lt;p>C++ provides three floating point data types: &lt;code>float&lt;/code>, &lt;code>double&lt;/code> and &lt;code>long double&lt;/code>. All the &lt;a class="link" href="http://webstore.ansi.org/RecordDetail.aspx?sku=INCITS%2FISO%2FIEC&amp;#43;14882-2012" target="_blank" rel="noopener"
+>C++11 standard&lt;/a> says about these types is:&lt;/p>
+&lt;blockquote>
+&lt;p>The type double provides at least as much precision as float, and the type long double provides at least as much precision as double.&lt;/p>
+&lt;p>The set of values of the type float is a subset of the set of values of the type double; the set of values of the type double is a subset of the set of values of the type long double. The value representation of floating-point types is implementation-defined.&lt;/p>
+&lt;/blockquote>
+&lt;p>However, almost all C++ compilers are part of a family that also includes a C compiler, and Annex F of the &lt;a class="link" href="http://webstore.ansi.org/RecordDetail.aspx?sku=INCITS/ISO/IEC%209899-1999%20%28R2005%29" target="_blank" rel="noopener"
+>C99 standard&lt;/a> is more prescriptive:&lt;/p>
+&lt;blockquote>
+&lt;ul>
+&lt;li>The float type matches the IEC 60559 single format.&lt;/li>
+&lt;li>The double type matches the IEC 60559 double format.&lt;/li>
+&lt;li>The long double type matches an IEC 60559 extended format, else a non-IEC 60559 extended format, else the IEC 60559 double format.&lt;/li>
+&lt;/ul>
+&lt;/blockquote>
+&lt;p>Since only a complete masochist would write a C++ compiler that used different types for floating point than their closely related C compiler, in practice C++ adheres to the same rules. Certainly every C++ compiler I&amp;rsquo;ve ever worked with over the last 20 years has implemented the float and double types using the single and double precision representations defined in &lt;a class="link" href="http://en.wikipedia.org/wiki/IEEE_floating_point" target="_blank" rel="noopener"
+>IEC 60559&lt;/a> (which is the same as &lt;a class="link" href="http://en.wikipedia.org/wiki/IEEE_754-1985" target="_blank" rel="noopener"
+>IEEE 754&lt;/a>). But there is some variation in implementations of the last of these types, long double, and this can cause problems.&lt;/p>
+&lt;p>Throughout my career in software development I&amp;rsquo;ve run into several issues with the long double type, and these fall into the two basic categories of:&lt;/p>
+&lt;ol>
+&lt;li>Lack of testing&lt;/li>
+&lt;li>Portability&lt;/li>
+&lt;/ol>
+&lt;h3 id="lack-of-testing">Lack of testing&lt;/h3>
+&lt;p>At the end of last year &lt;a class="link" href="https://web.archive.org/web/20170305103541/http://www.prelert.com/blog/linux-speeds-ahead/" target="_blank" rel="noopener"
+>I wrote about a problem&lt;/a> that would fall into the first category. A &lt;a class="link" href="http://sourceware.org/bugzilla/show_bug.cgi?id=2445" target="_blank" rel="noopener"
+>bug&lt;/a> in the x86_64 implementation of the &lt;code>powl()&lt;/code> function in glibc went unfixed for over 5 years. I suspect if the bug had been in the more widely used &lt;a class="link" href="http://pubs.opengroup.org/onlinepubs/9699919799/functions/pow.html" target="_blank" rel="noopener"
+>pow()&lt;/a> function then more of a fuss would have been made and somebody would have fixed it sooner. Because the long double version of the function is less widely used, the bug was left to fester.&lt;/p>
+&lt;p>Another example of the lack of testing long double gets is a problem I ran into with the IBM xlC/C++ compiler on &lt;a class="link" href="http://www-03.ibm.com/systems/power/software/aix/" target="_blank" rel="noopener"
+>AIX&lt;/a> before joining Prelert. The name (hard link) through which the compiler is &lt;a class="link" href="http://publib.boulder.ibm.com/infocenter/comphelp/v8v101/index.jsp?topic=%2Fcom.ibm.xlcpp8a.doc%2Fcompiler%2Fref%2Ftucmpinv1.htm" target="_blank" rel="noopener"
+>invoked&lt;/a> defines how it will behave, and when invoked using the name xlC128_r it uses a 128 bit representation for long double. At one time, even the most trivial programs compiled like this would core dump. Although the &lt;a class="link" href="http://www-01.ibm.com/support/docview.wss?uid=swg1IY96361" target="_blank" rel="noopener"
+>bug report&lt;/a> shows an example calling &lt;a class="link" href="http://pubs.opengroup.org/onlinepubs/007908775/xsh/fork.html" target="_blank" rel="noopener"
+>fork()&lt;/a>, even a simple &amp;ldquo;Hello world&amp;rdquo; program would core dump on exit if compiled with the &lt;a class="link" href="http://publib.boulder.ibm.com/infocenter/comphelp/v8v101/index.jsp?topic=%2Fcom.ibm.xlcpp8a.doc%2Fcompiler%2Fref%2Fruoptbrt.htm" target="_blank" rel="noopener"
+>-brtl&lt;/a> flag! Clearly all the testing had been done on the more commonly used invocations of the compiler (where long double is not 128 bits in size).&lt;/p>
+&lt;h3 id="portability">Portability&lt;/h3>
+&lt;p>On the portability side, some gotchas to be aware of are:&lt;/p>
+&lt;ol>
+&lt;li>Microsoft &lt;a class="link" href="http://en.wikipedia.org/wiki/Visual_C%2B%2B" target="_blank" rel="noopener"
+>Visual C++&lt;/a> represents long double using IEEE 754 double precision – just like double (the third option permitted by C99). Therefore, making a distinction between double and long double in your code is pointless if you only ever compile with Microsoft Visual C++. But if you have to support platforms other than Windows too and use long double then you&amp;rsquo;ve built in a key difference in behaviour between the platforms that may bite you. Most other x86 compilers treat long double as being the 80 bit extended precision type as used by the &lt;a class="link" href="http://en.wikipedia.org/wiki/X87" target="_blank" rel="noopener"
+>x87&lt;/a> floating-point unit.&lt;/li>
+&lt;li>On &lt;a class="link" href="http://en.wikipedia.org/wiki/SPARC" target="_blank" rel="noopener"
+>SPARC&lt;/a> chips (OK I know they&amp;rsquo;re dying out) the long double type maps to a 128 bit representation, but, by default, compilers will generate code to do the operations in software rather than in hardware. This dates back to a time when most SPARC chips couldn&amp;rsquo;t do the operations in hardware and would request it be done in software using interrupts. Doing the 128 bit floating point operations in software unconditionally was faster than reacting to these interrupts. However, doing operations on long doubles in software is orders of magnitude slower than doing the same operations on doubles in hardware – some of our unit tests were 20 times slower when we encountered this problem, and the tests weren&amp;rsquo;t purely doing long double arithmetic. This is a case where code can be portable in terms of compiling and producing the correct results, but not in terms of having acceptable performance.&lt;/li>
+&lt;/ol>
+&lt;p>It&amp;rsquo;s instructive to look at what other portable languages do. Java has &lt;a class="link" href="http://docs.oracle.com/javase/tutorial/java/nutsandbolts/datatypes.html" target="_blank" rel="noopener"
+>float and double types&lt;/a> corresponding to IEEE 754&amp;rsquo;s single and double precision representations (and unlike C++ the Java standard is &lt;a class="link" href="http://docs.oracle.com/javase/specs/jls/se7/html/jls-4.html#jls-4.2.3" target="_blank" rel="noopener"
+>very explicit&lt;/a> about how floating point operations may be implemented). Java doesn&amp;rsquo;t make a long double type available to the programmer, presumably due to the portability issues I&amp;rsquo;ve outlined (although the standard allows the x87 extended precision format to be used in intermediate calculations done by the JVM). &lt;a class="link" href="http://docs.python.org/2/library/stdtypes.html#typesnumeric" target="_blank" rel="noopener"
+>Python&lt;/a> just has a float type, which is &amp;ldquo;usually implemented as a double type in C&amp;rdquo;. So, if your overall system contains components written in other languages then you&amp;rsquo;ll avoid a data interchange problem by avoiding long double. The same goes if you want to store floating point numbers in a database table – for example &lt;a class="link" href="http://www.postgresql.org/" target="_blank" rel="noopener"
+>PostgreSQL&lt;/a> offers &lt;a class="link" href="http://www.postgresql.org/docs/9.2/static/datatype-numeric.html#DATATYPE-FLOAT" target="_blank" rel="noopener"
+>real and double&lt;/a> corresponding to IEEE 754&amp;rsquo;s single and double precision representations.&lt;/p>
+&lt;p>A final advantage on x86 CPUs of sticking to float and double is that the compiler can then choose to do floating point calculations in the &lt;a class="link" href="http://en.wikipedia.org/wiki/Streaming_SIMD_Extensions" target="_blank" rel="noopener"
+>SSE&lt;/a> unit of the CPU, which means two or four operations can potentially be done in parallel and function arguments passed in registers by &lt;a class="link" href="http://en.wikipedia.org/wiki/X86_calling_conventions#x86-64_calling_conventions" target="_blank" rel="noopener"
+>64 bit calling conventions&lt;/a> are nicely in the SSE registers ready to be used. By contrast, long double variables can only be operated on in the x87 floating-point unit and are not passed in registers, slowing the program down.&lt;/p>
+&lt;h3 id="conclusion">Conclusion&lt;/h3>
+&lt;p>Some might say that using long double improves the accuracy of results. This may be true, but regardless of the amount of digits a fixed precision floating point type has it will be subject to &lt;a class="link" href="http://en.wikipedia.org/wiki/Loss_of_significance" target="_blank" rel="noopener"
+>loss of significance&lt;/a> if a poorly chosen algorithm is applied to it. Using extended precision rather than double precision may mask this effect in some cases, but in the long term the only solutions are to use algorithms more appropriate for computer calculations or to somehow detect the loss of significance and replace the answer with an appropriate value.&lt;/p>
+&lt;p>In my opinion, if you want to write portable C++ code that not only compiles on multiple architectures but also doesn&amp;rsquo;t have horrendous performance problems on some architectures, long double is best avoided. That&amp;rsquo;s what we do at Prelert – our C++ code doesn&amp;rsquo;t use long double and when we use Boost we define the macro &lt;a class="link" href="http://www.boost.org/doc/libs/1_54_0/libs/math/doc/html/math_toolkit/config_macros.html#math_toolkit.config_macros.boost_math_macros" target="_blank" rel="noopener"
+>BOOST_MATH_NO_LONG_DOUBLE_MATH_FUNCTIONS&lt;/a> so that &lt;a class="link" href="http://www.boost.org/doc/libs/1_54_0/libs/math/doc/html/index.html" target="_blank" rel="noopener"
+>Boost.Math&lt;/a> doesn&amp;rsquo;t either.&lt;/p></description></item></channel></rss>

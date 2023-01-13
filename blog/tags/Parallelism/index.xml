@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Parallelism on JacobZ</title><link>https://zyxin.xyz/blog/tags/Parallelism/</link><description>Recent content in Parallelism on JacobZ</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><lastBuildDate>Thu, 07 Nov 2019 00:00:00 +0000</lastBuildDate><atom:link href="https://zyxin.xyz/blog/tags/Parallelism/index.xml" rel="self" type="application/rss+xml"/><item><title>进程、线程与协程 (C# vs Python)</title><link>https://zyxin.xyz/blog/2019-11/ParallelismInPythonAndCsharp/</link><pubDate>Thu, 07 Nov 2019 00:00:00 +0000</pubDate><guid>https://zyxin.xyz/blog/2019-11/ParallelismInPythonAndCsharp/</guid><description>&lt;p>近来由于项目需要，接触了一下一直没去了解过的Python异步语法，发现和之前我熟悉的C#有很多不同。在深入Python的异步逻辑之后，由于Python在语法上保留了很多语言机制的细节（比如成员函数的&lt;code>self&lt;/code>参数），我反而对C#的异步有了更深的了解。这里就来重新梳理一下各种并行方法的区别，以及他们在C#和Python上实现的区别。（这里只讨论单机的并行机制。）&lt;/p>
+&lt;p>总的来说，并行机制主要有进程(Process)、线程(Thread)和协程(Coroutine)，其并行实现的开销依次递减，但是他们对每个任务的鲁棒性也是依次递减的。进程是操作系统资源分配的最小单元，线程则是能够被CPU并行处理的最小单元，而协程则是目前实现“并行”的最简单方法。一个进程中可以有多个线程，而一个线程中可以有多个协程。他们具体在特性上有以下区别&lt;/p>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>&lt;/th>
+&lt;th>进程&lt;/th>
+&lt;th>线程&lt;/th>
+&lt;th>协程&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>独立内存堆&lt;/td>
+&lt;td>√&lt;/td>
+&lt;td>×&lt;/td>
+&lt;td>×&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>独立处理器（可硬件并行）&lt;/td>
+&lt;td>√&lt;/td>
+&lt;td>√&lt;/td>
+&lt;td>×&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>独立上下文&lt;/td>
+&lt;td>√&lt;/td>
+&lt;td>√&lt;/td>
+&lt;td>×&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>独立栈、寄存器状态&lt;/td>
+&lt;td>√&lt;/td>
+&lt;td>√&lt;/td>
+&lt;td>√&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;h2 id="进程">进程&lt;/h2>
+&lt;p>进程是系统层面实现并行的机制了，进程管理是现代操作系统的一大核心之一。进程之间互不影响，操作系统会保证一个程序崩溃了，其他程序以及系统内核不会崩溃。操作系统还会提供其他的进程管理功能，例如&lt;a class="link" href="https://en.wikipedia.org/wiki/Scheduling_%28computing%29" target="_blank" rel="noopener"
+>进程调度&lt;/a>、设置进程优先级等等。不同语言底层对进程接口的实现实际上都是对系统接口的封装。&lt;/p>
+&lt;h3 id="一些概念">一些概念&lt;/h3>
+&lt;p>与进程相关的概念通常都是操作系统课程的必修知识哈哈：&lt;/p>
+&lt;ul>
+&lt;li>进程间通信(Inter-process communiation, IPC)：故名思意。常用手段有管道、共享内存、信号量(Semaphore)、消息队列等。&lt;/li>
+&lt;li>管道(Pipe)：管道大概是进程间通信的最常用方式？分命名管道和匿名管道, 进程双方均可往其中读写数据。&lt;/li>
+&lt;li>远程过程调用(Remote procedure call): 远程过程调用通过特定的消息序列化手段，可以实现进程间通信，其使用形式是把一个“远程”的函数在本地进行执行。&lt;/li>
+&lt;li>进程锁：如果为了避免多个进程访问同一个资源的冲突的话，就会用到进程锁，其实现方法有&lt;a class="link" href="https://blog.csdn.net/luansxx/article/details/7736618" target="_blank" rel="noopener"
+>管道、信号量&lt;/a>、以及文件锁等。&lt;/li>
+&lt;li>文件锁：文件锁是实现进程互斥的一种常用手段，只需要建立空文件句柄并锁上就可了~并且文件锁还能做到权限控制，非常方便~&lt;/li>
+&lt;/ul>
+&lt;h3 id="c35">C#&lt;/h3>
+&lt;p>C#中对进程控制的模块主要通过&lt;a class="link" href="https://docs.microsoft.com/dotnet/api/system.diagnostics.process" target="_blank" rel="noopener"
+>&lt;code>System.Diagnostics.Process&lt;/code>&lt;/a>实现，可以实现建立进程、管理进程等，还可以指定具体的内存映射参数，如虚拟内存的页大小。而对管道的支持则是在&lt;code>Process&lt;/code>类中有一部分，以及在&lt;a class="link" href="https://docs.microsoft.com/en-us/dotnet/api/system.io.pipes" target="_blank" rel="noopener"
+>&lt;code>System.IO.Pipe&lt;/code>&lt;/a>里面有更全面的接口。我觉得这样的命名空间分类是挺合理的，&lt;code>Process&lt;/code>类的API其实只能用来进行程序调用和系统诊断，而&lt;code>Pipe&lt;/code>则由于它和&lt;code>Stream&lt;/code>的概念比较符合，因此归在IO空间下是合适的。&lt;/p>
+&lt;h3 id="python">Python&lt;/h3>
+&lt;p>Python中对进程的控制以及通信方法的实现都在&lt;code>multiprocess&lt;/code>包里，它的一些具体使用方法可以参考&lt;a class="link" href="https://zyxin.xyz/blog/2017-12/PythonCall/" >另一篇之前的博文&lt;/a>。值得一提的是，Python中还针对Unix系统提供了&lt;code>fcntl&lt;/code>, &lt;code>posix&lt;/code>等库专门用来调用系统底层API，这些API有部分是和进程有关的。相关内容还是查阅对应的资料会比较清楚~&lt;/p>
+&lt;h2 id="线程">线程&lt;/h2>
+&lt;p>线程是进程中细化的并行机制，线程的实现也需要用到操作系统的接口，不过线程的创建的管理基本都是在进程内部完成的。由于线程之间不独立内存空间，因此在C++这种能够随意操作内存的语言中，一个线程崩了，这个进程也大概率就崩了。但是在C#和Python中，由于有比较完善的Exception机制，并且没有什么机会直接操作内存，一般线程崩了主进程还是能接着跑的。多线程想必应该是大家用的最多的并行方法了~&lt;/p>
+&lt;h3 id="一些概念-1">一些概念&lt;/h3>
+&lt;p>在线程里面又有一些新的概念&lt;/p>
+&lt;ul>
+&lt;li>线程池(Thread pool)：线程池与内存池相似，都是为了避免频繁新建和销毁线程(or 内存)而造成额外的开销&lt;/li>
+&lt;li>线程锁：线程锁与进程锁相似，是为了避免线程间访问同样的资源而产生冲突（例如&lt;a class="link" href="https://stackoverflow.com/questions/34510/what-is-a-race-condition" target="_blank" rel="noopener"
+>race condition&lt;/a>）。线程间产生访问冲突非常常见，因此程序员掌握线程锁的使用是非常必要的。线程锁在C++中的&lt;code>&amp;lt;mutex&amp;gt;&lt;/code>有非常全面的实现。这里面锁的类型具有代表性，分为条件锁、自旋锁等等，具体区别可以参考&lt;a class="link" href="https://blog.csdn.net/bian_qing_quan11/article/details/73734157" target="_blank" rel="noopener"
+>这篇博客&lt;/a>。C++的多线程非常令人头大&amp;hellip;这里就不展开了。&lt;/li>
+&lt;li>事件(Event)：在多线程体系中，事件是一种常用于线程同步的机制，如果线程需要在运行过程中等待其他线程的运行，就可以使用事件机制。&lt;/li>
+&lt;/ul>
+&lt;h3 id="c35-1">C#&lt;/h3>
+&lt;p>C#中与线程相关的模块在&lt;a class="link" href="https://docs.microsoft.com/dotnet/api/system.threading" target="_blank" rel="noopener"
+>&lt;code>System.Threading&lt;/code>&lt;/a>空间下。&lt;code>System.Threading.Thread&lt;/code>提供了线程实现的类，使用delegate即可创建线程对象。这个空间底下也提供了&lt;code>SpinLock&lt;/code>、&lt;code>Semaphore&lt;/code>、&lt;code>Mutex&lt;/code>等线程锁，以及&lt;code>AutoResetEvent&lt;/code>实现了事件机制。&lt;code>System.Threading.ThreadPool&lt;/code>则提供了线程池的实现。另外需要指出的是C#提供了&lt;code>lock&lt;/code>关键字，只需对冲突的对象使用&lt;code>lock&lt;/code>锁上，那么在其对应的上下文中就能够避免冲突。&lt;/p>
+&lt;h3 id="python-1">Python&lt;/h3>
+&lt;p>Python中与线程相关的对象在&lt;a class="link" href="https://docs.python.org/library/threading.html" target="_blank" rel="noopener"
+>&lt;code>threading&lt;/code>&lt;/a>模块中，其中&lt;code>Thread&lt;/code>类提供了线程实现，&lt;code>Lock&lt;/code>, &lt;code>Semaphore&lt;/code>提供了线程锁，&lt;code>Event&lt;/code>实现了事件机制。Python中可以使用&lt;code>with lock:&lt;/code>这样的块实现与C#&lt;code>lock&lt;/code>相似的语法，但是这个地方的lock仍然需要自己声明，不如C#和Java中的&lt;code>lock&lt;/code>用着方便。&lt;/p>
+&lt;p>总体而言C#和Python对多线程机制的支持都比较全面，然而CPython有一个臭名昭著的&lt;a class="link" href="http://cenalulu.github.io/python/gil-in-python/" target="_blank" rel="noopener"
+>全局锁GIL&lt;/a>，使得其多线程效率大幅下降。因此在很多Python库中，大家宁愿使用&lt;code>multiprocess&lt;/code>多进程来进行并行（即便需要处理进程间通信的问题），也不愿使用&lt;code>threading&lt;/code>来完成并行任务。这一点上不得不说Python辣鸡！&lt;/p>
+&lt;h2 id="协程">协程&lt;/h2>
+&lt;p>协程应该是21世纪才用的比较多的技术了，并且这个概念应该是在Go里面提的最多。在前文我提到协程是并行时打了引号，这是因为协程本质上还是同一个时刻只能干一件事，没法利用硬件并行，因此我们形容协程都是用“异步”(Asychronized)而不是“并行”(Parallel)。异步是与同步相对的，只要程序能一会干点这个，一会干点那个，不按顺序来，那就可以称作异步了。协程的广泛应用是由于近些年大型服务器的负载越来越大，并发需求越来越高（&lt;del>同时剁手的人越来越多&lt;/del>），多任务切换的开销越来越不可忽视，因此协程这个开销最小的方法就被广泛应用了。协程实际上不是一个比线程更小的概念，而是另一类概念（并行/串行 vs 异步/同步)。协程的特点是一个任务能够跑到一半就暂停，然后把状态存起来，等到需要的东西备齐了以后再把状态复原接着跑；至于暂停之前和之后是不是在同一个线程上跑、有没有跟别的任务一块跑并不重要。因此实际上协程是回调(Callback)机制的一个封装升级。&lt;/p>
+&lt;p>实际上不依赖于系统线程的并行技术不止协程一种：
+&lt;blockquote>
+&lt;p>&lt;p>A &lt;a class="link" href="http://en.wikipedia.org/wiki/Fiber_%28computer_science%29" target="_blank" rel="noopener"
+>Fiber&lt;/a> is a lightweight thread that uses cooperative multitasking instead of preemptive multitasking. A running fiber must explicitly &amp;ldquo;yield&amp;rdquo; to allow another fiber to run, which makes their implementation much easier than kernel or user threads.&lt;/p>
+&lt;p>A &lt;a class="link" href="http://en.wikipedia.org/wiki/Coroutine" target="_blank" rel="noopener"
+>Coroutine&lt;/a> is a component that generalizes a subroutine to allow multiple entry points for suspending and resuming execution at certain locations. Unlike subroutines, coroutines can exit by calling other coroutines, which may later return to the point where they were invoked in the original coroutine.&lt;/p>
+&lt;p>A &lt;a class="link" href="http://en.wikipedia.org/wiki/Green_threads" target="_blank" rel="noopener"
+>Green Thread&lt;/a> is a thread that is scheduled by a virtual machine (VM) instead of natively by the underlying operating system. Green threads emulate multithreaded environments without relying on any native OS capabilities, and they are managed in user space instead of kernel space, enabling them to work in environments that do not have native thread support.&lt;/p>
+&lt;/p>&lt;span class="cite">&lt;span>― &lt;/span>&lt;span>Robert Harvey, &lt;/span>&lt;a href="https://softwareengineering.stackexchange.com/a/254141">&lt;cite>@StackExchange&lt;/cite>&lt;/a>&lt;/span>&lt;/blockquote>&lt;/p>
+&lt;h3 id="一些概念-2">一些概念&lt;/h3>
+&lt;ul>
+&lt;li>事件循环(Event loop)：事件循环是一种非常简单的实现异步的机制，简而言之就是维护一个队列，然后把队列里的任务挨个执行，而任务随时随地可以被添加进队列。&lt;/li>
+&lt;li>异步执行/等待(async/await)：这两个关键词在多个语言中都有出现。async用来修饰函数，说明这个函数可以异步执行；await用来等待异步函数的结束，如果没有结束就把当前任务搁着。&lt;/li>
+&lt;/ul>
+&lt;h3 id="c35-2">C#&lt;/h3>
+&lt;p>C#中没有协程的概念，C#在5.0版本中引入的&lt;code>async&lt;/code>/&lt;code>await&lt;/code>关键字提供了异步执行的接口。据我所知C#应该是最早一批引入这个概念的语言了，并且C#里面async和await的使用非常顺滑~。C#的async/await调度与Go一样，都是通过线程池实现，因此性能也非常不错。C#中与async/await有关的接口在&lt;a class="link" href="https://docs.microsoft.com/en-us/dotnet/api/system.threading.tasks%60" target="_blank" rel="noopener"
+>&lt;code>System.Threading.Tasks&lt;/code>&lt;/a>下，里面的&lt;code>Task&lt;/code>类型是对能够await的对象的封装。&lt;/p>
+&lt;p>C#中也有用到Event loop来实现异步的地方，一般是在UI相关的函数中，例如整个C#里面的&lt;code>event&lt;/code>机制都是通过事件循环来实现的。使用事件循环来完成与UI相关的异步应该是非常标准的做法了，例如Qt里面也有&lt;code>QEventLoop&lt;/code>来实现UI的异步回调。与Event loop相关的是Dispatcher机制，Dispatcher可以将指定任务加进事件循环中执行，例如在WPF中可以用Window的Dispatcher在其他线程中将任务加进UI主线程。&lt;/p>
+&lt;p>另外需要指出的是C#还可以通过&lt;code>yield&lt;/code>关键词实现异步，&lt;code>yield return&lt;/code>可能是C#最早的异步机制了，不过功能有限，只能与&lt;code>IEnumerable&lt;/code>合作使用。C#中有一些协程的库（如Unity里的）就是使用&lt;code>yield&lt;/code>机制来实现的。具体怎么使用&lt;code>yield&lt;/code>还请去学习C#的语法~&lt;/p>
+&lt;h3 id="python-2">Python&lt;/h3>
+&lt;p>Python对异步的支持就来的比较晚了，直到&lt;a class="link" href="https://www.python.org/dev/peps/pep-0492/" target="_blank" rel="noopener"
+>PEP 492&lt;/a>才正式加入了对&lt;code>async&lt;/code>关键字的支持，放在了&lt;code>asyncio&lt;/code>模块中。Python对这对关键词的实现又很辣鸡了，&lt;a class="link" href="https://robertoprevato.github.io/Comparisons-of-async-await/" target="_blank" rel="noopener"
+>采用的是Event loop机制来实现&lt;/a>（可能是因为多线程性能太差了吧= =）。最让人蛋疼是为了执行异步函数你还需要自己开event loop，如果你之前开过一个了，那你还需要把之前那个loop找回来，然后dispatch进去，这是何其难受！。。&lt;/p>
+&lt;p>Python中只要对象有&lt;code>__await__&lt;/code>、&lt;code>__aiter__&lt;/code>或者&lt;code>__aenter__&lt;/code>就可以分别支持&lt;code>await&lt;/code>、&lt;code>async for&lt;/code>和&lt;code>async with&lt;/code>的代码块。Python还设计了三个相关概念：Coroutine代表异步对象、Task代表异步执行计划、Future代表异步执行结果。。何必呢？？？像C#用一个Task代表全部不行吗？再配合event loop的接口，就产生了&lt;code>create_task&lt;/code>、&lt;code>run_coroutine_threadsafe&lt;/code>、&lt;code>run_until_complete&lt;/code>、&lt;code>run_in_executor&lt;/code>等我总是搞不清区别的函数。。。我爱C#！&lt;/p>
+&lt;hr>
+&lt;p>以上是我对C#和Python中异步机制的总结，我对各语言底层的了解并不深，如有错漏还请指点~&lt;/p></description></item></channel></rss>

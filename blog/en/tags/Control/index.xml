@@ -1,0 +1,776 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Control on JacobZ</title><link>https://zyxin.xyz/blog/en/tags/Control/</link><description>Recent content in Control on JacobZ</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><lastBuildDate>Wed, 10 Jun 2020 00:00:00 +0000</lastBuildDate><atom:link href="https://zyxin.xyz/blog/en/tags/Control/index.xml" rel="self" type="application/rss+xml"/><item><title>Notes for Control System</title><link>https://zyxin.xyz/blog/en/2020-06/ControlSystemNotes/</link><pubDate>Wed, 10 Jun 2020 00:00:00 +0000</pubDate><guid>https://zyxin.xyz/blog/en/2020-06/ControlSystemNotes/</guid><description>&lt;!-- $\require{mathtools}$ load the required TeX package -->
+&lt;blockquote>
+&lt;ul>
+&lt;li>In this note, $f\in\mathbb{F}^\mathbb{G}$ stands for a function with domain in $\mathbb{G}$ and co-domain in $\mathbb{F}$, i.e. $f:\mathbb{F}\to\mathbb{G}$, $H(x)$ generally stands for Heaviside function (step function)&lt;/li>
+&lt;li>Please read &lt;a class="link" href="https://zyxin.xyz/blog/en/2020-06/AlgebraBasicsNotes/" >the Algebra Basics notes&lt;/a> first if you are not familiar with related concepts.&lt;/li>
+&lt;/ul>
+&lt;/blockquote>
+&lt;h2 id="transforms">Transforms&lt;/h2>
+&lt;h3 id="laplace-transform">Laplace Transform&lt;/h3>
+&lt;ul>
+&lt;li>Definition: $F(s)=\mathcal{L}\{f(t)\}(s)=\int^\infty_0 f(t)e^{-st}\mathrm{d}t$
+&lt;blockquote>
+&lt;p>Note that the transform is not well defined for all functions in $\mathbb{C}^\mathbb{R}$. And the transform is only valid for $s$ in a region of convergence, which is usually separated by 0.&lt;/p>
+&lt;/blockquote>
+&lt;/li>
+&lt;li>Laplace Transform is a linear map from $(\mathbb{C}^\mathbb{R}, \mathbb{C})$ to $(\mathbb{C}^\mathbb{C}, \mathbb{C})$ and it&amp;rsquo;s one-to-one.&lt;/li>
+&lt;li>Properties: (see &lt;a class="link" href="https://en.wikipedia.org/wiki/Laplace_transform" target="_blank" rel="noopener"
+>Wikipedia&lt;/a> or &lt;a class="link" href="https://lpsa.swarthmore.edu/LaplaceZTable/LaplacePropTable.html" target="_blank" rel="noopener"
+>this page&lt;/a> for full list)
+&lt;ul>
+&lt;li>Derivative: $f&amp;rsquo;(t) \xleftrightarrow{\mathcal{L}} sF(s)-f(0^-)$&lt;/li>
+&lt;li>Integration: $\int^t_0 f(\tau)d\tau \xleftrightarrow{\mathcal{L}} \frac{1}{s}F(s)$&lt;/li>
+&lt;li>Delay: $f(t-a)H(t-a) \xleftrightarrow{\mathcal{L}} e^{-as}F(s)$&lt;/li>
+&lt;li>Convolution: $\int^t_0 f(\tau)g(t-\tau)\mathrm{d}\tau \xleftrightarrow{\mathcal{L}} F(s)G(s)$&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>Stationary Value: $\lim\limits_{t\to 0} f(t) = \lim\limits_{s\to \infty} sF(s), \lim\limits_{t\to \infty} f(t) = \lim\limits_{s\to 0} sF(s)$&lt;/li>
+&lt;/ul>
+&lt;h4 id="inverse-laplace-transform">Inverse Laplace Transform&lt;/h4>
+&lt;blockquote>
+&lt;p>Laplace transform is one-to-one, so we can apply inverse transform on functions in s-space&lt;/p>
+&lt;/blockquote>
+&lt;p>There are several ways to calculate Laplace transform, the first one is directly evaluating integration while the latter two are converting the function into certain formats that are convenient for table lookup:&lt;/p>
+&lt;ol>
+&lt;li>(Mellin&amp;rsquo;s) Inverse formula: $f(t)=\mathcal{L}^{-1}\{F(s)\}(t)=\frac{1}{2\pi j}\lim\limits_{T\to\infty} \int ^{\gamma+iT}_{\gamma-iT} e^{st}F(s)\mathrm{d}s$ where the integration is done along the vertical line $Re(s)=\gamma$ in the convex s-plane such that $\gamma$ is greater than the real part of all poles of $F(s)$.&lt;/li>
+&lt;li>Power Series: $F(s) = \sum^\infty_{n=0} \frac{n!a_n}{s^{n+1}}\xleftrightarrow{\mathcal{L}} f(t) = \sum ^\infty_{n=0} a_n t^n $&lt;/li>
+&lt;li>Partial Fractions: $F(s)=\frac{k_1}{s+a}+\frac{k_2}{s+b}+\ldots \xleftrightarrow{\mathcal{L}} f(t)=k_1 e^{-at} + k_2 e^{-bt} + \ldots$
+&lt;ul>
+&lt;li>To calculate partial fractions, one can use &lt;a class="link" href="http://tutorial.math.lamar.edu/Classes/Alg/DividingPolynomials.aspx" target="_blank" rel="noopener"
+>Polynomial Division&lt;/a> or following lemma:&lt;/li>
+&lt;li>Suppose $F(s)=\frac{N(s)}{D(s)}=\frac{N(s)}{\prod^n_{i=1} (s-p_i)^{r_i}}$ where $\mathrm{deg}(N(s)) &amp;lt; \mathrm{deg(D(s))}$ and each $p_i$ is a distinct root of $D(s)$ (i.e. pole) with multiplicity $r_i$, then $F(s)=\sum^n_{i=1}\sum^{r_i}_ {j=1} \frac{k_{ij}}{(s-p_i)j}$ where $k_{ij}=\frac{1}{(r_i-j)!}\left.\frac{\mathrm{d}^{r_i-j}}{\mathrm{d}s^{r_i-j}}(s-p_i)^{r_i}F(s)\right\vert_{s=p_i}$&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ol>
+&lt;h3 id="z-transfrom">Z-Transfrom&lt;/h3>
+&lt;ul>
+&lt;li>Definition: $F(z)=\mathcal{Z}\{f(k)_ {k\in\mathbb{N}}\}(z)=\sum^\infty_{k=0} f(k)z^{-k}$&lt;/li>
+&lt;/ul>
+&lt;blockquote>
+&lt;p>Notice that $f$ is defined on natural numbers. In time domain, it&amp;rsquo;s usually corresponding to $f(kT)$. Z-transform is also only valid for $z$ in certain region (usually separated by 1)&lt;/p>
+&lt;/blockquote>
+&lt;ul>
+&lt;li>Laplace Transform is a linear map from $(\mathbb{C}^\mathbb{N}, \mathbb{C})$ to $(\mathbb{C}^\mathbb{C}, \mathbb{C})$ and it&amp;rsquo;s one-to-one.&lt;/li>
+&lt;li>Properties: (see &lt;a class="link" href="https://en.wikipedia.org/wiki/Z-transform" target="_blank" rel="noopener"
+>Wikipedia&lt;/a> or &lt;a class="link" href="https://lpsa.swarthmore.edu/LaplaceZTable/LaplacePropTable.html" target="_blank" rel="noopener"
+>this page&lt;/a> for full list)
+&lt;ul>
+&lt;li>Accumulation: $\sum^n_{k=-\infty} f(k) \xleftrightarrow{\mathcal{Z}} \frac{1}{1-z^{-1}}F(z)$&lt;/li>
+&lt;li>Delay: $f(k-m) \xleftrightarrow{\mathcal{Z}} z^{-m}F(z)$&lt;/li>
+&lt;li>Convolution: $\sum^k_{n=0}f_1(n)f_2(k-n) \xleftrightarrow{\mathcal{Z}} F_1(z)F_2(z)$&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>Stationary Value: $\lim\limits_{t\to 0} f(t) = \lim\limits_{z\to \infty} F(z), \lim\limits_{t\to \infty} f(t) = \lim\limits_{z\to 1} (z-1)F(z)$&lt;/li>
+&lt;/ul>
+&lt;details>&lt;summary>Example: Z-Transform of PID controller&lt;/summary>
+Assume the close-loop error input of the controller is $e(t)$, and $e(kT)$ after sampling. PID controller action in analog is
+$$m(t)=K\left(e(t)+\frac{1}{T_i}\int^t_0e(t)\mathrm{d}t+T_d\frac{\mathrm{d}e(t)}{\mathrm{d}t}\right)$$
+We can approximate by trapezoidal rule with two point difference:
+$$m(kT)=K\left(e(kT)+\frac{T}{T_i}\sum^k_{h=1}\frac{e((h-1)T)+e(hT)}{2}+T_d\left(\frac{e(kT)-e((k-1)T)}{T}\right)\right)$$
+Lets define $f(hT) = \frac{1}{2}\left(e((h-1)T)+e(hT)\right),\;f(0)=0$
+Then $$\begin{split}\mathcal{Z}\left(\left\{\sum^k_{h=1}\frac{e((h-1)T)+e(hT)}{2}\right\}_k\right)(z)=\mathcal{Z}\left(\left\{\sum^k_{h=1}f(hT)\right\}_k\right)(z) \\ =\frac{1}{1-z^{-1}}(F(z)-F(0))=\frac{1}{1-z^{-1}}F(z)\end{split}$$
+Notice that $$F(z)=\mathcal{Z}\left({f(hT)}_h\right)(z)=\frac{1+z^{-1}}{2}E(z)$$
+so we can calculate the Z-transform of $m(kT)$
+$$\begin{split} M(z)&amp;=K\left(1+\frac{T}{2T_i}\left(\frac{1+z^{-1}}{1-z^{-1}}\right)+\frac{T_d}{T}(1-z^{-1})\right)E(z)\\&amp;=K\left(1-\frac{T}{2T_i}+\frac{T}{T_i}\frac{1}{1-z^{-1}}+\frac{T_d}{T}(1-z^{-1})\right)E(z)\\&amp;=\left(K_p+K_i\left(\frac{1}{1-z^-1}\right)+K_d(1-z^{-1})\right)E(z) \end{split}$$
+&lt;p>Here we have&lt;/p>
+&lt;ul>
+&lt;li>Proportional Gain $K_p=K-\frac{KT}{2T_i}$&lt;/li>
+&lt;li>Integral Gain $K_I=\frac{KT}{T_i}$&lt;/li>
+&lt;li>Derivative Gain $K_d=\frac{KT_d}{T}$&lt;/li>
+&lt;/ul>
+&lt;/details>
+&lt;h4 id="inverse-z-transform">Inverse Z-Transform&lt;/h4>
+&lt;ol>
+&lt;li>Inverse formula: $f(k)=\mathcal{Z}^{-1}\{F(z)\}(k)=\frac{1}{2\pi j}\oint _\Gamma z^{k-1}F(z)\mathrm{d}z$ where the integration is done along any closed path $\Gamma$ that encloses all finite poles of $z^{k-1}X(z)$ in the z-plane.
+&lt;ul>
+&lt;li>According to residual theorem, we can write it as $f(k)=\sum_{p_i}Res(z^{k-1}f(z), pi)$ where $p_i$ are poles of $z^{k-1}f(k)$ and residual $Res(g(z),p)=\frac{1}{(m-1)!}\left.\frac{\mathrm{d}^{m-1}}{\mathrm{d}z^{m-1}}\left((z-p)^mg(z)\right)\right\vert_{z=p}$ with $m$ being the multiplicity of the pole $p$ in $g$.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>Power Series: same as inverse laplace.&lt;/li>
+&lt;li>Partial Fractions: same as inverse laplace.&lt;/li>
+&lt;/ol>
+&lt;h4 id="modified-z-transfrom">Modified Z-Transfrom&lt;/h4>
+&lt;ul>
+&lt;li>Definition: $F(z,m)=\mathcal{Z}_m(f,m)=\mathcal{Z}(\left\{f(kT-(1-m)T)\right\} _{k\in\mathbb{N}^+})(z)$&lt;/li>
+&lt;li>We denote corresponding continuous form $\mathcal{L}(f(t-(1-m)T)\delta_ T(t))$ as $F^*(s,m)$&lt;/li>
+&lt;li>Residual Theorem: $\mathcal{Z}_m(f,m)=z^{-1}\sum _{p_i} Res(\frac{F(s)e^{mTs}}{1-z^{-1}e^{Ts}}, p_i)$&lt;/li>
+&lt;li>ModZ Transform is usually used when there&amp;rsquo;s delay in the system, use this transform to shift the signal with proper $m$ value.&lt;/li>
+&lt;/ul>
+&lt;h3 id="starred-transform">Starred Transform&lt;/h3>
+&lt;ul>
+&lt;li>Definition: $F^* (s)=\sum^\infty_{n=0}f(n*T)e^{-nTs}$&lt;/li>
+&lt;/ul>
+&lt;blockquote>
+&lt;p>Starred Transform is defined in continuous s-domain, but it only aggregates on discrete s values defined periodically by sampling time T, like Z-Transform. Starred Transform is usually exchangeable with Z-Transform with $z=e^{Ts}$.&lt;/p>
+&lt;/blockquote>
+&lt;ul>
+&lt;li>Sometimes we also see &lt;code>*&lt;/code> as an operator to sample a continuous signal. It converts a continuous signal to discrete delta functions. (See the &amp;ldquo;Sampler&amp;rdquo; section below)&lt;/li>
+&lt;li>Calculation from Laplace Transform
+&lt;ul>
+&lt;li>$F^*(s)=\sum_{p_i\in\{poles\;of\;F(\lambda)\}} Res\left(F(\lambda)\frac{1}{1-e^{-T(s-\lambda)}}, p_i\right)$&lt;/li>
+&lt;li>$F^*(s)=\frac{1}{T}\sum^\infty_{n=-\infty}F(s+jn\omega_s)+\frac{e(0)}{2}$ where $\omega_s=\frac{2\pi}{T}$&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>Properties:
+&lt;ul>
+&lt;li>$F^*(s)$ is periodic in s plane with period $j\omega_s=\frac{2\pi j}{T}$&lt;/li>
+&lt;li>If $F(s)$ has a pole at $s=s_0$, then $F^*(s)$ must have poles at $s=s_0+jn\omega_s$ for $m\in\mathbb{Z}$&lt;/li>
+&lt;li>$A(s)=B(s)F^* (s) \Rightarrow A^* (s)=B^* (s)F^* (s)$, while usually $A(s)=B(s)F(s) \nRightarrow A^* (s)=B^* (s)F^* (s)$&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;h3 id="fourier-transform">Fourier Transform&lt;/h3>
+&lt;blockquote>
+&lt;p>Fourier transform is basically to substitute $s=j\omega$ into Laplace transform. Additional properties are not discussed here.&lt;/p>
+&lt;ul>
+&lt;li>One important theorem (Shannon-Nyquist Sampling Theorem): Suppose $e:\mathbb{R}_+\to\mathbb{R}$ has a Fourier Transform with no frequency components greater than $f_0$, then $e$ is uniquely determined by the signal $e_s$ generated by ideally sampling $e$ with period $\frac{1}{2}f_0$.&lt;/li>
+&lt;/ul>
+&lt;/blockquote>
+&lt;h2 id="state-space-representation">State Space Representation&lt;/h2>
+&lt;h3 id="continuous-state-space-representation">Continuous State Space Representation&lt;/h3>
+&lt;h4 id="definition">Definition&lt;/h4>
+&lt;p>A continuous-time linear state-space system can be described by following two equations:
+\begin{align}&amp;amp;\text{State equation}:\;&amp;amp;\dot{x}(t)&amp;amp;=A(t)x(t)+B(t)u(t),&amp;amp;\;x(t)\in\mathbb{R}^n,\;u(t)&amp;amp;\in\mathbb{R}^m \\&amp;amp;\text{Output equation}:\;&amp;amp;y(t)&amp;amp;=C(t)x(t)+D(t)u(t),&amp;amp;\;y(t)&amp;amp;\in\mathbb{R}^p\end{align}&lt;/p>
+&lt;p>The input $u:[0,\infty)\to\mathbb{R}^m$, state $x:[0,\infty)\to\mathbb{R}^n$, and output $y:[0,\infty)\to\mathbb{R}^p$ are all &lt;em>signals&lt;/em>, i.e. functions of continuous time $t\in[0,\infty)$. The coefficients $A\in\mathbb{R}^{n\times n}$,$B\in\mathbb{R}^{n\times m}$,$C\in\mathbb{R}^{p\times n}$,$D\in\mathbb{R}^{p\times m}$&lt;/p>
+&lt;p>This linear time-varying (LTV) system can be written compactly as
+\begin{align*} \dot{x}&amp;amp;=A(t)x+B(t)u \\ y&amp;amp;=C(t)x+D(t)u\end{align*}
+Similarly, linear time-invariant (LTI) system can be written as
+\begin{align} \dot{x}&amp;amp;=Ax+Bu \\ y&amp;amp;=Cx+Du\end{align}&lt;/p>
+&lt;p>For non-linear system, the equation will be written as&lt;/p>
+&lt;table>&lt;tr>
+&lt;th style="text-align:center">time-varying (NLTV) &lt;/th>
+&lt;th style="text-align:center">time-invariant (NTLI) &lt;/th>
+&lt;th style="text-align:center">time-invariant autonomous&lt;/th>&lt;/tr>&lt;tr>&lt;td>
+&lt;p>\begin{align*}\dot{x}&amp;amp;=f(x,u,t)\\y&amp;amp;=g(x,u,t)\end{align*}&lt;/p>
+&lt;/td>&lt;td>
+&lt;p>\begin{align*}\dot{x}&amp;amp;=f(x,u)\\y&amp;amp;=g(x,u)\end{align*}&lt;/p>
+&lt;/td>&lt;td>
+&lt;p>\begin{align*}\dot{x}&amp;amp;=f(x)\\y&amp;amp;=g(x)\end{align*}&lt;/p>
+&lt;/td>&lt;/tr>&lt;/table>
+&lt;h4 id="solution">Solution&lt;/h4>
+&lt;blockquote>
+&lt;p>&lt;em>&lt;strong>Math prerequisites here:&lt;/strong>&lt;/em>&lt;/p>
+&lt;ul>
+&lt;li>For definition of function on matrix, see &lt;a href="{% post_path AlgebraBasicsNotes %}#Eigenvalue-and-Canonical-Forms">my notes for algebra basics&lt;/a>&lt;/li>
+&lt;li>$e^A$ is matrix exponential, &lt;code>expm&lt;/code> in MATLAB
+&lt;ol>
+&lt;li>$\frac{\mathrm{d}}{\mathrm{d}t}e^{At}=Ae^{At}=e^{At}A$&lt;/li>
+&lt;li>$e^{(A+B)t}\Leftrightarrow AB=BA$ &lt;strong>(be careful when commute matrices)&lt;/strong>&lt;/li>
+&lt;li>$\mathcal{L}\{e^{At}\}=(sI-A)^{-1}$ (can be derived from property 1 and laplace derivative)&lt;/li>
+&lt;/ol>
+&lt;/li>
+&lt;li>To calculate $e^A$
+&lt;ol>
+&lt;li>Eigenvalue decomposition&lt;/li>
+&lt;li>Jordan form decomposition&lt;/li>
+&lt;li>Directly evaluate infinite power series (converges quickly)&lt;/li>
+&lt;li>Inverse Laplace transform&lt;/li>
+&lt;/ol>
+&lt;/li>
+&lt;li>For more properties of the matrix function, see&lt;a class="link" href="https://zyxin.xyz/blog/en/2019-06/MatrixAlgebra/" >Matrix Algebra&lt;/a>&lt;/li>
+&lt;/ul>
+&lt;/blockquote>
+&lt;ul>
+&lt;li>
+&lt;p>For homogeneous LTI system: $$\begin{align}x(t)=e^{A(t-t_0)}x_0\end{align}$$&lt;/p>
+&lt;ul>
+&lt;li>&amp;ldquo;&lt;em>homogeneous&lt;/em>&amp;rdquo; = zero-input, Eq.5 is also called &lt;strong>zero input response&lt;/strong> (ZIR).&lt;/li>
+&lt;li>&amp;ldquo;&lt;em>homogeneous equation&lt;/em>&amp;rdquo; = 齐次方程&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>
+&lt;p>For LTI system:
+$$\begin{align}x(t)=e^{A(t-t_0)}x(t_0)+\int^t_{t_0}e^{A(t-\tau)}Bu(\tau)d\tau\end{align}$$
+This result requires $A$ to be time-invariant, $B,C,D$ can be time varying.&lt;/p>
+&lt;ul>
+&lt;li>The solution consists of two parts: ZIR and ZSR (&lt;strong>zero state response&lt;/strong>, $x(t_0)=0$), which are homogenenous solution (通解) and particular solution (特解) of the ODE.&lt;/li>
+&lt;li>ZIR and ZSR are both linear mapping&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>
+&lt;p>For homogeneous LTV system: $$\begin{align}x(t)=\Phi(t,t_0)x_0\end{align}$$&lt;/p>
+&lt;ul>
+&lt;li>Matrix $\Phi$ is called the &lt;strong>state transition matrix&lt;/strong>, defined as $$\begin{equation}\begin{split}\Phi(t,t_0)\equiv I+\int^t_{t_0}A(s_1)\mathrm{d}s_1+\int^t_ {t_0}A(s_1)\int^{s_1}_ {t_0}A(s_2)\mathrm{d}s_2\mathrm{d}s_1+\\ \int^t_ {t_0}A(s_1)\int^{s_1}_ {t_0}A(s_2)\int^{s_2}_ {t_0}A(s_3)\mathrm{d}s_3\mathrm{d}s_2\mathrm{d}s_1+\cdots\end{split}\end{equation}$$&lt;/li>
+&lt;li>Properties of $\Phi$:
+&lt;ol>
+&lt;li>$\Phi(t,t)=I$&lt;/li>
+&lt;li>$\frac{\mathrm{d}}{\mathrm{d}t}\Phi(t,t_0)=A(t)\Phi(t,t_0)$&lt;/li>
+&lt;li>(semigroup property) $\Phi(t,s)\Phi(s,\tau)=\Phi(t,\tau)$&lt;/li>
+&lt;li>$\forall t,\tau\geqslant 0,\;[\Phi(t,\tau)]^{-1}=\Phi(\tau,t)$&lt;/li>
+&lt;/ol>
+&lt;/li>
+&lt;li>Eq.6 can be directly derived by evaluating Eq.8&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>
+&lt;p>For LTV system:
+$$\begin{align}x(t)=\Phi(t,t_0)x_0+\int^t_{t_0}\Phi(t,\tau)B(\tau)u(\tau)d\tau\end{align}$$&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>Some conclusions:&lt;/p>
+&lt;ul>
+&lt;li>The solution given by Eq.9 is unique&lt;/li>
+&lt;li>The set of all solutions to ZIR system forms a vector space of dimension $n$&lt;/li>
+&lt;li>If $A(t)A(s)=A(s)A(t)$, then $\Phi(t,t_0)=e^{\int^t_{t_0}A(\tau)\mathrm{d}\tau}$&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;strong>Phase Portraits&lt;/strong>: A phase portrait is a graph of several zero-input responses on the phase plane ($\dot{x}(t)$ and $x(t)$ are phase variables)&lt;/p>
+&lt;blockquote>
+&lt;p>Usually in phase portraits, there are two straight lines corresponding to the eigenvector of A, other lines are growing in or opposite to the direction of the lines.&lt;/p>
+&lt;/blockquote>
+&lt;/li>
+&lt;/ul>
+&lt;h4 id="transfer-function">Transfer function&lt;/h4>
+&lt;ul>
+&lt;li>For LTI case, $\frac{Y(s)}{U(s)} = C(sI-A)^{-1}B+D$
+&lt;blockquote>
+&lt;p>This can be derived by take laplace transform of both sides of state equations&lt;/p>
+&lt;/blockquote>
+&lt;/li>
+&lt;/ul>
+&lt;h3 id="discrete-state-space-representation">Discrete State Space Representation&lt;/h3>
+&lt;h4 id="definition-1">Definition&lt;/h4>
+&lt;p>A discrete-time linear state-space system can be described by following two equations:
+$$\begin{align}&amp;amp;\text{State eq.}:\;&amp;amp;x(k+1)&amp;amp;=A(k)x(k)+B(k)u(k),&amp;amp;\;x\in\mathbb{R}^n,\;u&amp;amp;\in\mathbb{R}^m \\ &amp;amp;\text{Output eq.}:\;&amp;amp;y(k)&amp;amp;=C(k)x(k)+D(k)u(k),&amp;amp;\;y&amp;amp;\in\mathbb{R}^p\end{align}$$&lt;/p>
+&lt;p>The input $u:\mathbb{N}\to\mathbb{R}^m$, state $x:\mathbb{N}\to\mathbb{R}^n$, and output $y:\mathbb{N}\to\mathbb{R}^p$ are all &lt;em>signals&lt;/em>, i.e. functions of continuous time $t\in\mathbb{N}$.&lt;/p>
+&lt;p>Discrete LTI system is sometimes written compactly as $$\begin{align} x_{k+1}&amp;amp;=Ax_k+Bu_k \\ y_k&amp;amp;=Cx_k+Du_k \end{align}$$&lt;/p>
+&lt;h4 id="transfer-function-1">Transfer function&lt;/h4>
+&lt;ul>
+&lt;li>For LTI case, $H(z)=C(zI-A)^{-1}B+D$ (pulse tranfer function)&lt;/li>
+&lt;/ul>
+&lt;h3 id="controllability--reachability">Controllability &amp;amp; Reachability&lt;/h3>
+&lt;blockquote>
+&lt;p>Note: hereafter $\mathfrak{R}$ denotes &lt;a href="{% post_path AlgebraBasicsNotes %}#Linear-Operator">range space&lt;/a>, $\mathfrak{N}$ denotes &lt;a href="{% post_path AlgebraBasicsNotes %}#Linear-Operator">null space&lt;/a>.&lt;/p>
+&lt;/blockquote>
+&lt;ul>
+&lt;li>&lt;strong>Controllability&lt;/strong>: $\exists u$ that drives any initial state $x(t_0)=x_0$ to $x(t_1)=0$&lt;/li>
+&lt;li>&lt;strong>Reachability&lt;/strong>: $\exists u$ that drives initial state $x(t_0)=0$ to any $x(t_1)=x_1$&lt;/li>
+&lt;/ul>
+&lt;p>Consider the continuous LTV system $\dot{x}=A(t)x+B(t)u,\;x\in\mathbb{R}^n,u\in\mathbb{R}^m$.&lt;/p>
+&lt;ul>
+&lt;li>
+&lt;p>&lt;strong>Reachable Subspace&lt;/strong>: Given $t_0$ &amp;amp; $t_1$, the reachable subspace $\mathcal{R}[t_0, t_1]$ consists of all states $x_1$ for which there exists and input $u:[t_0, t_1]\to\mathbb{R}^m$ that transfers the state from $x(t_0)=0$ to $x(t_1)=x_1$.&lt;/p>
+&lt;ul>
+&lt;li>$\mathcal{R}[t_0, t_1]\equiv\left\{x_1\in\mathbb{R}^n\middle|\exists u(\cdot),\;x_1=\int^{t_1}_{t_0}\Phi(t_1,\tau)B(\tau)u(\tau)\mathrm{d}\tau\right\}$&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;strong>Controllable Subspace&lt;/strong>: Given $t_0$ &amp;amp; $t_1$, the controllable subspace $\mathcal{C}[t_0, t_1]$ consists of all states $x_0$ for which there exists an input $u:[t_0, t_1]\to\mathbb{R}^m$ that transfers the state from $x(t_0)=x_0$ to $x(t_1)=0$&lt;/p>
+&lt;ul>
+&lt;li>$\mathcal{C}[t_0, t_1]\equiv\left\{x_0\in\mathbb{R}^m\middle|\exists u(\cdot),\;0=\Phi(t_1,t_0)x_0+\int^{t_1}_{t_0}\Phi(t_1,\tau)B(\tau)u(\tau)\mathrm{d}\tau\right\}$&lt;/li>
+&lt;li>or $\mathcal{C}[t_0, t_1]\equiv\left\{x_0\in\mathbb{R}^m\middle|\exists u(\cdot),\;x_0=\int^{t_1}_{t_0}\Phi(t_0,\tau)B(\tau)\left[-u(\tau)\right]\mathrm{d}\tau\right\}$&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;strong>Reachability Grammian&lt;/strong>: $W_\mathcal{R}(t_0, t_1)\equiv\int^{t_1}_{t_0}\Phi(t_1,\tau)B(\tau)B(\tau)^\top\Phi^\top(t_1,\tau)\mathrm{d}\tau$ given times $t_1&amp;gt;t_0\geqslant0$&lt;/p>
+&lt;ul>
+&lt;li>The system is reachable at time $t_0$ iff $\exists t_1$ s.t. $W_\mathcal{R}(t_0,t_1)$ is non-singular.&lt;/li>
+&lt;/ul>
+&lt;blockquote>
+&lt;p>non-singular for some $t_1$ $\Rightarrow$ non-singular for any $t_1$&lt;/p>
+&lt;/blockquote>
+&lt;ul>
+&lt;li>$\mathcal{R}[t_0,t_1]=\mathfrak{R}(W_\mathcal{R}(t_0,t_1))$&lt;/li>
+&lt;li>if $x_1=W_\mathcal{R}(t_0,t_1)\eta_1\in\mathfrak{R}(W_\mathcal{R}(t_0,t_1))$, the control $u(t)=B^\top(t)\Phi^T(t_1,t)\eta_1$,$t\in[t_0,t_1]$ can be used to transfer the system from $x(t_0)=0$ to $x(t_1)=x_1$ (w/ minimum energy)&lt;/li>
+&lt;/ul>
+&lt;blockquote>
+&lt;p>minimum energy = minimum $\int^T_0\Vert u(\tau)\Vert^2\mathrm{d}\tau$&lt;/p>
+&lt;/blockquote>
+&lt;ul>
+&lt;li>For LTI system $W_\mathcal{R}(t_0,t_1)=\int^{t_1}_ {t_ 0}e^{A(t_1-\tau)}BB^\top e^{A^{\top} (t_1-\tau)}\mathrm{d}\tau=\int^{t_1-t_ 0}_ {0}e^{At}BB^\top e^{A^{\top}t}$&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;a class="link" href="https://en.wikipedia.org/wiki/Controllability_Gramian" target="_blank" rel="noopener"
+>&lt;strong>Controllability Grammian&lt;/strong>&lt;/a>: $W_\mathcal{C}(t_0, t_1)\equiv\int^{t_1}_{t_0}\Phi(t_0,\tau)B(\tau)B(\tau)^\top\Phi^\top(t_0,\tau)\mathrm{d}\tau$ given times $t_1&amp;gt;t_0\geqslant0$&lt;/p>
+&lt;ul>
+&lt;li>
+&lt;p>The system is reachable at time $t_0$ iff $\exists t_1$ s.t. $W_\mathcal{C}(t_0,t_1)$ is non-singular.&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>$\mathcal{C}[t_0,t_1]=\mathfrak{R}(W_\mathcal{C}(t_0,t_1))$&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>if $x_0=W_\mathcal{C}(t_0,t_1)\eta_0\in\mathfrak{R}(W_\mathcal{C}(t_0,t_1))$, control $u(t)=-B^\top(t)\Phi^\top(t_0,t)\eta_0$,$t\in[t_0,t_1]$ can be used to transfer the state from $x(t_0)=x_0$ to $x(t_1)=0$ (w/ minimum energy)&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>For LTI system $W_\mathcal{C}(t_0,t_1)=\int^{t_1}_ {t_ 0}e^{A(t_0-\tau)}BB^\top e^{A^{\top} (t_0-\tau)}\mathrm{d}\tau=\int^{t_1-t_ 0}_ {0}e^{-At}BB^\top e^{-A^{\top}t}$&lt;/p>
+&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;strong>Controllability Matrix&lt;/strong>: For LTI system, controllability matrix $\mathcal{C}=[B\;|\;AB\;|\;A^2B\;\cdots\;A^{n-1}B]$&lt;/p>
+&lt;blockquote>
+&lt;p>The controllability matrix works for both continuous and discrete system, and it&amp;rsquo;s easier to be derived from discrete LTI equations:
+In discrete LTI, $\mathcal{C}\mathbf{u}=-A^k x_0$ where $\mathbf{u}=\begin{bmatrix}u_{k-1} &amp;amp; u_{k-2} &amp;amp; \ldots &amp;amp; u_0\end{bmatrix}^\top$&lt;/p>
+&lt;/blockquote>
+&lt;ul>
+&lt;li>For LTI, $\mathcal{R}[t_0,t_1]=\mathfrak{R}(W_\mathcal{R}[t_0,t_1])=\mathfrak{R}(\mathcal{C})=\mathfrak{R}(W_\mathcal{C}[t_0,t_1])=\mathcal{C}[t_0,t_1]$&lt;/li>
+&lt;/ul>
+&lt;blockquote>
+&lt;p>This implies Controllability $\Leftrightarrow$ Reachability for LTI systems.&lt;/p>
+&lt;/blockquote>
+&lt;ul>
+&lt;li>The controllable subspace $\mathfrak{\mathcal{C}}$ is the smallest A-invariant subspace that contains $\mathfrak{\mathcal{B}}$&lt;/li>
+&lt;li>If the controllability matrix has full rank, the LTI system (or the pair $(A,B)$) is &lt;strong>completely controllable&lt;/strong>&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;strong>PBH-Eigenvector Test&lt;/strong>: An LTI system is not controllable iff there exists a nonzero &lt;em>left&lt;/em> eigenvector $v$ of $A$ such that $vB=0$&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;strong>PBH-Rank Test&lt;/strong>: An LTI system will be controllable iff $[\lambda I-A \;| \;B]$ has full row rank for all eigenvalue $\lambda$&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>For LTI system, there exists an input $u(\cdot)$ that transfer the state from $x_0$ ito $x_1$ in finite time $T$ iff $x_1-e^{AT}x_0\in\mathfrak{R}(\mathcal{C})$&lt;/p>
+&lt;ul>
+&lt;li>The input that transfers any state $x_0$ to any other state $x_1$ in some finite time $T$ is $u(t)=B^\top e^{A^{\top}(T-t)}W_\mathcal{R}^{-1}(0,T)[x_1 -e^{AT}x_0]$, for $t\in[0,T]$ (w/ minimum energy)&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;h3 id="observability">Observability&lt;/h3>
+&lt;ul>
+&lt;li>
+&lt;p>&lt;strong>Observability&lt;/strong>: Given any input $u(t)$ and output $y(t)$ over $t\in[t_0,t_1]$, it&amp;rsquo;s sufficient to determine a unique initial state $\exists !x(t_0)$.&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;a class="link" href="https://en.wikipedia.org/wiki/Observability_Gramian" target="_blank" rel="noopener"
+>&lt;strong>Observability Grammian&lt;/strong>&lt;/a>: $W_\mathcal{O}(t_0,t_1)\equiv\int^{t_1}_{t_0}\Phi^\top(t_1,\tau)C^\top(\tau)C(\tau)\Phi(t_1,\tau)\mathrm{d}\tau$&lt;/p>
+&lt;ul>
+&lt;li>
+&lt;p>The system is observable at time $t_0$ iff $\exists t_1$ s.t. $W_{\mathcal{O}}(0,t)$ is nonsingular.&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>For LTI system $W_{\mathcal{O}}(t_0,t_1)=\int^{t_1}_{t_0} e^{A^{\top}(t_1-\tau)}C^\top Ce^{A(t_1-\tau)}\mathrm{d}\tau=\int^{t_1-t_0}_0 e^{A^{\top}\tau}C^\top Ce^{A\tau}\mathrm{d}\tau$&lt;/p>
+&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;strong>Observability Matrix&lt;/strong>: For LTI system, observability $\mathcal{O}=\begin{bmatrix}C\\CA\\CA^2\\ \vdots\\CA^{k-1}\end{bmatrix}$&lt;/p>
+&lt;blockquote>
+&lt;p>The controllability matrix works for both continuous and discrete system, and it&amp;rsquo;s easier to be derived from discrete LTI equations:
+In discrete LTI, $\Psi_{k-1}=\mathcal{O}x_0$ where $$\Psi_k\equiv\begin{bmatrix}y_0\\y_1\\y_2\\ \vdots\\ y_{k-1}\end{bmatrix}-\begin{bmatrix} D &amp;amp; 0 &amp;amp; 0 &amp;amp; \cdots &amp;amp; 0 \\ CB &amp;amp; D &amp;amp; 0 &amp;amp; \cdots &amp;amp; 0 \\ CAB &amp;amp; CB &amp;amp; D &amp;amp; \cdots &amp;amp; 0 \\ \vdots &amp;amp; \vdots &amp;amp; \vdots &amp;amp; \ddots &amp;amp; \vdots \\ CA^{k-2}B &amp;amp; CA^{k-3}B &amp;amp; CA^{k-4}B &amp;amp; \cdots &amp;amp; 0 \end{bmatrix}\begin{bmatrix}u_0\\u_1\\u_2\\ \vdots \\ u_{k-1}\end{bmatrix}$$&lt;/p>
+&lt;/blockquote>
+&lt;ul>
+&lt;li>If the controllability matrix has full rank, the LTI system (or the pair $(A,C)$) is &lt;strong>completely observable&lt;/strong>.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;strong>PBH-Rank Test&lt;/strong>: An LTI system will be observable iff $\begin{bmatrix}A-\lambda I \\C\end{bmatrix}$ has full column rank for all eigenvalue $\lambda$&lt;/p>
+&lt;/li>
+&lt;/ul>
+&lt;h3 id="duality">Duality&lt;/h3>
+&lt;ul>
+&lt;li>&lt;strong>Duality Theorem&lt;/strong>: The pair $(A,B)$ is controllable iff the pair $(A^\top, B^\top)$ is observable.
+&lt;ul>
+&lt;li>&lt;em>Controllability&lt;/em> only depends on matrix $A$ and $B$ while the &lt;em>Observability&lt;/em> only depends on matrix $A$ and $C$&lt;/li>
+&lt;li>Duality theorem is useful for proof of observability conclusions from controllability&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>&lt;strong>Adjoint System&lt;/strong>:&lt;/li>
+&lt;/ul>
+&lt;table>
+&lt;tr>&lt;th>&lt;/th>&lt;th> Original System &lt;/th>&lt;th> Adjoint System &lt;/th>&lt;/tr>
+&lt;tr>&lt;td>Equations&lt;/td>&lt;td> $$\begin{align*} \dot{x}&amp;=A(t)x+B(t)u \\ y&amp;=C(t)x \end{align*}$$&lt;/td>&lt;td>$$\begin{align*} \dot{p}&amp;=-A^*(t)p-C^*(t)v \\ z&amp;=B^*(t)p\end{align*}$$&lt;/td>&lt;/tr>
+&lt;tr>&lt;td>Initial Condition&lt;/td>&lt;td>$x(t_0)=x_0$&lt;/td>&lt;td>$p(t_1)=p_1$&lt;/td>&lt;/tr>
+&lt;tr>&lt;td>State Trasition Matrix&lt;/td>&lt;td> $\Phi(t,t_0)$ &lt;/td>&lt;td> $\Phi^*(t_1,t)=\left(\Phi^*(t,t_1)\right)^{-1}$&lt;/td>&lt;/tr>
+&lt;tr>&lt;td>Zero-State Response&lt;/td>&lt;td> $$\begin{split}L_u:\;&amp;u(\cdot)\to x(t_1)\\=&amp;\int^{t_1}_{t_0}\Phi(t_1,\tau)B(\tau)u(\tau)\mathrm{d}\tau\end{split}$$&lt;/td>&lt;td>$$\begin{split}P_u:\;&amp;v(\cdot)\to p(t_0)\\=&amp;\int^{t_1}_{t_0}\Phi^*(\tau,t_0)C^*(\tau)v(\tau)\mathrm{d}\tau\end{split}$$&lt;/td>&lt;/tr>
+&lt;tr>&lt;td>Zero-Input Response&lt;/td>&lt;td> $$\begin{split}L_0:\;&amp;x_0\to y(\cdot)\\=&amp;C(\cdot)\Phi(\cdot,t_0)x_0\end{split}$$ &lt;/td>&lt;td> $$\begin{split}P_0:\;&amp;p_1\to z(\cdot)\\=&amp;B^*(\cdot)\Phi^*(t_1,\cdot)p_1\end{split}$$ &lt;/td>&lt;/tr>
+&lt;tr>&lt;td rowspan="3"> Duality Theorem &lt;/td>&lt;td> Controllable ($\rho(L_u)=n$) &lt;/td>&lt;td> Observable ($\rho(P_0^*)=n$)&lt;/td>&lt;/tr>
+&lt;tr>&lt;td> Observable ($\rho(L_0^*)=n$) &lt;/td>&lt;td> Controllable ($\rho(P_u)=n$) &lt;/td>&lt;/tr>
+&lt;tr>&lt;td> A state is reachable ($x\in\mathfrak{R}(L_u)$) &lt;/td>&lt;td> A state is unobservable ($x\in\mathfrak{N}(L_0)$) &lt;/td>&lt;/tr>
+&lt;/table>
+Note that ZIR and ZSR are both linear mappings and $L_u^*=P_0,\;L_0^*=P_u$
+&lt;h3 id="decomposition-and-realizations">Decomposition and Realizations&lt;/h3>
+&lt;ul>
+&lt;li>
+&lt;p>Similarity Transform of a (LTI) system: Based on Eq.3 and Eq.4, define $x=P\bar{x}$, then we have $$\begin{align}\dot{\bar{x}}&amp;amp;=P^{-1}AP\bar{x}+P^{-1}Bu&amp;amp;=\bar{A}\bar{x}+\bar{B}u \\ y&amp;amp;=CP\bar{x}+Du&amp;amp;=\bar{C}\bar{x}+Du\end{align}$$&lt;/p>
+&lt;ul>
+&lt;li>Similarity transform doesn&amp;rsquo;t affect transfer function.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;strong>Controllability Decomposition&lt;/strong>: For an uncontrollable LTI system, define matrix $V=[V_1\;V_2]$ where $V_1$ is a basis for $\mathfrak{R}(\mathcal{C})$ and $V_2$ complete a basis for $\mathbb{R}^n$, then after similarity transform with $\bar{x}=V^{-1}x$, we can partition the system like following:
+$$\begin{align*}\dot{\bar{x}}&amp;amp;=\bar{A}\bar{x}+\bar{B}u&amp;amp;=&amp;amp;\begin{bmatrix}\bar{A}_ {11}&amp;amp;\bar{A}_ {12} \\ \mathbf{0} &amp;amp; \bar{A} _{22}\end{bmatrix}\begin{bmatrix}\bar{x} _1 \\ \bar{x} _2\end{bmatrix}+\begin{bmatrix}\bar{B} _1 \\ \mathbf{0}\end{bmatrix}u \\ y&amp;amp;=\bar{C}\bar{x}+Du&amp;amp;=&amp;amp; \begin{bmatrix}\bar{C} _1 &amp;amp; \bar{C} _2\end{bmatrix}\begin{bmatrix}\bar{x} _1 \\ \bar{x} _2\end{bmatrix} + Du\end{align*}$$
+Here $\bar{x}_2$ is uncontrollable, and ZSR of the system with or without $\bar{x}_2$ is the same.&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;strong>Observability Decomposition&lt;/strong>: For an unobservable LTI system, define matrix $U=\begin{bmatrix}U_1\\U_2\end{bmatrix}$ where $U_1$ is a basis for $\mathfrak{R}(\mathcal{O}^\top)$ and $U_2$ complete a basis for $\mathbb{R}^n$, then after similarity transform with $\hat{x}=Ux$, we can partition the system like following:
+$$\begin{align*}\dot{\hat{x}}&amp;amp;=\hat{A}\hat{x}+\hat{B}u&amp;amp;=&amp;amp;\begin{bmatrix}\hat{A}_ {11}&amp;amp;\mathbf{0} \\ \hat{A}_ {21} &amp;amp; \hat{A} _{22}\end{bmatrix}\begin{bmatrix}\hat{x} _1 \\ \hat{x} _2\end{bmatrix}+\begin{bmatrix}\hat{B} _1 \\ \hat{B} _2\end{bmatrix}u \\ y&amp;amp;=\hat{C}\hat{x}+Du&amp;amp;=&amp;amp; \begin{bmatrix}\hat{C} _1 &amp;amp; \mathbf{0}\end{bmatrix}\begin{bmatrix}\hat{x} _1 \\ \hat{x} _2\end{bmatrix} + Du\end{align*}$$&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;strong>Realization&lt;/strong>: $\Sigma$ (system with Eq.3 and Eq.4) is a realization of $H(s)$ iff $H(s)=C(sI-A)^{-1}B+D$.&lt;/p>
+&lt;ul>
+&lt;li>&lt;strong>Equivalent&lt;/strong>: Two realizations are said to be equivalent if they have the same transfer function&lt;/li>
+&lt;li>&lt;strong>Algebraically Equivalent&lt;/strong>: Two realizations have same transfer function and $n$ (dimension of states). (this implies a similarity transform between them)&lt;/li>
+&lt;li>&lt;strong>Minimal Realization&lt;/strong>: $\Sigma$ is a minimal realization of $H(s)$ iff there doesn&amp;rsquo;t exists an equivalent realization $\bar{\Sigma}$ with $\bar{n}&amp;lt; n$&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>
+&lt;p>$\Sigma$ is a minial realization iff $\Sigma$ is completely controllable and observable.&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;strong>Kalman Cannonical Structure Theorem&lt;/strong> (aka. Kalman Decomposition): suppose $\rho(\mathcal{C})&amp;lt; n$ and $\rho(\mathcal{O})&amp;lt; n$, $\mathfrak{R}(\mathcal{C})$ are the controllable states, $\mathfrak{N}(\mathcal{O})$ are the unobservable states, define subspaces:&lt;/p>
+&lt;/li>
+&lt;/ul>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th style="text-align:left">Subspaces&lt;/th>
+&lt;th style="text-align:center">Controllable&lt;/th>
+&lt;th style="text-align:center">Observable&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td style="text-align:left">$V_2\equiv\mathfrak{R}(\mathcal{C})\cup\mathfrak{N}(\mathcal{O})$&lt;/td>
+&lt;td style="text-align:center">Yes&lt;/td>
+&lt;td style="text-align:center">No&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td style="text-align:left">$V_1$ s.t. $V_1\oplus V_2=\mathfrak{R}(\mathcal{C})$&lt;/td>
+&lt;td style="text-align:center">Yes&lt;/td>
+&lt;td style="text-align:center">Yes&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td style="text-align:left">$V_4$ s.t. $V_4\oplus V_2=\mathfrak{N}(\mathcal{O})$&lt;/td>
+&lt;td style="text-align:center">No&lt;/td>
+&lt;td style="text-align:center">No&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td style="text-align:left">$V_3$ s.t. $V_1\oplus V_2\oplus V_3\oplus V_4=\mathbb{C}^n$&lt;/td>
+&lt;td style="text-align:center">No&lt;/td>
+&lt;td style="text-align:center">Yes&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td style="text-align:left">Then let $$\begin{align*}\tilde{x}=\begin{bmatrix}\tilde{x}_ 1\\ \tilde{x}_ 2\\ \tilde{x}_ 3\\ \tilde{x}_ 4\end{bmatrix},\;\tilde{A}=&amp;amp;\begin{bmatrix}A_ {\mathrm{co}} &amp;amp;&amp;amp;A_{13}&amp;amp;\\A_{21}&amp;amp;A_{\mathrm{c\bar{o}}}&amp;amp;A_{23}&amp;amp;A_{24}\\&amp;amp;&amp;amp;A_{\mathrm{\bar{c}o}}&amp;amp;\\&amp;amp;&amp;amp;A_{43}&amp;amp;A_{\mathrm{\bar{c}\bar{o}}} \end{bmatrix},\;\tilde{B}=\begin{bmatrix}B_{\mathrm{co}}\\ B_{\mathrm{c\bar{o}}} \\ \mathbf{0} \\ \mathbf{0} \end{bmatrix} \\ \tilde{C}=&amp;amp;\begin{bmatrix}C_{\mathrm{co}}&amp;amp;\mathbf{0}\quad&amp;amp;C_{\mathrm{\bar{c}o}}&amp;amp;\mathbf{0}\quad\end{bmatrix}\end{align*}$$&lt;/td>
+&lt;td>&lt;/td>
+&lt;td>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td style="text-align:left">$$\tilde{\Sigma}:\begin{cases} \dot{\tilde{x}}=A_{\mathrm{co}}\tilde{x}_ 1+B_{\mathrm{co}}u_1\\ y=C_{\mathrm{co}}\tilde{x}_1\end{cases}$$&lt;/td>
+&lt;td>&lt;/td>
+&lt;td>&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;p>$\tilde{\Sigma}$ is completely controllable and completely observable.&lt;/p>
+&lt;hr/>
+Consider SISO systems $$H(s)=\frac{b(s)}{a(s)}=\frac{b_{n-1}s^{n-1}+\ldots+b_1s+b_0}{s^n+a_{n-1}s^{n-1}+\ldots+a_1s+a_0}=\frac{\sum^{n-1}_{j=0} b_js^j}{s^n+\sum^{n-1}_{i=0} a_is^i}=\frac{Y(s)}{U(s)}$$
+&lt;ul>
+&lt;li>&lt;strong>Controllable Cannonical Form&lt;/strong>: $$\begin{align}\dot{x}&amp;amp;=\begin{bmatrix} 0&amp;amp;1&amp;amp;&amp;amp;\\ \vdots &amp;amp; &amp;amp; \ddots &amp;amp; \\ 0&amp;amp;&amp;amp;&amp;amp;1 \\-a_0&amp;amp;-a_1&amp;amp;\cdots&amp;amp;-a_{n-1}\end{bmatrix}x+\begin{bmatrix}0\\ \vdots \\ 0 \\ 1\end{bmatrix}u&amp;amp;=&amp;amp;A_cx+B_cu\\ y&amp;amp;=\begin{bmatrix}\quad b_0 &amp;amp;\quad b_1 &amp;amp;\cdots &amp;amp; \quad b_{n-1}\end{bmatrix}x&amp;amp;=&amp;amp;C_cx \end{align}$$
+&lt;ul>
+&lt;li>$(A_c, B_c)$ is controllable&lt;/li>
+&lt;li>$(A_c, C_c)$ is observable if $a(s)$ and $b(s)$ have no common factors&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>&lt;strong>Observable Cannonical Form&lt;/strong>: $$\begin{align}\dot{x}&amp;amp;=\begin{bmatrix} 0&amp;amp;&amp;amp;&amp;amp;&amp;amp;-a_0\\ 1 &amp;amp; \ddots &amp;amp;&amp;amp;&amp;amp;-a_1 &amp;amp; \\ &amp;amp;\ddots&amp;amp;\ddots&amp;amp;&amp;amp;\vdots \\&amp;amp;&amp;amp;\ddots&amp;amp;0&amp;amp;-a_{n-2} \\ &amp;amp;&amp;amp;&amp;amp;1&amp;amp;-a_{n-1}\end{bmatrix}x+\begin{bmatrix}b_0\\ b_1 \\ \vdots \\ b_{n-2} \\ b_{n-1}\end{bmatrix}u&amp;amp;=&amp;amp;A_ox+B_ou\\ y&amp;amp;=\begin{bmatrix}0 &amp;amp; \;\cdots &amp;amp;\;\cdots &amp;amp; 0 &amp;amp; \quad 1\qquad \end{bmatrix}x&amp;amp;=&amp;amp;C_ox \end{align}$$
+&lt;ul>
+&lt;li>$(A_o, C_o)$ is observable&lt;/li>
+&lt;li>$(A_o, B_o)$ is controllable if $a(s)$ and $b(s)$ have no common factors&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>&lt;strong>Model Cannonical Forms&lt;/strong>: Do &lt;strong>Spectral Decomposition&lt;/strong> (eigen-decomposition) or Jordan Decomposition, and then use the modal matrix (matrix of eigenvectors) to do similarity transform.&lt;/li>
+&lt;li>&lt;strong>The Gilbert Realization&lt;/strong>: Let $G(s)$ be a $p\times m$ rational transfer function with simple poles (nonrepeated) at $\lambda_i,\;i=1,2,\ldots,k$. Calculate partial fraction expansion $$G(s)=\sum^k_{i=1}\frac{R_i}{s-\lambda_i},\qquad \text{Residue}\;R_i=\lim_{s\to\lambda_i}(s-\lambda_i)G(s)$$ Let $r_i=\rho(R_i)$, now write $R_i=C_iB_i$ where $C_ i\in\mathbb{R}^ {p\times r_ i},\;B_ i\in\mathbb{R}^ {r_ i\times p}$, then write $$A=\mathrm{blkdiag}\{\lambda_i I_{r_i}\},\;B^\top=[B_1^\top \;\cdots\; B^\top_k],\;C=[C_1\; \cdots\;C_k]$$, then $(A,B,C)$ is a realization of $G(s)$ with order $n=\sum^k_1 r_i$&lt;/li>
+&lt;/ul>
+&lt;p>For MIMO system the cannonical forms with be quite complex:&lt;/p>
+&lt;ul>
+&lt;li>&lt;strong>Controllable Cannonical Form (for MIMO)&lt;/strong>: Here we provide a way to convert from controllable LTI system to controllable. The collection of independent columns of $\mathcal{C}$ may be expressed as $$M=[b_1\;Ab_1\; \cdots\;A^{\mu_1-1}b_1\;|\;b_2\;Ab_2\;\cdots\;A^{\mu_2-1}b_2\;|\;\cdots\;|\;b_p\;Ab_p\;\cdots\;A^{\mu_p-1}b_p]$$ Construct $M^{-1}$ and then $T$:$$M^{-1}=\left[m_{11}^\top\;m_{12}^\top\;\cdots\;m_{1\mu_1}^\top\;\middle|\;\cdots\;\middle|\;m_{p1}^\top\;m_{p2}^\top\;\cdots\;m_{p\mu_p}^\top \right]^\top$$ $$T=\left[m_{1\mu_1}^\top\;(m_{1\mu_1}A)^\top\;\cdots\;\left(m_{1\mu_1}A^{\mu_1-1}\right)^\top\;\middle|\;\cdots\;\middle|\; m_{p\mu_p}^\top\;(m_{p\mu_p}A)^\top\;\cdots\;\left(m_{p\mu_p}A^{\mu_p-1}\right)^\top\right]^\top$$
+Perform similarity transform with $\bar{x}=Tx$ and the canonical form will be obtained like following:
+$$\bar{A}=\begin{bmatrix}\bar{A}_ {\mu_1\times\mu_1}&amp;amp;\mathbf{0}_ {\cdot\cdot}&amp;amp;\cdots&amp;amp;\mathbf{0}_ {\cdot\cdot} \\ \mathbf{0}_ {\cdot\cdot}&amp;amp;\bar{A}_ {\mu_2\times\mu_2}&amp;amp;\cdots&amp;amp;\mathbf{0}_ {\cdot\cdot}\\ \vdots&amp;amp;\vdots&amp;amp;\ddots&amp;amp;\vdots \\ \mathbf{0}_ {\cdot\cdot}&amp;amp;\mathbf{0}_ {\cdot\cdot}&amp;amp;\cdots&amp;amp;\bar{A}_ {\mu_ p\times\mu_ p} \end{bmatrix},\quad\bar{B}=\begin{bmatrix}\mathbf{0}_ {\cdot n}\\ \mathbf{0}_ {\cdot (n-1)}\\ \vdots\\ \mathbf{0}_ {\cdot 1}\end{bmatrix}$$
+Here $\bar{A}_ {\mu_ i\times\mu_ i}$ is the same structure as in SISO, $\mathbf{0}_ {\cdot\cdot}$ is a zero matrix except the last row, $\mathbf{0}_ {\cdot i}$ is a zero matrix except for the last row, and in the last row there are $i$ non-zeros on the right with the first element being 1.&lt;/li>
+&lt;/ul>
+&lt;h2 id="system-performance">System Performance&lt;/h2>
+&lt;ul>
+&lt;li>
+&lt;p>&lt;strong>System Characteristic Equation&lt;/strong>: The polynomical with the roots equal to the poles of the output that are independent of the input.&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;strong>System Type&lt;/strong>: A plant $G$ can always be written as $G(s)=\frac{K\prod^m_{i=1}(s-s_i)}{s^N\prod^p_{j=1}(s-s_j)},\;z_i,z_j\neq 0$ or $G(z)=\frac{K\prod^m_{i=1}(z-z_i)}{(z-1)^N\prod^p_{j=1}(z-z_j)},\;z_i,z_j\neq 1$. Here $N$ is called the system type of $G(z)$.&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>Properties that matters for a controller:&lt;/p>
+&lt;ol>
+&lt;li>Stability&lt;/li>
+&lt;li>Steady state accuracy&lt;/li>
+&lt;li>Transient response&lt;/li>
+&lt;li>Sensitivity&lt;/li>
+&lt;li>Exogenous disturbance rejection&lt;/li>
+&lt;li>Bounded control effort&lt;/li>
+&lt;/ol>
+&lt;/li>
+&lt;/ul>
+&lt;h3 id="stability">Stability&lt;/h3>
+&lt;ul>
+&lt;li>&lt;strong>Stability&lt;/strong> means when the time goes to infinity, the system response is bounded.
+&lt;ul>
+&lt;li>A system is &lt;strong>stable&lt;/strong> if all its poles lies in the left half of $s$-plane or all inside the unit circle of $z$-plane.&lt;/li>
+&lt;li>A system is &lt;strong>marginally stable&lt;/strong> if one of the pole is on the imaginary axis of $s$-plane or on the unit circle of $z$-plane.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>Stability of linear systems is independent of input
+&lt;ul>
+&lt;li>The stability of a linear system can be evaluated by its characteristic equation $1-G_{op}(z)=0$, where $G_{op}$ is the open-loop transfer function (transfer function when input is eliminated, or feedback route is cut off).&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>Methods to evaluate stability
+&lt;ul>
+&lt;li>&lt;strong>Routh-Hurwitz Criterion&lt;/strong>: $s$-plane (omited here, see &lt;a class="link" href="https://en.wikipedia.org/wiki/Routh%E2%80%93Hurwitz_stability_criterion" target="_blank" rel="noopener"
+>Wikipedia&lt;/a>)
+&lt;ul>
+&lt;li>For discrete system, a strategy is use bilinear transformation: $z=e^{\omega T}\approx \frac{1+\omega T/2}{1-\omega T/2}$&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>&lt;strong>Jury Criterion&lt;/strong>: $z$-plane (see &lt;a class="link" href="https://en.wikipedia.org/wiki/Jury_stability_criterion" target="_blank" rel="noopener"
+>Wikipedia&lt;/a>)&lt;/li>
+&lt;li>&lt;strong>Root Locus Method&lt;/strong>: both $s$- and $z$-plane (see &lt;a class="link" href="https://en.wikipedia.org/wiki/Root_locus" target="_blank" rel="noopener"
+>Wikipedia&lt;/a>, &lt;code>rlocus&lt;/code> in MATLAB)&lt;/li>
+&lt;li>&lt;strong>Nyquist Criterion&lt;/strong>: both $s$- and $z$-plane (see &lt;a class="link" href="https://en.wikipedia.org/wiki/Nyquist_stability_criterion" target="_blank" rel="noopener"
+>Wikipedia&lt;/a>, &lt;code>nyquist&lt;/code> in MATLAB)
+&lt;ul>
+&lt;li>It works for both continuous and discrete systems, the difference is that in $s$-plane the detour point is at $s=0$ while in $z$-plane the detour point is at $z=1$.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>&lt;strong>Bode Diagrams&lt;/strong>: draw frequency response for (pulse) transfer function, works for both $s$- and $z$-plane (see &lt;a class="link" href="https://en.wikipedia.org/wiki/Bode_plot" target="_blank" rel="noopener"
+>Wikipedia&lt;/a>, &lt;code>bode&lt;/code> in MATLAB)&lt;/li>
+&lt;/ul>
+&lt;blockquote>
+&lt;p>A review of the stability judgement method &lt;a class="link" href="https://www.zhihu.com/question/60272694" target="_blank" rel="noopener"
+>here at 知乎&lt;/a>&lt;/p>
+&lt;/blockquote>
+&lt;/li>
+&lt;/ul>
+&lt;h3 id="lyaponov-stability">Lyaponov Stability&lt;/h3>
+&lt;blockquote>
+&lt;p>Lyaponove Stability is only concerned with the effect of initial conditions on the response of the system (ZIR)&lt;/p>
+&lt;/blockquote>
+&lt;ul>
+&lt;li>&lt;strong>Equilibrium Point&lt;/strong> $x_e$: Consider NLTV $\dot{x}(t)=f(x(t),u(t),t)$, equilibrium point satisfies $x(t_0)=x_e,\;u(t)\equiv 0\Rightarrow x(t)=x_e,\;\text{i.e. }f(x_e,0,t)=0,\;\forall t&amp;gt;t_0$
+&lt;ul>
+&lt;li>For discrete system, it&amp;rsquo;s $x(k+1)=x(k)=x_e$&lt;/li>
+&lt;li>For LTI system, $x_e$ can be calculated from $Ax_e=0$, so the origin $x=0$ is always an equilibrium point.&lt;/li>
+&lt;li>Set of equilibrium points in LTI systems are connected.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>&lt;strong>Lyapunov stability&lt;/strong>: An equilibrium point $x_e$ of the system $\dot{x}=A(t)x$ is &lt;strong>stable (in the sense of Lyapunov)&lt;/strong> iff $\forall \epsilon&amp;gt;0,\;\exists \delta(t_0,\epsilon)&amp;gt;0$ s.t. $\Vert x(t_0)-x_e\Vert&amp;lt;\delta\Rightarrow\Vert x(t)-x_e\Vert &amp;lt;\epsilon,\;\forall t&amp;gt;t_0$
+&lt;ul>
+&lt;li>$x_e$ is &lt;strong>uniformly stable&lt;/strong> if $\delta=\delta(\epsilon)$ (regardless of $t_0$)&lt;/li>
+&lt;li>$x_e$ &lt;em>in LTI&lt;/em> is stable $\Rightarrow x_e$ is uniformly stable&lt;/li>
+&lt;li>$x_e$ is &lt;strong>asymptotically stable&lt;/strong> if $\Vert x(t)-x_e\Vert\to 0$ as $t\to 0$&lt;/li>
+&lt;li>$x_e$ is &lt;strong>exponentially stable&lt;/strong> if $\Vert x(t)-x_e\Vert \leqslant \gamma e^{-\lambda(t-t_0)}\Vert x(t_0)-x(e)\Vert$&lt;/li>
+&lt;li>$x_e$ &lt;em>in LTI&lt;/em> is asymptotically stable $\Rightarrow x_e$ is exponentially stable&lt;/li>
+&lt;li>$x_e$ is &lt;strong>globally stable&lt;/strong> if $\delta$ can be chosen arbitrarily large&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>For LTV system, the system is stable (the zero solution is stable) iff $\Phi(t,t_0)$ is bounded by $K(t_0)$.
+&lt;ul>
+&lt;li>If bounded by constant $K$, then the system is uniformly stable.&lt;/li>
+&lt;li>If bounded by constant $K$ and $\Vert\Phi(t,0)\Vert\to 0$ as $t\to 0$, then the system is asymptotically stable.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>For LTI system $\dot{x}=Ax$, it is Lyapunov stable iff $\mathrm{Re}(\lambda_i)\leqslant 0$ or $\mathrm{Re}(\lambda_i)=0,\;\eta_i=1$. ($\eta_i$ is the multiplicity of $\lambda_i$)
+&lt;ul>
+&lt;li>If $\mathrm{Re}(\lambda_i)&amp;lt;0$, then the system is asymptotically stable&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>Internal stability: concerns the state variables&lt;/li>
+&lt;li>External stability: concerns the output variables&lt;/li>
+&lt;/ul>
+&lt;blockquote>
+&lt;p>Notes for contents below:&lt;/p>
+&lt;ul>
+&lt;li>Positive definite (pd.) function: function $V$ is pd. wrt. $p$ if $V(x)&amp;gt;0,\;x\neq p$ and $V(x)=0,\;x=p$&lt;/li>
+&lt;li>$C^n$ denotes the set of continuous and at least n-th differentiable functions&lt;/li>
+&lt;/ul>
+&lt;/blockquote>
+&lt;ul>
+&lt;li>
+&lt;p>&lt;strong>Lyapunov&amp;rsquo;s Direct Method&lt;/strong>: Let $\mathcal{U}$ be an open neighborhood of $p$ and let $V:\mathcal{U}-&amp;gt;\mathbb{R}$ be a countinuous positive definite $C^1$ function wrt. $p$, we have following two conclusions:&lt;/p>
+&lt;ol>
+&lt;li>If $\dot{V}\leqslant 0$ on $\mathcal{U}\backslash\{p\}$ then $p$ is a stable fixed point of $\dot{x}=f(x)$&lt;/li>
+&lt;li>If $\dot{V}&amp;lt; 0$ on $\mathcal{U}\backslash\{p\}$ then $p$ is an asymptotically stable fixed point of $\dot{x}=f(x)$&lt;/li>
+&lt;/ol>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;strong>Lyapunov Function&lt;/strong>:&lt;/p>
+&lt;ul>
+&lt;li>A function satisfying conclusion 1 is called a Lyapunov function&lt;/li>
+&lt;li>A function satisfying conclusion 2 is called a &lt;strong>strict&lt;/strong> Lyapunov function&lt;/li>
+&lt;li>A function that is $C^1$ and pd. is called a Lyapunov function candidate&lt;/li>
+&lt;/ul>
+&lt;blockquote>
+&lt;p>The energy function usually can be used as Lyapunov function. If it&amp;rsquo;s only semi-positive definite, one can use &lt;a class="link" href="https://en.wikipedia.org/wiki/LaSalle%27s_invariance_principle" target="_blank" rel="noopener"
+>LaSalle&amp;rsquo;s Theorem&lt;/a>&lt;/p>
+&lt;/blockquote>
+&lt;/li>
+&lt;li>
+&lt;p>For LTI system, the zero solution of $\dot{x}=Ax$ is asymptotically stable iff $\forall$ pd. hermitian matrices $Q$, equation $A^*P+PA=-Q$ has a unique hermitian solution $P$ that is positive definite.&lt;/p>
+&lt;ul>
+&lt;li>$A^*P+PA=-Q$ is called Lyapunov&amp;rsquo;s Matrix Equation&lt;/li>
+&lt;/ul>
+&lt;blockquote>
+&lt;p>here $V(x)=x^* Px=\int^\infty_0 x^*(t)Qx(t)dt$, which can be also called cost-to-go, or generalized energy&lt;/p>
+&lt;/blockquote>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;strong>Lyapunov&amp;rsquo;s Indirect Method&lt;/strong> (Lyapunov&amp;rsquo;s First Method / Lyapunov&amp;rsquo;s Linearization Theorem): The nonlinear system $\dot{x}=f(x)$ is (locally) asymptotically stable near the equilibrium point $x_e$ if the linearized system $\dot{x}_L=\frac{\partial f}{\partial x}(x_e)x_L$ is asymptotically stable.&lt;/p>
+&lt;/li>
+&lt;/ul>
+&lt;h3 id="bounded-input-bounded-output-stability">Bounded-Input Bounded-Output Stability&lt;/h3>
+&lt;blockquote>
+&lt;p>BIBO stability is only concerned with the response of the system to the input (ZSR).&lt;/p>
+&lt;/blockquote>
+&lt;ul>
+&lt;li>&lt;strong>Bounded-Input Bounded-Output (BIBO) stability&lt;/strong>: The LTV system is said to be (uniformly) BIBO stable if there exists a finite constant $g$ s.t. $\forall u(\cdot)$, its forced response $y_f(\cdot)$ satisfies $$ \sup_{t\in[0,\infty)}\Vert y_f(t)\Vert \leqslant g \sup_{t\in[0,\infty)} \Vert u(t)\Vert $$
+&lt;blockquote>
+&lt;p>The impulse response can be analyzed to assess BIBO stability
+The LTV system is uniformly BIBO stable iff every entry of $D(t)$ is bounded and $\sup_{t\geqslant 0}\int^t_0|g_{ij}(t,\tau)|d\tau &amp;lt;\infty$ for every entry $g_{ij}$ of the matrix $C(t)\Phi(t,\tau)B(\tau)$.&lt;/p>
+&lt;/blockquote>
+&lt;/li>
+&lt;li>BIBO stability is related with the stability descibed in classical control theory.&lt;/li>
+&lt;li>Exponential Lyapunov Stability $\Rightarrow$ BIBO stability&lt;/li>
+&lt;/ul>
+&lt;h3 id="steady-state-accuracy">Steady State Accuracy&lt;/h3>
+&lt;p>Steady state accurary can be derived from the property of Laplace/Z-transform as mentioned above (assuming stability)
+$$\lim\limits_{t\to \infty} f(t) = \lim\limits_{z\to 1} (z-1)F(z) = \lim\limits_{s\to 0}sF(s)$$&lt;/p>
+&lt;h3 id="transient-response">Transient Response&lt;/h3>
+&lt;p>Some measurements of transient response (with step input):&lt;/p>
+&lt;ul>
+&lt;li>&lt;strong>Rise time&lt;/strong> $t_r$: time from 10% to 90% of steady state value&lt;/li>
+&lt;li>&lt;strong>Peak overshoot&lt;/strong>: $M_p$ for overshoot magnitude and $t_p$ for time&lt;/li>
+&lt;li>&lt;strong>Settling time&lt;/strong> $t_s$: time after which the magnitude fall in $1-d$ to $1-d$ final value. $d$ is usually %2~5.&lt;/li>
+&lt;/ul>
+&lt;h3 id="sensitivity">Sensitivity&lt;/h3>
+&lt;p>Given a transfer function $H(z)$ with parameter $\Theta\in\mathbb{R}$, then sensitivity is defined as $S_H=\frac{\partial H}{\partial \Theta}\cdot\frac{\Theta}{H} = \frac{\partial H/H}{\partial \Theta/\Theta}$&lt;/p>
+&lt;h2 id="discretization-and-linearization">Discretization and Linearization&lt;/h2>
+&lt;h3 id="discretization-example">Discretization Example&lt;/h3>
+&lt;p>The following image shows a minial example of sampling and hold.
+&lt;img src="https://zyxin.xyz/blog/blog/en/2020-06/ControlSystemNotes/snh.png"
+width="769"
+height="210"
+loading="lazy"
+alt="A minimal example of a conversion process with analog and digital signals"
+class="gallery-image"
+data-flex-grow="366"
+data-flex-basis="878px"
+>&lt;/p>
+&lt;h3 id="sampling-ad">Sampling (A/D)&lt;/h3>
+&lt;ul>
+&lt;li>Ideal sampler (a.k.a impulse modulator) converts a continuous signal $e: \mathbb{R}_+ \to \mathbb{R}$ to a discrete one $\hat{e}: \mathbb{N}\to \mathbb{R}$, such that $$ \hat{e}=e(t)\delta(t-kT)=e(t)\delta_T(t); \forall k\in \mathbb{N} $$
+&lt;ul>
+&lt;li>Ideal sampler is actually applying starred transform.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>How to sample? A rule of thumb used to select sampling rates is chosing a rate of at least 5 samples per time constant.
+&lt;ul>
+&lt;li>The $\tau$ appearing in the transient response term $ke^{-t/\tau}$ of a first order analog system is called the time constant.&lt;/li>
+&lt;li>If the sampling time is too large, it can make the system unstable.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;h2 id="reconstructionhold-da">Reconstruction/Hold (D/A)&lt;/h2>
+&lt;ul>
+&lt;li>Zero order hold (ZOH): $ZOH(\{e(k)\}_{k\in\mathbb{N}})(t) = e(k)\;for\;kT\leq t\leq (k+1)T$
+&lt;ul>
+&lt;li>Alternative form: $ZOH(\{e(k)\})=\sum^\infty_{k=0}e(k)(H(t-kT)-H(t-(k+1)T))$&lt;/li>
+&lt;li>Its Laplace Transform: $G_{ZOH}(s)=\frac{1-e^{-Ts}}{s}$&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>First order hold (FOH): (delayed version) $$FOH(\{e(k)\}_ {k\in\mathbb{N}})(t)=\sum_ {k\in\mathbb{N}}\left[e(kT)+\frac{t-kT}{T}(e(kT)-e((k-1)T)) \right]\left[H(t-kT)-H(t-(k+1)T) \right]$$&lt;/li>
+&lt;/ul>
+&lt;h2 id="state-space-representation-1">State Space Representation&lt;/h2>
+&lt;p>Suppose we are given the LTI continuous system
+$$\begin{align*} \dot{x}(t) &amp;amp;= Ax(t)+Bu(t) \\ y(t)&amp;amp;=Cx(t)+Du(t) \end{align*}$$
+If the input is sampled and ZOH and the output is sampled, then
+$$\begin{align*} x(k+1)&amp;amp;=\bar{A}x(k)+\bar{B}u(k) \\ y(k)&amp;amp;=\bar{C}x(k)+\bar{D}u(k)\end{align*}$$
+where $\bar{A}=\Phi((k+1)T,kT)=e^{AkT}$&lt;/br>
+$\bar{B}=\int^{(k+1)T}_{kT}\Phi((k+1)T,\tau)B\mathrm{d}\tau=A^{-1}(e^{AT}-I)$&lt;/br>
+$\bar{C}=C$ and $\bar{D}=D$&lt;/p>
+&lt;blockquote>
+&lt;p>Steps to apply conversion:&lt;/p>
+&lt;ol>
+&lt;li>Dervice SS model for analog system&lt;/li>
+&lt;li>Calculate discrete representation (&lt;code>c2d&lt;/code> in MATLAB)&lt;/li>
+&lt;li>Calculate pulse transfer function (&lt;code>ss2tf&lt;/code> in MATLAB)
+If there is a complex system with multiple sampling and holding, a general rule is&lt;/li>
+&lt;/ol>
+&lt;ul>
+&lt;li>Each ZOH output is assumed to be an input&lt;/li>
+&lt;li>Each sampler input is assumed to be an output
+and then create continuous state space from analog part of the system, then discretize them to generate discrete equations&lt;/li>
+&lt;/ul>
+&lt;/blockquote>
+&lt;h3 id="s-plane-and-z-plane">$s$-plane and $z$-plane&lt;/h3>
+&lt;p>When converting $s$ to $z$, the complex variables are related by $z=e^{Ts}$. Suppose $s=\sigma+j\omega$, then $z=e^{T\sigma}\angle \omega T$&lt;/p>
+&lt;blockquote>
+&lt;p>Note: if frequencies differ in integer multiples of the sampling frequency $\frac{2\pi}{T}=\omega_s$, then they are sampled into the same location in the $z$-plane.&lt;/p>
+&lt;/blockquote>
+&lt;p>For transient response relationship, suppose $s$-plane poles occur at $s=\sigma\pm j\omega$, then the transient response if $Ae^{\sigma t}\cos(\omega t+\varphi)$. When sampling occurs at $z$-plane poles, then the transient response if $Ae^{\sigma kT}\cos(\omega kT+\varphi)$.&lt;/p>
+&lt;details>&lt;summary>Example: 2nd order transfer function&lt;/summary>
+$$G(s)=\frac{\omega_n^2}{s^2+2\xi\omega_ns+\omega_n^2}$$
+The $z$-plane poles occur at $z=r\angle\pm\theta$ where $r=e^{-\xi\omega_n T}$ and $\theta=\omega_n T\sqrt{1-\xi^2}$.
+&lt;p>Then we can get the inverse relationship&lt;/p>
+&lt;ul>
+&lt;li>$\xi=-\ln( r)/\sqrt{\ln^2( r)+\theta^2}$&lt;/li>
+&lt;li>$\omega_n=(1/T)\sqrt{\ln^2( r)+\theta^2}$&lt;/li>
+&lt;li>(time constant) $\tau=-T/\ln( r)$&lt;/li>
+&lt;/ul>
+&lt;/details>
+&lt;h3 id="linearization">Linearization&lt;/h3>
+&lt;ul>
+&lt;li>&lt;strong>Jacobian Linearization&lt;/strong>: linearize $\dot{x}=f(x,u)$ at an equilibrium $(x_e, u_e)$ is $$\frac{\mathrm{d}z}{\mathrm{d}t}=Az+Bv,\quad\text{where}\;A=\left.\frac{\mathrm{d}f}{\mathrm{d}x}\right|_ {\begin{split}x=x_e\\u=u_e\end{split}},\;B=\left.\frac{\mathrm{d}f}{\mathrm{d}u}\right|_ {\begin{split}x=x_e\\u=u_e\end{split}},\;z=(x-x_e),\;v=(u-u_e)$$
+&lt;ul>
+&lt;li>change $(x_e, u_e)$ to a trajectory $(x_e(t), u_e(t))$ we can linearize the system about a trajectory.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;h1 id="controllers">Controllers&lt;/h1>
+&lt;h2 id="full-state-feedback">Full State Feedback&lt;/h2>
+&lt;blockquote>
+&lt;p>This method can be used for both continuous and discrete systems, just make sure to use corresponding method for choosing correct closed-loop transfer function.&lt;/p>
+&lt;/blockquote>
+&lt;p>For state space systems, with access to all of the state variables, we can change the $A$ matrix and thereby change the system dynamics by feedback.&lt;/p>
+&lt;p>Consider SISO LTI system ($u\in\mathbb{R},y\in\mathbb{R}$), we define the input as $u\equiv Kx+Ev$ where $K\in\mathbb{R}^{1\times n},\;E\in\mathbb{R}$ is an input matrix and $v(t)\in\mathbb{R}^\mathbb{R}$ is the exogeneous (externally applied) input. The new system will be $$\begin{align}\dot{x}&amp;amp;=(A+BK)x+BEv\\y&amp;amp;=(C+DK)x+DEv\end{align}$$
+The mission is to find a state update matrix $A_{\mathrm{CL}}\equiv A+BK$ with desired set of eigenvalues, therefore we can construct $A_{\mathrm{CL}}$ with specific eigenvalues and then calculate $K$. This process will be quite easy if the system is already in controllable cannonical form. (which can be constructed directly from transfer function or using similarity transform)&lt;/p>
+&lt;p>Another way (SISO only) to calculate $K$ without controllable cannonical form is using the following formulae given the desired characteristic polynomial $\phi^{\star}(s)=s^n+\sum^{n-1}_ {i=0} a^\star_i s^i$ and original characteristic polynomial $\phi(s)=s^n+\sum^{n-1}_ {i=0} a_i s^i$&lt;/p>
+&lt;ul>
+&lt;li>&lt;strong>Ackermann&amp;rsquo;s Formula&lt;/strong>: $K=-e^\top_n\mathcal{C}^{-1}\phi^\star(A)$ (here $e_i$ is unit vector with 1 at i-th position)&lt;/li>
+&lt;li>&lt;strong>Bass-Gura&amp;rsquo;s Formula&lt;/strong>: $$K=-[(a^\star_{n-1}-a_{n-1}) \;\cdots\;(a^\star_0-a_0)]\begin{bmatrix}1&amp;amp;a_{n-1}&amp;amp;a_{n-2}&amp;amp;\cdots&amp;amp;a_1\\&amp;amp;1&amp;amp;a_{n-1}&amp;amp;\cdots&amp;amp;a_2\\ &amp;amp;&amp;amp;\ddots&amp;amp;\ddots&amp;amp;\vdots \\ &amp;amp;&amp;amp;&amp;amp;1&amp;amp;a_{n-1}\\ &amp;amp;&amp;amp;&amp;amp;&amp;amp;1\end{bmatrix}^{-1}\mathcal{C}^{-1}$$&lt;/li>
+&lt;/ul>
+&lt;p>Note that the zeros of transfer function will not be affected by state feedback.&lt;/p>
+&lt;h3 id="state-estimation-observer-design">State Estimation (Observer Design)&lt;/h3>
+&lt;blockquote>
+&lt;p>Some times we don&amp;rsquo;t have the direct access to the state, we need construct an observer
+For stochastic version, please check &lt;a href="{% post_path StochasticSystemNotes %}#Observation-Filtering">my notes for stochastic system&lt;/a>&lt;/p>
+&lt;/blockquote>
+&lt;p>Assume a plant $\Sigma$ and an (&lt;strong>Luenberger&lt;/strong>) &lt;strong>observer&lt;/strong> $\hat{\Sigma}$:
+$$\Sigma:\begin{cases}\dot{x}=Ax+Bu\\ y=Cx\end{cases},\quad \hat{\Sigma}:\begin{cases} \dot{\hat{x}}=A\hat{x}+Bu+L(y-\hat{y})\\ y=C\hat{x}\end{cases}$$&lt;/p>
+&lt;p>Subtract observer dynamics from plant dynamics and define $e\equiv x-\hat{x}$, the dynamics for $e$ is $\dot{e}=(A-LC)e$ and $y-\hat{y}=Ce$. This error dynamic $A_e=A-LC$ can be easily changed with observable cannonical form. (which similarly can be constructed directly from transfer function or using similarity transform)&lt;/p>
+&lt;ul>
+&lt;li>&lt;strong>Reduced-order Observer&lt;/strong>: If the state length of the system $n$ is large while $n-p$ is small, split the system and let $x_1$ holds the states that can be measured directly while $x_2$ holds states that are to be estimated, (i.e. $y=x_1+Du$). Define $z=\hat{x}_2-Lx_1$ then the system runs like $$\begin{align*}\begin{bmatrix}x_1 \\ \hat{x}_2\end{bmatrix}&amp;amp;=\begin{bmatrix} y-Du\\ z+Lx_1 \end{bmatrix}\qquad\begin{split}&amp;amp;\text{measurement} \\ &amp;amp;\text{observer}\end{split} \\ u&amp;amp;=K\begin{bmatrix}x_1 \\ \hat{x}_2 \end{bmatrix} + v \qquad\text{control law}\end{align*}$$ And then the error we care about is only $e=x_2-\hat{x}_2$.&lt;/li>
+&lt;li>&lt;strong>Ackermann&amp;rsquo;s Formula&lt;/strong>: $L=\phi^\star(A)\mathcal{O}^{-1}e_n$ ($\phi^\star$ is the desired characteristic function for $A_e$)&lt;/li>
+&lt;li>&lt;strong>Separation Principle&lt;/strong>: If a stable observer and stable state feedback are designed for an LTI system, then the combined observer and feedback will be stable.&lt;/li>
+&lt;/ul>
+&lt;blockquote>
+&lt;p>Errors from state estimation&lt;/p>
+&lt;ol>
+&lt;li>Inaccurate knowledge of $A$ and $B$&lt;/li>
+&lt;li>Initial condition uncertainty&lt;/li>
+&lt;li>Disturbance or sensor error
+It&amp;rsquo;s advised to choose observer poles to be 2-4x faster than closed loop poles&lt;/li>
+&lt;/ol>
+&lt;/blockquote>
+&lt;h3 id="lqrhttpsenwikipediaorgwikilineare28093quadratic_regulator">&lt;a class="link" href="https://en.wikipedia.org/wiki/Linear%E2%80%93quadratic_regulator" target="_blank" rel="noopener"
+>LQR&lt;/a>&lt;/h3>
+&lt;blockquote>
+&lt;p>Motivation: handle control constraints and time varying dynamics with performance metric (ideas of optimal control)
+Note: $x^\top Ax$ is called a &lt;strong>quadratic form&lt;/strong>, $x^\top Ay$ is called a &lt;strong>bilinear form&lt;/strong>&lt;/p>
+&lt;/blockquote>
+&lt;ul>
+&lt;li>A quadratic function $f(x)=x^\top Dx+C^\top x+c_0$ has one minimizer iff $D\succ 0$, or multiple minimizers iff $D\succeq 0$.&lt;/li>
+&lt;li>(discrete finite time) &lt;strong>Linear Quadratic Regulator&lt;/strong> (LQR): the control problem is defined as $$\begin{align*}\min_{u\in\left(\mathbb{R}^m\right)^{\{0,\ldots,N\}}} J_{N}(u,x_0)&amp;amp;=\frac{1}{2}\sum^{N}_{k=0}(x^\top(k)Q(k)x(k)+u^\top(k)R(k)u(k)) \\ \mathrm{s.t.}\qquad x(k+1) &amp;amp;= A(k)x(k) + B(k)u(k)\quad \forall k\in\{0,\ldots,N-1\}\\ y(k)&amp;amp;=C(k)x(k)\\ x(0)&amp;amp;=x_0\end{align*}$$ where $Q(k)\succ 0$ and $R(k)\succ 0$&lt;/li>
+&lt;li>&lt;strong>Bellman&amp;rsquo;s Principle of Optimality&lt;/strong>: If a closed loop control $u^\star$ is optimal over the interval $0\leqslant k\leqslant N$, it&amp;rsquo;s also optimal over any subinterval $m\leqslant k\leqslant N$ where $m\in\{0,\ldots,N\}$&lt;/li>
+&lt;li>&lt;strong>The Minimum Principle&lt;/strong>: The optimal input to the LQR problem satisfies the following backward equations: $$\begin{align*}u^\star(k)&amp;amp;=-K(x)x(k) \\ K(k)&amp;amp;=\left[B^\top(k) P(k+1)B(k)+\frac{1}{2}R(k)\right]^{-1}B^\top(k)P(k+1)A(k) \\ P(k)&amp;amp;=A^\top(k)P(k+1)[A(k)- B(k)K(k)]+\frac{1}{2}Q(k)\end{align*}$$ and $P(N)=Q(N),\;K(N)=0$. The optimal cost is $J^\star_N=x^\top(0)P(0)x(0)$&lt;/li>
+&lt;li>For infinite horizon, $K(k)$ start becoming constants. The optimal input for LQR problem (assuming the system became LTI when $N\to\infty$) is $u^*(k)=-Kx(k)$ where $$K=(B^\top PB+R/2)^{-1}B^\top PA$$ and $P\succ 0$ is the unique solution to the discrete-time &lt;strong>algebraic Riccati Equation&lt;/strong>: $$P=A^\top PA-A^\top PB\left(B^\top PB+R/2\right)^{-1}B^\top PA+Q/2$$&lt;/li>
+&lt;/ul></description></item></channel></rss>

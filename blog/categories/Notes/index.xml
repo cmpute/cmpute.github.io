@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Notes on JacobZ</title><link>https://zyxin.xyz/blog/categories/Notes/</link><description>Recent content in Notes on JacobZ</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><lastBuildDate>Thu, 06 Jun 2019 00:00:00 +0000</lastBuildDate><atom:link href="https://zyxin.xyz/blog/categories/Notes/index.xml" rel="self" type="application/rss+xml"/><item><title>矩阵代数 — Matrix Algebra</title><link>https://zyxin.xyz/blog/2019-06/MatrixAlgebra/</link><pubDate>Thu, 06 Jun 2019 00:00:00 +0000</pubDate><guid>https://zyxin.xyz/blog/2019-06/MatrixAlgebra/</guid><description>&lt;p>在学习线性系统以及SLAM的过程中碰到了很多矩阵的求导与积分运算，但是几乎没有系统地学习过这些知识。矩阵可以构成环，因此也有很多运算性质和推广。最近大佬发给我一本《Matrix Cookbook》，非常系统地列举了进阶矩阵运算的法则，这里贴在博客上以供参考～&lt;/p>
+&lt;h2 id="目录">目录&lt;/h2>
+&lt;ol>
+&lt;li>基础内容&lt;/li>
+&lt;li>求导&lt;/li>
+&lt;li>逆&lt;/li>
+&lt;li>复矩阵&lt;/li>
+&lt;li>求解与分解&lt;/li>
+&lt;li>统计与概率&lt;/li>
+&lt;li>多元概率分布&lt;/li>
+&lt;li>高斯&lt;/li>
+&lt;li>特殊矩阵&lt;/li>
+&lt;li>函数与运算符&lt;/li>
+&lt;/ol>
+&lt;h2 id="来源">来源&lt;/h2>
+&lt;p>这本书可以&lt;a class="link" href="http://www2.imm.dtu.dk/pubdb/views/publication_details.php?id=3274" target="_blank" rel="noopener"
+>Technical University of Denmark资料网站下到&lt;/a>。如果链接失效了，&lt;a class="link" href="https://zyxin.xyz/blog/blog/static/doc/matrixcookbook.pdf" >可以直接从此处下载&lt;/a>。&lt;/p></description></item></channel></rss>

@@ -1,0 +1,253 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>C/C++ on JacobZ</title><link>https://zyxin.xyz/blog/tags/C/C++/</link><description>Recent content in C/C++ on JacobZ</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><atom:link href="https://zyxin.xyz/blog/tags/C/C++/index.xml" rel="self" type="application/rss+xml"/><item><title>长浮点数（long double）的陷阱</title><link>https://zyxin.xyz/blog/2022-07/ThePitfallOfLongDouble/</link><pubDate>Sun, 24 Jul 2022 01:19:33 +0000</pubDate><guid>https://zyxin.xyz/blog/2022-07/ThePitfallOfLongDouble/</guid><description>&lt;p>{% note default %}&lt;/p>
+&lt;h2 id="前言">前言&lt;/h2>
+&lt;p>此文转载自Prelert的博客，作者为David。这篇文章目前只能&lt;a class="link" href="https://web.archive.org/web/20170422155137/http://info.prelert.com/blog/author/david" target="_blank" rel="noopener"
+>在WebArchive找到&lt;/a>了，因此我把此文转载并翻译到我的博客上。&lt;/p>
+&lt;p>我是在搜索为什么Rust没有对应C/C++中&lt;code>long double&lt;/code>的数据类型的时候看到了这篇博文，Rust不提供对应的数据类型造成了一些互操作性的问题（参见&lt;a class="link" href="https://immunant.com/blog/2019/11/rust2020/#:~:text=long%20doubletypes%20in%20C%20are%20specified%20as%20being,with%20C%20code%2C%20Rust%20needs%20to%20support%20long" target="_blank" rel="noopener"
+>这里&lt;/a>和&lt;a class="link" href="https://github.com/rust-lang/rust-bindgen/issues/1549" target="_blank" rel="noopener"
+>这里&lt;/a>）。与此相对的是，Zig和新发布的Carbon语言都支持&lt;code>f16&lt;/code>和&lt;code>f128&lt;/code>数据类型（其中Zig还支持&lt;code>f80&lt;/code>，Carbon还支持&lt;code>bfloat16&lt;/code>）。不过这倒是不令人意外，因为Zig和Carbon都以与C/C++的极致兼容性为卖点。这篇博客也许能解释一部分Rust不支持更高精度浮点数的原因。
+{% endnote %}&lt;/p>
+&lt;h2 id="正文">正文&lt;/h2>
+&lt;p>C++ 提供三种浮点数据类型：&lt;code>float&lt;/code>, &lt;code>double&lt;/code> 和 &lt;code>long double&lt;/code>。关于这些类型，&lt;a class="link" href="http://webstore.ansi.org/RecordDetail.aspx?sku=INCITS%2FISO%2FIEC&amp;#43;14882-2012" target="_blank" rel="noopener"
+>C++11标准&lt;/a>只提到了：&lt;/p>
+&lt;blockquote>
+&lt;p>&lt;code>double&lt;/code>类型需要提供至少与&lt;code>float&lt;/code>同等的精度，而&lt;code>long double&lt;/code>需要提供至少与&lt;code>double&lt;/code>同等的精度。&lt;/p>
+&lt;p>&lt;code>float&lt;/code>类型所有支持的数值是&lt;code>duoble&lt;/code>的子集；&lt;code>double&lt;/code>类型所有支持的数值是&lt;code>long duoble&lt;/code>的子集。各浮点类型的数据表示方法取决于具体的实现。&lt;/p>
+&lt;/blockquote>
+&lt;p>但是，几乎所有C++编译器都带一个C编译器，而&lt;a class="link" href="http://webstore.ansi.org/RecordDetail.aspx?sku=INCITS/ISO/IEC%209899-1999%20%28R2005%29" target="_blank" rel="noopener"
+>C99标准&lt;/a>的F附件则有更详细的规定：&lt;/p>
+&lt;blockquote>
+&lt;ul>
+&lt;li>&lt;code>float&lt;/code> 类型对应IEC 60559标准的单精度浮点数&lt;/li>
+&lt;li>&lt;code>double&lt;/code> 类型对应IEC 60559标准的双精度浮点数&lt;/li>
+&lt;li>&lt;code>long double&lt;/code>类型对应IEC 60559标准的扩展精度浮点数，或者非IEC 60559的扩展精度浮点数，或者IEC 60559的双精度浮点数。&lt;/li>
+&lt;/ul>
+&lt;/blockquote>
+&lt;p>只有一个彻头彻尾的M才会编写一个在C++和C部分使用不同浮点类型的C++编译器，因此实际上C++也要服从同样的规定。我所使用果的所有近20年内的C++编译器都使用&lt;a class="link" href="http://en.wikipedia.org/wiki/IEEE_floating_point" target="_blank" rel="noopener"
+>IEC 60559&lt;/a>（也就是&lt;a class="link" href="http://en.wikipedia.org/wiki/IEEE_754-1985" target="_blank" rel="noopener"
+>IEEE 754&lt;/a>）所规定的单精度和双精度浮点数，但是在实现最后一个类型——&lt;code>long double&lt;/code>——上这些编译器会有不一致，这也导致了一些问题。&lt;/p>
+&lt;p>在我的整个软件开发生涯中，我遇到过的几次与&lt;code>long double&lt;/code>类型相关的问题，可以被归为两类：&lt;/p>
+&lt;ol>
+&lt;li>缺乏测试&lt;/li>
+&lt;li>可移植性&lt;/li>
+&lt;/ol>
+&lt;h3 id="缺乏测试">缺乏测试&lt;/h3>
+&lt;p>在去年底我记录了一个&lt;a class="link" href="https://web.archive.org/web/20170305103541/http://www.prelert.com/blog/linux-speeds-ahead/" target="_blank" rel="noopener"
+>可以归为第一类的问题&lt;/a>。一个glibc在x86_64平台上的&lt;code>powl()&lt;/code>函数实现中的&lt;a class="link" href="http://sourceware.org/bugzilla/show_bug.cgi?id=2445" target="_blank" rel="noopener"
+>bug&lt;/a>有五年多未得到修复。我感觉如果这个bug是在用的更广泛的&lt;a class="link" href="http://pubs.opengroup.org/onlinepubs/9699919799/functions/pow.html" target="_blank" rel="noopener"
+>&lt;code>pow()&lt;/code>&lt;/a>函数中，那么会有更多人感到惊奇然后有人会更快修复它。因为这个函数的&lt;code>long double&lt;/code>版本用的人较少，因此这个bug就烂在那了。&lt;/p>
+&lt;p>另一个&lt;code>long double&lt;/code>缺乏测试的例子是我在加入Prelert之前碰到的，与IBM的xlC/C++编译器相关在&lt;a class="link" href="http://www-03.ibm.com/systems/power/software/aix/" target="_blank" rel="noopener"
+>AIX&lt;/a>系统上的问题。调用这个编译器的时候使用的名字（硬链接）决定了它的行为方式，当使用名称 xlC128_r 调用编译器时，它使用128位的 long double 表示。然后有一段时间，即使是最简单的程序编译都会崩（core dump）。尽管&lt;a class="link" href="http://www-01.ibm.com/support/docview.wss?uid=swg1IY96361" target="_blank" rel="noopener"
+>bug报告&lt;/a>里面提到了一个调用&lt;a class="link" href="http://pubs.opengroup.org/onlinepubs/007908775/xsh/fork.html" target="_blank" rel="noopener"
+>fork()&lt;/a>的例子，但其实如果打开了&lt;a class="link" href="http://publib.boulder.ibm.com/infocenter/comphelp/v8v101/index.jsp?topic=%2Fcom.ibm.xlcpp8a.doc%2Fcompiler%2Fref%2Fruoptbrt.htm" target="_blank" rel="noopener"
+>-brtl&lt;/a>开关，最简单的&amp;quot;hello world&amp;quot;程序也能崩！显然所有的测试都是在使用其他更常用的名字调用编译器时完成的（这些情况下&lt;code>long double&lt;/code>不是128位）。&lt;/p>
+&lt;h3 id="可移植性">可移植性&lt;/h3>
+&lt;p>而关于可移植性，一些需要注意的坑有：&lt;/p>
+&lt;ol>
+&lt;li>微软的&lt;a class="link" href="http://en.wikipedia.org/wiki/Visual_C%2B%2B" target="_blank" rel="noopener"
+>Visual C++&lt;/a>使用IEEE 754双精度浮点数表示&lt;code>long double&lt;/code>——跟&lt;code>double&lt;/code>一样（&lt;code>C99&lt;/code>标准所允许的第三种情况）。因此在你的代码中区分&lt;code>long double&lt;/code>和&lt;code>double&lt;/code>毫无意义如果你只用微软的VC++进行编译。但如果你的代码需要支持别的平台并且你仍然使用&lt;code>long double&lt;/code>，那么你就给你的代码里面掺入了一个很关键的，与平台相关的行为区别，它会让你吃亏的。大部分其他x86编译器都把&lt;code>long double&lt;/code>看作&lt;a class="link" href="http://en.wikipedia.org/wiki/X87" target="_blank" rel="noopener"
+>x87&lt;/a>所使用的80位扩展精度浮点数。&lt;/li>
+&lt;li>在&lt;a class="link" href="http://en.wikipedia.org/wiki/SPARC" target="_blank" rel="noopener"
+>SPARC芯片&lt;/a>上（我知道它已经快挂了），&lt;code>long double&lt;/code>类型使用128位的表示，但是默认情况下，编译器会生成软件实现，而非硬件实现的（浮点数）操作。这个情况可以回溯到大部分SPARC芯片都不支持这样的操作，然后使用中断来实现的时候。在软件层面实现浮点操作比去响应这些中断要快。但是软实现的浮点操作比硬件加速的浮点操作慢好几个数量级——我们发现一些单元测试会慢20倍，而且这些并不是单纯的做&lt;code>long double&lt;/code>运算的测试。这是一个牺牲性能来换取代码（在编译和正确性方面）可移植的例子。&lt;/li>
+&lt;/ol>
+&lt;p>参考其他可移植的语言很有指导意义。Java有与IEEE754的单/双精度浮点数对应的&lt;a class="link" href="http://docs.oracle.com/javase/tutorial/java/nutsandbolts/datatypes.html" target="_blank" rel="noopener"
+>&lt;code>float&lt;/code>和&lt;code>double&lt;/code>类型&lt;/a>（并且不像C++，Java标准&lt;a class="link" href="http://docs.oracle.com/javase/specs/jls/se7/html/jls-4.html#jls-4.2.3" target="_blank" rel="noopener"
+>对如何实现浮点数运算非常明确&lt;/a>）。Java没有给程序员提供&lt;code>long double&lt;/code>类型，大概是因为我上面提到的可移植性问题（尽管这个标准允许在中间计算过程中使用x87扩展精度的格式）。&lt;a class="link" href="http://docs.python.org/2/library/stdtypes.html#typesnumeric" target="_blank" rel="noopener"
+>Python&lt;/a>只有一个&lt;code>float&lt;/code>类型，并且“通常用C语言的&lt;code>double&lt;/code>实现”。因此，如果你的整体系统包含使用其他语言编写的组件，那你弃用&lt;code>long double&lt;/code>可以避免数据交换中的问题。同样的道理也适用于在数据库中存储浮点数——例如&lt;a class="link" href="http://www.postgresql.org/" target="_blank" rel="noopener"
+>PostgreSQL&lt;/a>提供&lt;a class="link" href="http://www.postgresql.org/docs/9.2/static/datatype-numeric.html#DATATYPE-FLOAT" target="_blank" rel="noopener"
+>&lt;code>real&lt;/code>和&lt;code>double&lt;/code>&lt;/a>，对应IEEE 754的单/双精度浮点数。&lt;/p>
+&lt;p>最后，一个在x86 CPU上只用&lt;code>float&lt;/code>和&lt;code>double&lt;/code>的好处是，编译器可以利用上CPU的&lt;a class="link" href="http://en.wikipedia.org/wiki/Streaming_SIMD_Extensions" target="_blank" rel="noopener"
+>SSE&lt;/a>单元，然后两次或四次（浮点）运算有机会并行完成。这时使用64位调用约定的把函数参数传到寄存器中，那之后就可以直接使用SSE寄存器了。反之，&lt;code>long double&lt;/code>变量只能在&lt;code>x87&lt;/code>浮点运算单元中使用，并且不会使用寄存器传参，从而让程序变慢了。&lt;/p>
+&lt;h3 id="结论">结论&lt;/h3>
+&lt;p>有些人可能会说，使用&lt;code>long double&lt;/code>可以提高结果的精度。这可能是对的，但是无论一个固定精度的浮点数有多少有效位数，它都会有有效位数损失的情况（如果使用的算法不好的话）。使用扩展精度而不是双精度可能会在某些情况下避免这些问题，但是长期来看唯一的解决方法是使用更适合计算机的算法，或者设法检测有效位数损失，并且把结果替换成合适的值。&lt;/p>
+&lt;p>在我看来，如果你想编写可移植的C++代码，使得它不仅可以在多个平台运行，并且在某些平台上没有很夸张的性能问题，你最好避开&lt;code>long duoble&lt;/code>。这也是我们在Prelert做法——我们的C++代码不使用&lt;code>long duoble&lt;/code>，并且在使用Boost的时候我们定义&lt;a class="link" href="http://www.boost.org/doc/libs/1_54_0/libs/math/doc/html/math_toolkit/config_macros.html#math_toolkit.config_macros.boost_math_macros" target="_blank" rel="noopener"
+>BOOST_MATH_NO_LONG_DOUBLE_MATH_FUNCTIONS&lt;/a>这个宏，让&lt;a class="link" href="http://www.boost.org/doc/libs/1_54_0/libs/math/doc/html/index.html" target="_blank" rel="noopener"
+>Boost.Math&lt;/a>也不使用。&lt;/p></description></item><item><title>C/C++中的特殊宏</title><link>https://zyxin.xyz/blog/2017-09/SpecialMacrosInCpp/</link><pubDate>Wed, 20 Sep 2017 00:00:00 +0000</pubDate><guid>https://zyxin.xyz/blog/2017-09/SpecialMacrosInCpp/</guid><description>&lt;p>在阅读VTK和QT的源码时，遇到了类似于Python中特殊变量形式的宏，如&lt;code>__LINE__&lt;/code>和&lt;code>__FILE__&lt;/code>，这两个宏的用途是作为函数参数返回调用行数和文件名。一时惊奇，原来C里面也有这个内置宏，而且貌似在各大库的Debug模块中都经常被用到。此外也碰到了变长的宏的用法，于是查了一下标准中对宏的描述，做一下笔记，对宏代码很有帮助~&lt;/p>
+&lt;blockquote>
+&lt;p>文中点击标题的角标即可转到GCC文档对应页面。&lt;/p>
+&lt;/blockquote>
+&lt;h2 id="stringizing1-字符串化">Stringizing&lt;sup id="fnref:1">&lt;a href="#fn:1" class="footnote-ref" role="doc-noteref">1&lt;/a>&lt;/sup> (字符串化)&lt;/h2>
+&lt;p>在宏定义中可以将传入的参数原封不动地&lt;strong>变成字符串常量插入代码中&lt;/strong>，使用的方法是利用&lt;code>#&lt;/code>运算符。例如下面的宏&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-cpp" data-lang="cpp">&lt;span class="line">&lt;span class="cl">&lt;span class="cp">#define WARN_IF(EXPR) \
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cp">do { if (EXPR) \
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cp"> fprintf (stderr, &amp;#34;Warning: &amp;#34; #EXPR &amp;#34;\n&amp;#34;); } \
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cp">while (0)
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cp">&lt;/span>&lt;span class="n">WARN_IF&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="n">x&lt;/span> &lt;span class="o">==&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>其中&lt;code>#EXPR&lt;/code>便是字符串化的参数，在编译时会变成&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-cpp" data-lang="cpp">&lt;span class="line">&lt;span class="cl">&lt;span class="k">do&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="k">if&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="n">x&lt;/span> &lt;span class="o">==&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">fprintf&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="n">stderr&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s">&amp;#34;Warning: &amp;#34;&lt;/span> &lt;span class="s">&amp;#34;x == 0&amp;#34;&lt;/span> &lt;span class="s">&amp;#34;&lt;/span>&lt;span class="se">\n&lt;/span>&lt;span class="s">&amp;#34;&lt;/span>&lt;span class="p">);&lt;/span> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">while&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="mi">0&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>会输出&lt;code>Warning: x == 0&lt;/code>。这一特性可以使得使用宏定义的时候同时输出参数名字或者表达式，便于进行记录。此时若&lt;code>x&lt;/code>本身也是宏的话在&lt;code>#EXPR&lt;/code>中不会展开。如果想让宏&lt;code>x&lt;/code>在&lt;code>#EXPR&lt;/code>中也展开的话，需要再用另一个宏把这个宏包起来即可。&lt;/p>
+&lt;h2 id="concatenation2-符号连接">Concatenation&lt;sup id="fnref:2">&lt;a href="#fn:2" class="footnote-ref" role="doc-noteref">2&lt;/a>&lt;/sup> (符号连接)&lt;/h2>
+&lt;p>有时候向宏内传入的参数不完全是你想要的参数，或者希望通过一个参数展开成多个变量的时候，就可以使用符号连接的宏，使用方法是利用&lt;code>##&lt;/code>运算符。例如假设有一个储存命名函数的结构体&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-cpp" data-lang="cpp">&lt;span class="line">&lt;span class="cl">&lt;span class="k">struct&lt;/span> &lt;span class="nc">command&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kt">char&lt;/span> &lt;span class="o">*&lt;/span>&lt;span class="n">name&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kt">void&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="o">*&lt;/span>&lt;span class="n">function&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="kt">void&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">};&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>使用下面的宏可以简洁方便地定义多个结构体&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;span class="lnt">7
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-cpp" data-lang="cpp">&lt;span class="line">&lt;span class="cl">&lt;span class="cp">#define COMMAND(NAME) { #NAME, NAME ## _command }
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cp">&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">struct&lt;/span> &lt;span class="nc">command&lt;/span> &lt;span class="n">commands&lt;/span>&lt;span class="p">[]&lt;/span> &lt;span class="o">=&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">COMMAND&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="n">quit&lt;/span>&lt;span class="p">),&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">COMMAND&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="n">help&lt;/span>&lt;span class="p">),&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">};&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>其中&lt;code>NAME ## _command&lt;/code>的作用就是在&lt;code>NAME&lt;/code>展开后在末尾加上&lt;code>_command&lt;/code>，避免直接连接会导致宏无法被识别的现象。展开后得到&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-cpp" data-lang="cpp">&lt;span class="line">&lt;span class="cl">&lt;span class="k">struct&lt;/span> &lt;span class="nc">command&lt;/span> &lt;span class="n">commands&lt;/span>&lt;span class="p">[]&lt;/span> &lt;span class="o">=&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">{&lt;/span> &lt;span class="s">&amp;#34;quit&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">quit_command&lt;/span> &lt;span class="p">},&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">{&lt;/span> &lt;span class="s">&amp;#34;help&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">help_command&lt;/span> &lt;span class="p">},&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">};&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 id="variadic-macros3-可变参数的">Variadic Macros&lt;sup id="fnref:3">&lt;a href="#fn:3" class="footnote-ref" role="doc-noteref">3&lt;/a>&lt;/sup> (可变参数的)&lt;/h2>
+&lt;p>可变参数的用法与普通代码中的可变参数用法是一致的，即通过对最后一个参数进行特殊声明来让这个宏可以接受变长的参数。举例如下：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-cpp" data-lang="cpp">&lt;span class="line">&lt;span class="cl">&lt;span class="cp">#define eprintf(…) fprintf (stderr, __VA_ARGS__)
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cp">#define eprintf(args…) fprintf (stderr, args)
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>这两个宏的展开效果是一样的，如果在代码中插入&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-cpp" data-lang="cpp">&lt;span class="line">&lt;span class="cl">&lt;span class="n">eprintf&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;%s:%d: &amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">input_file&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">lineno&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>则会展开成&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-cpp" data-lang="cpp">&lt;span class="line">&lt;span class="cl">&lt;span class="n">fprintf&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="n">stderr&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s">&amp;#34;%s:%d: &amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">input_file&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">lineno&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>从上面的代码可以看出，如果使用&lt;code>...&lt;/code>来表示变长参数，那么在宏定义中就用预定义宏变量&lt;code>__VA_ARGS__&lt;/code>来代表这些参数，如果是在某一个参数名的后面加上&lt;code>...&lt;/code>，那么就是用将这个参数变成变长参数。&lt;/p>
+&lt;p>另外，变长参数之前可以有普通的参数，如&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-cpp" data-lang="cpp">&lt;span class="line">&lt;span class="cl">&lt;span class="cp">#define eprintf(format, …) fprintf (stderr, format, __VA_ARGS__)
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>不过需要注意的是，在标准C中这样的情况下变长参数至少需要输入一个参数，否则在转义时参数末尾会多一个逗号。即&lt;code>eprintf(&amp;quot;success!\n&amp;quot;, );&lt;/code>会变成&lt;code>fprintf(stderr, &amp;quot;success!\n&amp;quot;, );&lt;/code>。在GNU CPP中这个问题可以通过在&lt;code>__VA_ARGS__&lt;/code>前面加上&lt;code>##&lt;/code>符号来解决。&lt;/p>
+&lt;h2 id="predefined-macros4-预定义的宏">Predefined Macros&lt;sup id="fnref:4">&lt;a href="#fn:4" class="footnote-ref" role="doc-noteref">4&lt;/a>&lt;/sup> (预定义的宏)&lt;/h2>
+&lt;p>在标准中有提供一些内置的宏，可以给调试提供很多方便~&lt;/p>
+&lt;ul>
+&lt;li>&lt;code>__FILE__&lt;/code>：当前文件的路径名&lt;/li>
+&lt;li>&lt;code>__LINE__&lt;/code>：调用处的行号&lt;/li>
+&lt;li>&lt;code>__func__&lt;/code>(C99)/&lt;code>__FUNCTION__&lt;/code>(GCC)：调用处所属的函数名&lt;/li>
+&lt;li>&lt;code>__DATE__&lt;/code>：处理器上当前的日期&lt;/li>
+&lt;li>&lt;code>__TIME__&lt;/code>：处理器上当前的时间&lt;/li>
+&lt;li>&lt;code>__STDC_VERSION__&lt;/code>：C标准的版本，例如C11标准下会展开成201103&lt;/li>
+&lt;li>&lt;code>__cplusplus&lt;/code>：在C++编译器时会被定义，展开结果同&lt;code>__STDC_VERSION__&lt;/code>
+其他还有很多的不在标准中的预定义的宏，具体可以查看编译器的说明。其中GNU C的预定义宏可以参考&lt;a class="link" href="https://gcc.gnu.org/onlinedocs/cpp/Common-Predefined-Macros.html#Common-Predefined-Macros" target="_blank" rel="noopener"
+>Common Predefined Macros&lt;/a>&lt;/li>
+&lt;/ul>
+&lt;h2 id="directives-within-macro-arguments5-在宏参数里修改宏">Directives Within Macro Arguments&lt;sup id="fnref:5">&lt;a href="#fn:5" class="footnote-ref" role="doc-noteref">5&lt;/a>&lt;/sup> (在宏参数里修改宏)&lt;/h2>
+&lt;p>GNU编译器还提供了在展开宏的参数时修改宏的功能。。。这个功能非常少用，先举个病态的例子：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-cpp" data-lang="cpp">&lt;span class="line">&lt;span class="cl">&lt;span class="cp">#define f(x) x x
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cp">&lt;/span>&lt;span class="n">f&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="mi">1&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cp">#undef f
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cp">#define f 2
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cp">&lt;/span>&lt;span class="n">f&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>这一段语句展开后得到的结果是&lt;code>1 2 1 2&lt;/code>，这就是在参数中修改宏。但是这个宏非常影响阅读，太tricky了，最好还是别用。&lt;/p>
+&lt;div class="footnotes" role="doc-endnotes">
+&lt;hr>
+&lt;ol>
+&lt;li id="fn:1">
+&lt;p>&lt;a class="link" href="https://gcc.gnu.org/onlinedocs/cpp/Stringizing.html#Stringizing" target="_blank" rel="noopener"
+>GCC文档中的Stringizing部分&lt;/a>&amp;#160;&lt;a href="#fnref:1" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
+&lt;/li>
+&lt;li id="fn:2">
+&lt;p>&lt;a class="link" href="https://gcc.gnu.org/onlinedocs/cpp/Concatenation.html#Concatenation" target="_blank" rel="noopener"
+>GCC文档中的Concatenation部分&lt;/a>&amp;#160;&lt;a href="#fnref:2" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
+&lt;/li>
+&lt;li id="fn:3">
+&lt;p>&lt;a class="link" href="https://gcc.gnu.org/onlinedocs/cpp/Variadic-Macros.html#Variadic-Macros" target="_blank" rel="noopener"
+>GCC文档中的Variadic部分&lt;/a>&amp;#160;&lt;a href="#fnref:3" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
+&lt;/li>
+&lt;li id="fn:4">
+&lt;p>&lt;a class="link" href="https://gcc.gnu.org/onlinedocs/cpp/Predefined-Macros.html#Predefined-Macros" target="_blank" rel="noopener"
+>GCC文档中的预定义宏&lt;/a>&amp;#160;&lt;a href="#fnref:4" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
+&lt;/li>
+&lt;li id="fn:5">
+&lt;p>&lt;a class="link" href="https://gcc.gnu.org/onlinedocs/cpp/Directives-Within-Macro-Arguments.html#Directives-Within-Macro-Arguments" target="_blank" rel="noopener"
+>GCC文档中Directives部分&lt;/a>&amp;#160;&lt;a href="#fnref:5" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
+&lt;/li>
+&lt;/ol>
+&lt;/div></description></item></channel></rss>

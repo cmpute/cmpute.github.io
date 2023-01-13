@@ -1,0 +1,315 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>TeX on JacobZ</title><link>https://zyxin.xyz/blog/tags/TeX/</link><description>Recent content in TeX on JacobZ</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><lastBuildDate>Tue, 22 Aug 2017 00:00:00 +0000</lastBuildDate><atom:link href="https://zyxin.xyz/blog/tags/TeX/index.xml" rel="self" type="application/rss+xml"/><item><title>Word - 快速输入数学公式</title><link>https://zyxin.xyz/blog/2017-08/WordMath/</link><pubDate>Tue, 22 Aug 2017 00:00:00 +0000</pubDate><guid>https://zyxin.xyz/blog/2017-08/WordMath/</guid><description>&lt;p>周围很多人对Word中输入公式的方式非常不满，认为在Word中打公式太慢，因而转投LaTeX。每当发现这样的情况，我就会告诉他们其实Word现在输入公式已经可以非常快了，而且相比TeX，可以实时预览能方便太多！我的大部分复变笔记就是在Surface上全部用Onenote输入的。然而坑爹的就是Word对公式输入的帮助非常少，&lt;del>很难搜到详细的文档&lt;/del>（好吧我被打脸了，这里有官方文档：&lt;a class="link" href="https://support.office.com/en-us/article/Linear-format-equations-using-UnicodeMath-and-LaTeX-in-Word-2E00618D-B1FD-49D8-8CB4-8D17F25754F8" target="_blank" rel="noopener"
+>英文&lt;/a>|&lt;a class="link" href="https://support.office.com/zh-cn/article/%E5%9C%A8-Word-%E4%B8%AD%E4%BD%BF%E7%94%A8-UnicodeMath-%E5%92%8C%E4%B9%B3%E8%83%B6%E6%BC%86%E7%BA%BF%E6%80%A7%E6%A0%BC%E5%BC%8F%E5%85%AC%E5%BC%8F-2E00618D-B1FD-49D8-8CB4-8D17F25754F8" target="_blank" rel="noopener"
+>中文&lt;/a>）。因此此文的目的就在于详细展示一下Word中快速输入公式的技巧，造福广大苦逼工科生。&lt;/p>
+&lt;p>在Office2010之前的早期版本，Word中的公式是MathType通过“域”的方式插入的（类似于在Word中插入Visio图表的样子），实际渲染时直接是生成图片，而如果需要编辑的话得在外部程序MathType中编辑。这个方式有很多弊端，一很丑，二生成的pdf的公式是图片，三操作很不方便。而在近期的Office版本中公式输入大有改进，并且在&lt;strong>PPT、Onenote（包括Win10的UWP版）等Office软件&lt;/strong>中已经全面支持native体验的公式输入（公式编辑器貌似被称作&lt;em>UnicodeMath&lt;/em>，在Office大部分产品中都已包含），现在我打公式的速度已经起飞了。&lt;/p>
+&lt;h2 id="基本操作">基本操作&lt;/h2>
+&lt;p>在Word中任意位置按下&lt;kbd>Alt&lt;/kbd>+&lt;kbd>=&lt;/kbd>（Mac中是&lt;kbd>Control&lt;/kbd>+&lt;kbd>=&lt;/kbd>）可以切换公式编辑，或者选中文字按下&lt;kbd>Alt&lt;/kbd>+&lt;kbd>=&lt;/kbd>把它变成公式，再按&lt;kbd>Ctrl&lt;/kbd>+&lt;kbd>I&lt;/kbd>可以设置成斜体。输入内置公式或者拷入的公式可以按&lt;kbd>Enter&lt;/kbd>可以整体格式化。对于格式化的公式可以选择“线性”格式查看原始文字。在公式编辑中，快捷命令通过空格可以立即转换成格式化后的公式形式，因此当公式没有按照你想要的形式生成时可以按空格试试。&lt;/p>
+&lt;p>例如内置公式&lt;code>(a+b)^n=∑_(k=0)^n▒〖(n¦k) a^k b^(n-k) 〗&lt;/code>，选中它后按下&lt;kbd>Alt&lt;/kbd>+&lt;kbd>=&lt;/kbd>，然后把光标移到末尾按回车即可变成格式化的公式：
+$$(a+b)^n=\sum_{k=0}^n\binom{n}{k}a^kb^{n-k}$$&lt;/p>
+&lt;p>在Word公式中有一些内置的函数识别（例如sin、exp），这些函数的名字打完后按空格会自动生成公式块，并且取消函数名称的斜体显示。即$sin$ → $\sin\square$&lt;/p>
+&lt;blockquote>
+&lt;p>内置的函数名的列表可以在Word的公式选项中“可识别的按钮”面板中查看&lt;/p>
+&lt;p>&lt;img src="https://zyxin.xyz/blog/blog/2017-08/WordMath/word_math_funcs.png"
+width="673"
+height="297"
+loading="lazy"
+alt="内置函数列表"
+class="gallery-image"
+data-flex-grow="226"
+data-flex-basis="543px"
+>&lt;/p>
+&lt;/blockquote>
+&lt;h2 id="快捷命令">快捷命令&lt;/h2>
+&lt;p>公式输入有不少快捷命令（转义符），熟练掌握就能大大提高速度。&lt;/p>
+&lt;blockquote>
+&lt;p>Note: 在下面的命令中，&lt;strong>空格是很重要&lt;/strong>的。如果代码中有空格的话代表在Word中输入时也要按下空格。&lt;/p>
+&lt;/blockquote>
+&lt;h3 id="常规符号">常规符号&lt;/h3>
+&lt;p>&lt;img src="https://zyxin.xyz/blog/blog/2017-08/WordMath/word_symbol.jpg"
+width="936"
+height="258"
+loading="lazy"
+class="gallery-image"
+data-flex-grow="362"
+data-flex-basis="870px"
+>&lt;/p>
+&lt;p>在Word的公式工具栏中，鼠标移到工具栏符号列表中的符号上即可看见符号的意义和快捷命令。（不过不是所有符号都有快捷键）&lt;/p>
+&lt;p>&lt;img src="https://zyxin.xyz/blog/blog/2017-08/WordMath/word_symbol_sample.png"
+width="290"
+height="212"
+loading="lazy"
+alt="一个例子"
+class="gallery-image"
+data-flex-grow="136"
+data-flex-basis="328px"
+>&lt;/p>
+&lt;p>例如在上图中，小于等于的快捷输入方法是&lt;code>\le&lt;/code>、&lt;code>\leq&lt;/code>和&lt;code>&amp;lt;=&lt;/code>，其中输入&lt;code>&amp;lt;=&lt;/code>会自动转换成该符号，而另外两个需要输入后&lt;strong>按空格才会立即转换&lt;/strong>（不按的话在继续输入公式时也会转换）。&lt;/p>
+&lt;blockquote>
+&lt;p>&lt;strong>Tips&lt;/strong>&lt;/p>
+&lt;ul>
+&lt;li>变体字母有三种：手写体（&lt;code>\script$&lt;/code>），花体（&lt;code>\fraktur$&lt;/code>），双线（&lt;code>\double$&lt;/code>），其中&lt;code>$&lt;/code>为任意字母（大小写是对应的）。这三种字母应用在不同的场景，需注意区分。如&lt;code>\doubleR&lt;/code>($\mathbb{R}$)为实数，&lt;code>\scriptR&lt;/code>($\mathcal{R}$)为黎曼积分，&lt;code>\frakturR&lt;/code>($\mathfrak{R}$)为实部。部分字母的双线形式可以直接通过&lt;code>\$$&lt;/code>打出（如&lt;code>\jj&lt;/code> → $\mathbb{j}$，&lt;code>\Dd&lt;/code> → $\mathbb{D}$）&lt;/li>
+&lt;li>〈与TeX相同〉希腊字母的快捷命令，小写开头为小写，大写开头为大写：&lt;code>\gamma&lt;/code> → γ &lt;code>\Gamma&lt;/code> → Γ。个别字母有多种小写，如&lt;code>\phi&lt;/code> → $\phi$ | &lt;code>\varphi&lt;/code> → $\varphi$。这样的字母有&lt;code>\varepsilon \varphi \varpi \varrho \varsigma \vartheta&lt;/code>。&lt;/li>
+&lt;li>〈与TeX相同〉积分符号、导数等是可以累计的：&lt;code>\int \iint \iiint \oint \oiint \dot \ddot \prime \pprime&lt;/code>&lt;/li>
+&lt;/ul>
+&lt;/blockquote>
+&lt;h3 id="括号">括号&lt;/h3>
+&lt;p>括号会默认配对和自动封闭，如果需要输入不自动配对的括号，或者转义括号，请使用命令输入括号，而不是直接打（括号的快捷命令见下文）。&lt;/p>
+&lt;p>如果只有一边括号，使用位置符可以&lt;code>\open&lt;/code> &lt;code>\close&lt;/code>或&lt;code>\begin&lt;/code> &lt;code>\end&lt;/code>封闭括号块：
+&lt;code>{5x\close&lt;/code>结果为$\{5x$，&lt;code>\open5x}&lt;/code>结果为$5x\}$。当然，直接打&lt;code>{5x&lt;/code>也是可以的，但是这样的话&lt;code>5x&lt;/code>和&lt;code>{&lt;/code>会在同一级，而如果封闭括号块后&lt;code>5x&lt;/code>会被包在一个公式块内，并且可以&lt;strong>自动根据括号内内容调整大小&lt;/strong>。&lt;/p>
+&lt;p>&lt;em>例：&lt;code>123\open 45\close &lt;/code>=&lt;code>123\begin 45\end &lt;/code>=&lt;code>123〖45〗 &lt;/code>=&lt;code>123\box 45 &lt;/code> → $123\boxed{45}$&lt;/em>&lt;/p>
+&lt;h3 id="排版符号">排版符号&lt;/h3>
+&lt;ul>
+&lt;li>位置格式符：
+&lt;ul>
+&lt;li>&lt;code>\above&lt;/code>: 位于上方 （显示为 $\perp$ ，即&lt;code>\perp&lt;/code>/&lt;code>\bot&lt;/code>）&lt;/li>
+&lt;li>&lt;code>\below&lt;/code>: 位于下方 （显示为 $\top$ ，即&lt;code>\top&lt;/code>）&lt;/li>
+&lt;li>&lt;code>\left&lt;/code>: 位于左侧 （显示为 $\vdash$ ，即&lt;code>\vdash&lt;/code>）&lt;/li>
+&lt;li>&lt;code>\right&lt;/code>: 位于右侧 （显示为 $\dashv$ ，即&lt;code>\dashv&lt;/code>）&lt;/li>
+&lt;li>&lt;code>\atop&lt;/code>: 上下排列 （显示为 ¦ ）&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>&lt;code>\rect&lt;/code>: 矩形方框&lt;/li>
+&lt;li>&lt;code>\matrix&lt;/code>: 矩阵 &amp;amp; &lt;code>\eqarray&lt;/code>：多行公式
+&lt;ul>
+&lt;li>&lt;code>&amp;amp;&lt;/code>: 换列（可以看作&lt;code>\t&lt;/code>，对应TeX的&lt;code>&amp;amp;&lt;/code>）
+&lt;ul>
+&lt;li>也可以作为参数分隔：&lt;em>&lt;code>\sqrt(5&amp;amp;2)&lt;/code> → $\sqrt[5]2$&lt;/em>&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>&lt;code>@&lt;/code>: 换行（可以看作&lt;code>\n&lt;/code>，对应TeX的&lt;code>\\&lt;/code>）&lt;/li>
+&lt;li>&lt;em>例：&lt;code>\matrix (A&amp;amp;B@C&amp;amp;D) &lt;/code> → $\begin{array}{lc}A&amp;amp;B\\C&amp;amp;D\end{array}$&lt;/em>&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>&lt;code>\of&lt;/code>：构建子区域，用于文字运算的表达
+&lt;ul>
+&lt;li>&lt;em>例：&lt;code>cov \of (A^T A) &lt;/code> → $\mathrm{cov}\left(A^TA\right)$&lt;/em>&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;blockquote>
+&lt;p>&lt;strong>Tips&lt;/strong>
+多行公式可以利用&lt;code>&amp;amp;&lt;/code>指定对齐位置：&lt;/p>
+&lt;ul>
+&lt;li>&lt;code>\eqarray (x+y&amp;amp;=2@x+y+z&amp;amp;=3@z&amp;amp;=5)&lt;/code> $$\begin{array}{rcl}x+y&amp;amp;=&amp;amp;2\\x+y+z&amp;amp;=&amp;amp;3\\z&amp;amp;=&amp;amp;5\end{array}$$&lt;/li>
+&lt;li>&lt;code>\eqarray (&amp;amp;x+y=2@&amp;amp;x+y+z=3@&amp;amp;z=5)&lt;/code> $$\begin{align}&amp;amp;x+y=2\\&amp;amp;x+y+z=3\\&amp;amp;z=5\end{align}$$&lt;/li>
+&lt;/ul>
+&lt;p>多行公式对齐也可以用&lt;kbd>Shift&lt;/kbd>+&lt;kbd>Enter&lt;/kbd>换行之后，右键在菜单中选定指定位置对齐。不过此方法只能指定一个对齐位置。&lt;/p>
+&lt;p>使用&lt;code>\Vmatrix&lt;/code>开头可以直接输入竖线包围的矩阵：&lt;/p>
+&lt;ul>
+&lt;li>&lt;code>\Vmatrix (A&amp;amp;B@C&amp;amp;D) &lt;/code> $$\begin{Vmatrix}A&amp;amp;B\\C&amp;amp;D\end{Vmatrix}$$&lt;/li>
+&lt;/ul>
+&lt;/blockquote>
+&lt;h3 id="自动合并">自动合并&lt;/h3>
+&lt;p>在公式输入时，有不少的符号会自动合并，便于你输入一些常用符号。如之前所说，这些快捷方式都能在工具栏的提示框中可以找到，但是由于不好找，这里还是总结一下:&lt;/p>
+&lt;ul>
+&lt;li>&lt;code>+-&lt;/code> → $\pm$, &lt;code>-+&lt;/code> → $\mp$&lt;/li>
+&lt;li>&lt;code>...&lt;/code> → $\ldots$&lt;/li>
+&lt;li>&lt;code>/=&lt;/code> → $\neq$, &lt;code>~=&lt;/code> → $\cong$, &lt;code>/~=&lt;/code> → $\ncong$ &lt;code>:=&lt;/code> → $\mathrel{\vcenter{:}}=$&lt;/li>
+&lt;li>&lt;code>/&amp;gt;&lt;/code> → $\ngeq$, &lt;code>/&amp;lt;&lt;/code> → $\nleq$&lt;/li>
+&lt;li>&lt;code>&amp;gt;&amp;gt;&lt;/code> → $\gg$, &lt;code>&amp;lt;&amp;lt;&lt;/code> → $\ll$&lt;/li>
+&lt;li>&lt;code>&amp;gt;=&lt;/code> → $\geq$, &lt;code>&amp;lt;=&lt;/code> → $\leq$&lt;/li>
+&lt;li>&lt;code>-&amp;gt;&lt;/code> → $\rightarrow$, &lt;code>&amp;lt;-&lt;/code> → $\leftarrow$&lt;/li>
+&lt;li>&lt;code>&amp;gt;-&lt;/code> → $\succ$, &lt;code>-&amp;lt;&lt;/code> → $\prec$ (好像只有OneNote支持)&lt;/li>
+&lt;li>&lt;code>=&amp;gt;&lt;/code> → $\Rightarrow$ (好像只有OneNote支持)&lt;/li>
+&lt;/ul>
+&lt;h2 id="工具栏中常用结构的输入">工具栏中常用结构的输入&lt;/h2>
+&lt;p>&lt;img src="https://zyxin.xyz/blog/blog/2017-08/WordMath/word_math_tools.png"
+width="501"
+height="67"
+loading="lazy"
+alt="Word中的公式工具栏"
+class="gallery-image"
+data-flex-grow="747"
+data-flex-basis="1794px"
+>&lt;/p>
+&lt;h3 id="分数">分数&lt;/h3>
+&lt;ul>
+&lt;li>$\frac{A}{B}$ ← &lt;code>A/B&lt;/code>&lt;/li>
+&lt;li>&lt;math xmlns="http://www.w3.org/1998/Math/MathML">&lt;mfrac bevelled="true">&lt;mi>A&lt;/mi>&lt;mi>B&lt;/mi>&lt;/mfrac>&lt;/math> ← &lt;code>A\sdiv B&lt;/code>&lt;/li>
+&lt;li>$A⁄B$ ← &lt;code>A\ldiv B&lt;/code>&lt;/li>
+&lt;li>$\partial A$ ← &lt;code>\partial A&lt;/code>（偏导）&lt;/li>
+&lt;/ul>
+&lt;h3 id="上下标">上下标&lt;/h3>
+&lt;ul>
+&lt;li>$A^B$ ← &lt;code>A^B&lt;/code>&lt;/li>
+&lt;li>$A_B$ ← &lt;code>A_B&lt;/code>&lt;/li>
+&lt;li>$A^B_C$ ← &lt;code>A^B_C&lt;/code>&lt;/li>
+&lt;li>$_C^BA$ ← &lt;code>(_C^B)A&lt;/code>&lt;/li>
+&lt;/ul>
+&lt;h3 id="根式">根式&lt;/h3>
+&lt;ul>
+&lt;li>$\sqrt A$ ← &lt;code>\sqrt A&lt;/code>&lt;/li>
+&lt;li>$\sqrt[B]A$ ← &lt;code>\sqrt (B&amp;amp;A)&lt;/code> 或 &lt;code>\root B\of A&lt;/code>&lt;/li>
+&lt;li>$\sqrt[3]A$ ← &lt;code>\cbrt A&lt;/code>&lt;/li>
+&lt;li>$\sqrt[4]A$ ← &lt;code>\qdrt A&lt;/code>&lt;/li>
+&lt;/ul>
+&lt;h3 id="积分大型运算符">积分、大型运算符&lt;/h3>
+&lt;ul>
+&lt;li>$\int A$ ← &lt;code>\int \of A&lt;/code>&lt;/li>
+&lt;li>$\int^B_C A$ ← &lt;code>\int^B_C\of A&lt;/code>&lt;/li>
+&lt;/ul>
+&lt;blockquote>
+&lt;p>&lt;strong>Tips&lt;/strong>&lt;/p>
+&lt;ul>
+&lt;li>积分号可以换成如下符号：〈与TeX相同〉
+&lt;ul>
+&lt;li>积分: &lt;code>\int \iint \iiint \oint \oiint \oiiint \coint \aoint&lt;/code>&lt;/li>
+&lt;li>求和/积: &lt;code>\sum \amalg \prod \coprod&lt;/code>&lt;/li>
+&lt;li>逻辑: &lt;code>\bigcap \bigcup \bigsqcup \bigvee \bigwedge&lt;/code>&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>转换&lt;img src="https://zyxin.xyz/blog/blog/2017-08/WordMath/word_sum.png"
+width="85"
+height="92"
+loading="lazy"
+class="gallery-image"
+data-flex-grow="92"
+data-flex-basis="221px"
+>这两种形式的符号有两种方法：
+&lt;ol>
+&lt;li>右键积分符号
+&lt;img src="https://zyxin.xyz/blog/blog/2017-08/WordMath/word_sum_change1.png"
+width="266"
+height="122"
+loading="lazy"
+class="gallery-image"
+data-flex-grow="218"
+data-flex-basis="523px"
+>
+右键菜单中还有隐藏上下限等选项。&lt;/li>
+&lt;li>在公式选项页面卡中
+&lt;img src="https://zyxin.xyz/blog/blog/2017-08/WordMath/word_sum_change2.png"
+width="544"
+height="235"
+loading="lazy"
+class="gallery-image"
+data-flex-grow="231"
+data-flex-basis="555px"
+>
+（前提是公式显示为“显示”模式而非“内嵌”模式）&lt;/li>
+&lt;/ol>
+&lt;/li>
+&lt;/ul>
+&lt;/blockquote>
+&lt;h3 id="括号-1">括号&lt;/h3>
+&lt;ul>
+&lt;li>$\left(A\right)$ ← &lt;code>(A) &lt;/code>&lt;/li>
+&lt;li>$A)$ ← &lt;code>\open A) &lt;/code>&lt;/li>
+&lt;li>$(A$ ← &lt;code>(A\close &lt;/code>&lt;/li>
+&lt;li>$\left(A\vert B\right)$ ← &lt;code>(A\vbar B) &lt;/code> （分隔符能分割出两个公式块）&lt;/li>
+&lt;li>$\binom{A}{B}$ ← &lt;code>(A\atop B) &lt;/code>&lt;/li>
+&lt;li>$\left\{\begin{aligned}A\\B\end{aligned}\right.$ ← &lt;code>{\matrix (A@B)\close &lt;/code>&lt;/li>
+&lt;/ul>
+&lt;blockquote>
+&lt;p>括号有如下选择：&lt;code>\bra \ket \langle \rangle \Rangle \lbrace \rbrace \lbbrack \Rbrack \lbrack \rbrack \lceil \rceil \lfloor \rfloor \vert \Vert \lmoust \rmoust&lt;/code>&lt;/p>
+&lt;/blockquote>
+&lt;h3 id="导数符号上下标">导数符号（上下标）&lt;/h3>
+&lt;ul>
+&lt;li>$\overrightarrow A$ ← &lt;code>A\vec &lt;/code>&lt;/li>
+&lt;/ul>
+&lt;blockquote>
+&lt;p>相同用法的符号有：&lt;code>\dot \ddot \dddot \bar \Bar \ubar \Ubar \vec \lvec \hvec=\rhvec \lhvec \tvec \hat \tilde&lt;/code>，以及音标符号：&lt;code>\grave \acute \breve \check&lt;/code>&lt;/p>
+&lt;/blockquote>
+&lt;ul>
+&lt;li>$\overbrace A^B$ ← &lt;code>\overbrace A\above B &lt;/code>&lt;/li>
+&lt;/ul>
+&lt;blockquote>
+&lt;p>相同用法的符号有：&lt;code>\overbar \overbrace \overbracket \overline \overparen \overshell&lt;/code>&lt;/p>
+&lt;/blockquote>
+&lt;ul>
+&lt;li>$\underbrace A_B$ ← &lt;code>\underbrace A\below B &lt;/code>&lt;/li>
+&lt;/ul>
+&lt;blockquote>
+&lt;p>相同用法的符号有：&lt;code>\underbar \underbrace \underbracket \underline \underparen&lt;/code>&lt;/p>
+&lt;/blockquote>
+&lt;ul>
+&lt;li>$\boxed A$ ← &lt;code>\rect A &lt;/code>&lt;/li>
+&lt;/ul>
+&lt;h3 id="极限和对数">极限和对数&lt;/h3>
+&lt;ul>
+&lt;li>$\log_B\left(A\right)$ ← &lt;code>log_B A&lt;/code>&lt;/li>
+&lt;li>&lt;math xmlns="http://www.w3.org/1998/Math/MathML">&lt;munder>&lt;mi>lim&lt;/mi>&lt;mi>B&lt;/mi>&lt;/munder>&lt;mi>A&lt;/mi>&lt;/math> ← &lt;code>lim\below B A&lt;/code> 或 &lt;code>lim_B A &lt;/code>&lt;/li>
+&lt;/ul>
+&lt;blockquote>
+&lt;p>&lt;code>min&lt;/code>、&lt;code>max&lt;/code>、&lt;code>sup&lt;/code>、&lt;code>inf&lt;/code>等用法类似&lt;/p>
+&lt;/blockquote>
+&lt;h3 id="运算符">运算符&lt;/h3>
+&lt;ul>
+&lt;li>$\overset{def}{=}$ ← &lt;code>\defeq&lt;/code>， $\overset\cdot=$ ← &lt;code>\doteq&lt;/code>， $\overset\Delta=$ ← &lt;code>\Deltaeq&lt;/code>&lt;/li>
+&lt;li>$\xrightarrow A$ ← &lt;code>\rightarrow \below A&lt;/code>&lt;/li>
+&lt;li>$\xleftarrow[A]{}$ ← &lt;code>\leftarrow \above A&lt;/code>&lt;/li>
+&lt;/ul>
+&lt;blockquote>
+&lt;p>可以替换的箭头符号：&lt;code>\leftarrow \Leftarrow \leftharpoondown \leftharpoonup \rightarrow \Rightarrow \rightharpoondown \rightharpoonup \leftrightarrow \Leftrightarrow \Longleftarrow \Longleftrightarrow \Longrightarrow \lrhar&lt;/code>&lt;/p>
+&lt;/blockquote>
+&lt;h3 id="矩阵">矩阵&lt;/h3>
+&lt;ul>
+&lt;li>$\begin{array}{ccc}A&amp;amp;B&amp;amp;C\\D&amp;amp;E&amp;amp;F\end{array}$ ← &lt;code>\matrix (A&amp;amp;B&amp;amp;C@D&amp;amp;E&amp;amp;F)&lt;/code>&lt;/li>
+&lt;li>常用占位符:
+&lt;ul>
+&lt;li>$\cdots$ ← &lt;code>\cdots&lt;/code>&lt;/li>
+&lt;li>$\ddots$ ← &lt;code>\ddots&lt;/code>&lt;/li>
+&lt;li>$\vdots$ ← &lt;code>\vdots&lt;/code>&lt;/li>
+&lt;li>&lt;math xmlns="http://www.w3.org/1998/Math/MathML">&lt;mo>⋰&lt;/mo>&lt;/math> ← &lt;code>\rddots&lt;/code>&lt;/li>
+&lt;li>$\dots$ ← &lt;code>\dots&lt;/code> 或 &lt;code>\ldots&lt;/code>&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;blockquote>
+&lt;p>&lt;em>例：与括号结合：&lt;code>(\matrix (A&amp;amp;\cdots &amp;amp;B@\vdots &amp;amp;\ddots &amp;amp;\vdots @C&amp;amp;\cdots &amp;amp;D) ) &lt;/code> → $\begin{pmatrix}A&amp;amp;\cdots&amp;amp;B\\\vdots&amp;amp;\ddots&amp;amp;\vdots\\C&amp;amp;\cdots&amp;amp;D\end{pmatrix}$&lt;/em>&lt;/p>
+&lt;/blockquote>
+&lt;h2 id="预置公式">预置公式&lt;/h2>
+&lt;ul>
+&lt;li>&lt;code>\binomial&lt;/code>: 二项式展开&lt;/li>
+&lt;li>&lt;code>\identitymatrix&lt;/code>: 单位矩阵&lt;/li>
+&lt;li>&lt;code>\integral&lt;/code>: 某积分式&lt;/li>
+&lt;li>&lt;code>\limit&lt;/code>: e的极限定义式&lt;/li>
+&lt;li>&lt;code>\quadratic&lt;/code>: 一元二次方程根&lt;/li>
+&lt;/ul>
+&lt;blockquote>
+&lt;p>在工具栏里没有显示出来的命令还有很多，比如空格命令：&lt;code>\nbsp \thicksp \thinsp \vthicksp \zwnj \zwsp&lt;/code>&lt;/p>
+&lt;/blockquote>
+&lt;h2 id="其他技巧">其他技巧&lt;/h2>
+&lt;h3 id="快捷命令列表">快捷命令列表&lt;/h3>
+&lt;p>对于Word中符号的快捷命令，有很多都是与TeX相似的，因此可以参照TeX的符号列表查找符号的输入。此外，还可以参考前文提到的&lt;a class="link" href="https://support.office.com/en-us/article/Linear-format-equations-using-UnicodeMath-and-LaTeX-in-Word-2E00618D-B1FD-49D8-8CB4-8D17F25754F8" target="_blank" rel="noopener"
+>很全面的官方参考文档&lt;/a>，以及在百度我搜到的唯一一份&lt;a class="link" href="http://wenku.baidu.com/link?url=Dq-oZHiINdb5sQQE-U9gymEPt5i8V7lJMhWj5pfRjc-CW_vSb7Mbgpyvq6c412RMofyQX2h8DQ0kNlslZCRNY5Z90PrfnHZb8ddgFnyD-4G" target="_blank" rel="noopener"
+>介绍Word公式快捷输入的文档&lt;/a>，这里面有一部分命令的列表。&lt;/p>
+&lt;p>工具栏内所展示的快捷命令其实不完全，Word中所有内置的快捷命令可以通过“公式选项”→“数学符号自动更正”菜单进行查看，不过这里面的列表可读性太差，因此不推荐使用。
+&lt;img src="https://zyxin.xyz/blog/blog/2017-08/WordMath/word_math_shortcuts.png"
+width="768"
+height="554"
+loading="lazy"
+alt="快捷命令列表"
+class="gallery-image"
+data-flex-grow="138"
+data-flex-basis="332px"
+>&lt;/p>
+&lt;h3 id="使用mathml来进行tex与word公式的转换">使用MathML来进行TeX与Word公式的转换&lt;/h3>
+&lt;p>MathML是一种用于描述公式的XML语言，十分强大，公式的描述能力要强于Word与TeX，但缺点就在于过于繁杂。MathML格式的公式可以直接拷贝进Word公式编辑中，因此如果需要在TeX与Word公式之间进行转换的话，可以先将TeX公式渲染为MathML，然后将MathML导入Word。这里推荐一个网站：&lt;a class="link" href="http://www.wiris.com/editor/demo/en/mathml-latex" target="_blank" rel="noopener"
+>Wiris Editor&lt;/a>&lt;/p>
+&lt;p>此外在Word2016以后，已经直接支持内置公式与TeX公式的转换了。&lt;a class="link" href="https://support.office.com/zh-cn/article/%E7%BC%96%E5%86%99%E3%80%81%E6%8F%92%E5%85%A5%E6%88%96%E6%9B%B4%E6%94%B9%E5%85%AC%E5%BC%8F-1D01CABC-CEB1-458D-BC70-7F9737722702" target="_blank" rel="noopener"
+>详见官网&lt;/a>。&lt;/p>
+&lt;h3 id="公式自动编号">公式自动编号&lt;/h3>
+&lt;p>编写论文时经常会遇到公式自动编号的问题，这是很多人转投TeX的另一个原因。但其实在Word里实现公式自动编号也很简单，可以用一个&lt;em>无框表格&lt;/em>把公式包起来，第一个单元格放公式，第二个单元格放编号。编号可以用自定义的编号样式来完成，设定好编号以后输入新公式时编号使用同样的样式即可完成自动编号了。&lt;/p>
+&lt;p>&lt;img src="https://zyxin.xyz/blog/blog/2017-08/WordMath/word_math_number.png"
+width="529"
+height="245"
+loading="lazy"
+alt="自定义编号样式"
+class="gallery-image"
+data-flex-grow="215"
+data-flex-basis="518px"
+>&lt;/p>
+&lt;h3 id="其他资料">其他资料&lt;/h3>
+&lt;ul>
+&lt;li>&lt;a class="link" href="http://unicode.org/notes/tn28/UTN28-PlainTextMath-v3.pdf" target="_blank" rel="noopener"
+>Unicode Nearly Plain-Text Encoding of MathematicsVersion 3&lt;/a>&lt;/li>
+&lt;li>&lt;a class="link" href="https://www.cs.bgu.ac.il/~khitron/Equation%20Editor.pdf" target="_blank" rel="noopener"
+>Word数学符号输入手册&lt;/a>&lt;/li>
+&lt;li>&lt;a class="link" href="http://mohu.org/info/symbols/symbols.htm" target="_blank" rel="noopener"
+>常用数学符号的 LaTeX 表示方法&lt;/a>：可以参考里面的符号命令，与Word是基本一致的。&lt;/li>
+&lt;li>&lt;a class="link" href="http://www.wiris.com/editor/demo/en/developers#mathml-latex" target="_blank" rel="noopener"
+>MathML与LaTeX生成器&lt;/a>&lt;/li>
+&lt;/ul>
+&lt;hr>
+&lt;p>本文介绍了一下Word中公式输入的快捷键，Office中有很多没有well-documented的功能，大家可以多去挖掘挖掘，能够有效提高效率~&lt;/p></description></item></channel></rss>

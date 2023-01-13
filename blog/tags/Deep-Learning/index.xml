@@ -1,0 +1,322 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Deep Learning on JacobZ</title><link>https://zyxin.xyz/blog/tags/Deep-Learning/</link><description>Recent content in Deep Learning on JacobZ</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><lastBuildDate>Thu, 21 Sep 2017 00:00:00 +0000</lastBuildDate><atom:link href="https://zyxin.xyz/blog/tags/Deep-Learning/index.xml" rel="self" type="application/rss+xml"/><item><title>Windows10下配置Keras + CNTK (GPU) + Tensorflow (GPU)</title><link>https://zyxin.xyz/blog/2017-09/InstallCNTKKeras/</link><pubDate>Thu, 21 Sep 2017 00:00:00 +0000</pubDate><guid>https://zyxin.xyz/blog/2017-09/InstallCNTKKeras/</guid><description>&lt;blockquote>
+&lt;p>本文安装时的各软件版本为&lt;/p>
+&lt;ul>
+&lt;li>Windows 10.0.15063&lt;/li>
+&lt;li>Visual Studio 2017 (VS15.2)&lt;/li>
+&lt;li>Anaconda3 4.3.25&lt;/li>
+&lt;li>CNTK 2.2&lt;/li>
+&lt;li>Tensorflow 1.4&lt;/li>
+&lt;li>Keras 2.0.6&lt;/li>
+&lt;li>NVIDIA Geforce Notebook Driver 376.54&lt;/li>
+&lt;/ul>
+&lt;/blockquote>
+&lt;p>配这一波环境又让我对微软爸爸的信仰值飙升一大截！特此记录一下安装过程，虽然步骤十分简单没有什么好写的（笑，但是本着能不再踩的坑就不要再踩的原则，还是记录下来吧~&lt;/p>
+&lt;h2 id="安装-cntk">安装 CNTK&lt;/h2>
+&lt;p>不得不说我还是非常喜欢CNTK的，不仅因为它是微软爸爸的产品，能在Windows亲儿子上运行，而且性能很不错（关于性能的比较可以参见&lt;a class="link" href="https://github.com/zer0n/deepframeworks/blob/master/README.md" target="_blank" rel="noopener"
+>Github一篇评测&lt;/a>、&lt;a class="link" href="https://arxiv.org/abs/1608.07249v7" target="_blank" rel="noopener"
+>一篇老文&lt;/a>和&lt;a class="link" href="http://www.datasciencecentral.com/profiles/blogs/search-for-the-fastest-deep-learning-framework-supported-by-keras" target="_blank" rel="noopener"
+>一篇新文&lt;/a>），最重要的是它是所有深度学习库里面唯一提供&lt;strong>Pre-built Installation&lt;/strong>的！！不知道多少人在编译Caffe和Tensorflow时被N卡驱动和CUDA、MKL等等安装坑过。。。占空间就罢了，还经常各种报错！而Windows下安装CNTK，由于已经编译好了，就不会碰到这种问题！所以当我得知几个月前Keras已经支持CNTK后端的时候，我立马准备在自己的电脑上装一份了！省的天天跟别人抢服务器= =&lt;/p>
+&lt;p>安装流程可以参考&lt;a class="link" href="https://docs.microsoft.com/en-us/cognitive-toolkit/Setup-Windows-Binary-Script" target="_blank" rel="noopener"
+>官方教程&lt;/a>。首先就是下载CNTK，我当然是选择下载编译后的包啦，直接进入&lt;a class="link" href="https://github.com/Microsoft/CNTK/releases" target="_blank" rel="noopener"
+>CNTK的Release页&lt;/a>找到你需要的版本就可以~（不得再次感叹一声预编译版本好全。。连UWP都有）当然你如果不怕像Linux一样折腾= =那么你可以直接下载源码去编译。&lt;/p>
+&lt;p>下载后解压。注意，解压后的位置直接就是之后CNTK运行的位置，因此后文解压到的目录就称作“CNTK目录”了。然后cd进&lt;code>&amp;lt;CNTK目录&amp;gt;\Scripts\install\windows&lt;/code>运行&lt;code>install.bat&lt;/code>即可安装。为了避免cmd把路径识别成两个参数，请把压缩包解压到一个&lt;strong>不含空格的路径&lt;/strong>中。&lt;/p>
+&lt;p>如果之前已经装了Anaconda，就可以通过&lt;code>AnacondaBasePath&lt;/code>参数指定Anaconda的位置避免重复安装。这里如果你anaconda的安装位置有空格的话batchfile就会同样因为路径问题用不了了，只能上Powershell直接运行ps1脚本。用管理员模式打开Powershell，先在环境变量中添加ps1的模块位置&lt;code>$Env:PSModulePath=$Env:PSModulePath+&amp;quot;;&amp;lt;CNTK目录&amp;gt;\Scripts\install\windows\ps\Modules&amp;quot;&lt;/code>，然后运行&lt;code>ps/install.ps1 -AnacondaBasePath &amp;quot;&amp;lt;Anaconda安装目录&amp;gt;&amp;quot;&lt;/code>，即可安装。如果遇到&lt;code>无法加载文件，因为在此系统中禁止执行脚本。&lt;/code>的报错，可以运行&lt;code>Set-ExecutionPolicy Bypass&lt;/code>命令（不区分大小写），在运行完脚本后运行&lt;code>Set-Execution Restricted&lt;/code>设置回来。&lt;/p>
+&lt;p>此外还可以通过&lt;code>PyVersion&lt;/code>参数来设置conda环境的Python版本，默认的版本是3.5。安装完成后Anaconda中会添加&lt;code>cntk-pyxx&lt;/code>的环境，后两位是你指定的Python版本，后文就用默认的&lt;code>cntk-py35&lt;/code>来表示。&lt;/p>
+&lt;p>安装完成后运行&lt;code>&amp;lt;CNTK目录&amp;gt;\Scripts\cntkpy35.bat&lt;/code>设置环境变量，然后会进入&lt;code>cntk-py35&lt;/code>环境。再cd到&lt;code>&amp;lt;CNTK目录&amp;gt;\Tutorials\HelloWorld-LogisticRegression&lt;/code>，运行&lt;code>cntk configFile=lr_bs.cntk makeMode=false command=Train&lt;/code>即可验证安装。&lt;/p>
+&lt;h2 id="安装-keras">安装 Keras&lt;/h2>
+&lt;p>安装CNTK后安装Keras就很简单了。首先运行&lt;code>activate cntk-py35&lt;/code>进入环境，然后运行&lt;code>pip install keras&lt;/code>即可。&lt;/p>
+&lt;p>然后是把Keras后端切换成CNTK，&lt;a class="link" href="https://keras.io/backend/" target="_blank" rel="noopener"
+>Keras文档&lt;/a>有对应的说明，只需将&lt;code>%USERPROFILE%\.keras\keras.json&lt;/code>中的&lt;code>backend&lt;/code>值改为&lt;code>cntk&lt;/code>。&lt;/p>
+&lt;p>初步测试Keras只需测试&lt;code>import keras&lt;/code>能否成功即可。进一步的测试可以通过运行&lt;a class="link" href="https://github.com/fchollet/keras/blob/master/examples/README.md" target="_blank" rel="noopener"
+>Keras的样例脚本&lt;/a>来完成。运行结果如下：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;span class="lnt">25
+&lt;/span>&lt;span class="lnt">26
+&lt;/span>&lt;span class="lnt">27
+&lt;/span>&lt;span class="lnt">28
+&lt;/span>&lt;span class="lnt">29
+&lt;/span>&lt;span class="lnt">30
+&lt;/span>&lt;span class="lnt">31
+&lt;/span>&lt;span class="lnt">32
+&lt;/span>&lt;span class="lnt">33
+&lt;/span>&lt;span class="lnt">34
+&lt;/span>&lt;span class="lnt">35
+&lt;/span>&lt;span class="lnt">36
+&lt;/span>&lt;span class="lnt">37
+&lt;/span>&lt;span class="lnt">38
+&lt;/span>&lt;span class="lnt">39
+&lt;/span>&lt;span class="lnt">40
+&lt;/span>&lt;span class="lnt">41
+&lt;/span>&lt;span class="lnt">42
+&lt;/span>&lt;span class="lnt">43
+&lt;/span>&lt;span class="lnt">44
+&lt;/span>&lt;span class="lnt">45
+&lt;/span>&lt;span class="lnt">46
+&lt;/span>&lt;span class="lnt">47
+&lt;/span>&lt;span class="lnt">48
+&lt;/span>&lt;span class="lnt">49
+&lt;/span>&lt;span class="lnt">50
+&lt;/span>&lt;span class="lnt">51
+&lt;/span>&lt;span class="lnt">52
+&lt;/span>&lt;span class="lnt">53
+&lt;/span>&lt;span class="lnt">54
+&lt;/span>&lt;span class="lnt">55
+&lt;/span>&lt;span class="lnt">56
+&lt;/span>&lt;span class="lnt">57
+&lt;/span>&lt;span class="lnt">58
+&lt;/span>&lt;span class="lnt">59
+&lt;/span>&lt;span class="lnt">60
+&lt;/span>&lt;span class="lnt">61
+&lt;/span>&lt;span class="lnt">62
+&lt;/span>&lt;span class="lnt">63
+&lt;/span>&lt;span class="lnt">64
+&lt;/span>&lt;span class="lnt">65
+&lt;/span>&lt;span class="lnt">66
+&lt;/span>&lt;span class="lnt">67
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-text" data-lang="text">&lt;span class="line">&lt;span class="cl">(cntk-py35) C:\Users\Jacob&amp;gt;python C:\Users\Jacob\Downloads\mnist_mlp.py
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Using CNTK backend
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Selected GPU[0] GeForce GTX 850M as the process wide default device.
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">60000 train samples
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">10000 test samples
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">_________________________________________________________________
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Layer (type) Output Shape Param #
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">=================================================================
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">dense_1 (Dense) (None, 512) 401920
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">_________________________________________________________________
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">dropout_1 (Dropout) (None, 512) 0
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">_________________________________________________________________
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">dense_2 (Dense) (None, 512) 262656
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">_________________________________________________________________
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">dropout_2 (Dropout) (None, 512) 0
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">_________________________________________________________________
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">dense_3 (Dense) (None, 10) 5130
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">=================================================================
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Total params: 669,706
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Trainable params: 669,706
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Non-trainable params: 0
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">_________________________________________________________________
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Train on 60000 samples, validate on 10000 samples
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Epoch 1/20
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">D:\Program Files\Anaconda3\envs\cntk-py35\lib\site-packages\cntk\core.py:361: UserWarning: your data is of type &amp;#34;float64&amp;#34;, but your input variable (uid &amp;#34;Input75&amp;#34;) expects &amp;#34;&amp;lt;class &amp;#39;numpy.float32&amp;#39;&amp;gt;&amp;#34;. Please convert your data beforehand to speed up training.
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> (sample.dtype, var.uid, str(var.dtype)))
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">60000/60000 [==============================] - 4s - loss: 0.2464 - acc: 0.9248 - val_loss: 0.1097 - val_acc: 0.9653
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Epoch 2/20
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">60000/60000 [==============================] - 3s - loss: 0.1035 - acc: 0.9681 - val_loss: 0.0843 - val_acc: 0.9744
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Epoch 3/20
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">60000/60000 [==============================] - 3s - loss: 0.0742 - acc: 0.9776 - val_loss: 0.0872 - val_acc: 0.9764
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Epoch 4/20
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">60000/60000 [==============================] - 3s - loss: 0.0607 - acc: 0.9822 - val_loss: 0.0688 - val_acc: 0.9804
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Epoch 5/20
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">60000/60000 [==============================] - 3s - loss: 0.0502 - acc: 0.9851 - val_loss: 0.0863 - val_acc: 0.9781
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Epoch 6/20
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">60000/60000 [==============================] - 3s - loss: 0.0424 - acc: 0.9874 - val_loss: 0.0828 - val_acc: 0.9801
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Epoch 7/20
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">60000/60000 [==============================] - 3s - loss: 0.0369 - acc: 0.9890 - val_loss: 0.0758 - val_acc: 0.9812
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Epoch 8/20
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">60000/60000 [==============================] - 3s - loss: 0.0367 - acc: 0.9895 - val_loss: 0.0840 - val_acc: 0.9825
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Epoch 9/20
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">60000/60000 [==============================] - 3s - loss: 0.0338 - acc: 0.9903 - val_loss: 0.1029 - val_acc: 0.9782
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Epoch 10/20
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">60000/60000 [==============================] - 3s - loss: 0.0313 - acc: 0.9912 - val_loss: 0.0837 - val_acc: 0.9827
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Epoch 11/20
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">60000/60000 [==============================] - 3s - loss: 0.0273 - acc: 0.9919 - val_loss: 0.1013 - val_acc: 0.9808
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Epoch 12/20
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">60000/60000 [==============================] - 3s - loss: 0.0277 - acc: 0.9925 - val_loss: 0.0921 - val_acc: 0.9827
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Epoch 13/20
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">60000/60000 [==============================] - 3s - loss: 0.0252 - acc: 0.9931 - val_loss: 0.0900 - val_acc: 0.9832
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Epoch 14/20
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">60000/60000 [==============================] - 3s - loss: 0.0268 - acc: 0.9931 - val_loss: 0.1035 - val_acc: 0.9830
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Epoch 15/20
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">60000/60000 [==============================] - 3s - loss: 0.0233 - acc: 0.9940 - val_loss: 0.1280 - val_acc: 0.9797
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Epoch 16/20
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">60000/60000 [==============================] - 3s - loss: 0.0243 - acc: 0.9942 - val_loss: 0.0998 - val_acc: 0.9830
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Epoch 17/20
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">60000/60000 [==============================] - 3s - loss: 0.0222 - acc: 0.9942 - val_loss: 0.1011 - val_acc: 0.9849
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Epoch 18/20
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">60000/60000 [==============================] - 3s - loss: 0.0205 - acc: 0.9946 - val_loss: 0.1111 - val_acc: 0.9830
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Epoch 19/20
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">60000/60000 [==============================] - 3s - loss: 0.0201 - acc: 0.9951 - val_loss: 0.1302 - val_acc: 0.9801
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Epoch 20/20
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">60000/60000 [==============================] - 3s - loss: 0.0206 - acc: 0.9952 - val_loss: 0.1181 - val_acc: 0.9827
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Test loss: 0.11807218486
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Test accuracy: 0.9827
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 id="安装-tensorflow">安装 Tensorflow&lt;/h2>
+&lt;p>Tensorflow虽然没有提供安装即可用的安装包，但是它可以通过&lt;code>pip&lt;/code>和&lt;code>conda&lt;/code>来安装，也是非常方便的，直接&lt;code>pip install tensorflow-gpu&lt;/code>即可。如果想避免CNTK和Tensorflow相互影响，可以专门为Tensorflow也开一个环境。&lt;/p>
+&lt;p>Tensorflow的GPU版本需要CUDA和CuDNN的支持，这个是pip无法安装的。独立安装CUDA和CuDNN需要从NVIDIA官网注册下载，也是很麻烦，但而由于CNTK里面是带这两个东西的，因此只需要把PATH设置到CNTK下面即可，非常方便！具体方式是在环境变量&lt;code>PYTHONPATH&lt;/code>中添加&lt;code>&amp;lt;CNTK目录&amp;gt;\cntk&lt;/code>，如果原本没有&lt;code>PYTHONPATH&lt;/code>这个变量就新建一个。&lt;/p>
+&lt;p>这样，Tensorflow也很快就安装完成了，修改Keras的后端跑一个测试结果如下：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;span class="lnt">25
+&lt;/span>&lt;span class="lnt">26
+&lt;/span>&lt;span class="lnt">27
+&lt;/span>&lt;span class="lnt">28
+&lt;/span>&lt;span class="lnt">29
+&lt;/span>&lt;span class="lnt">30
+&lt;/span>&lt;span class="lnt">31
+&lt;/span>&lt;span class="lnt">32
+&lt;/span>&lt;span class="lnt">33
+&lt;/span>&lt;span class="lnt">34
+&lt;/span>&lt;span class="lnt">35
+&lt;/span>&lt;span class="lnt">36
+&lt;/span>&lt;span class="lnt">37
+&lt;/span>&lt;span class="lnt">38
+&lt;/span>&lt;span class="lnt">39
+&lt;/span>&lt;span class="lnt">40
+&lt;/span>&lt;span class="lnt">41
+&lt;/span>&lt;span class="lnt">42
+&lt;/span>&lt;span class="lnt">43
+&lt;/span>&lt;span class="lnt">44
+&lt;/span>&lt;span class="lnt">45
+&lt;/span>&lt;span class="lnt">46
+&lt;/span>&lt;span class="lnt">47
+&lt;/span>&lt;span class="lnt">48
+&lt;/span>&lt;span class="lnt">49
+&lt;/span>&lt;span class="lnt">50
+&lt;/span>&lt;span class="lnt">51
+&lt;/span>&lt;span class="lnt">52
+&lt;/span>&lt;span class="lnt">53
+&lt;/span>&lt;span class="lnt">54
+&lt;/span>&lt;span class="lnt">55
+&lt;/span>&lt;span class="lnt">56
+&lt;/span>&lt;span class="lnt">57
+&lt;/span>&lt;span class="lnt">58
+&lt;/span>&lt;span class="lnt">59
+&lt;/span>&lt;span class="lnt">60
+&lt;/span>&lt;span class="lnt">61
+&lt;/span>&lt;span class="lnt">62
+&lt;/span>&lt;span class="lnt">63
+&lt;/span>&lt;span class="lnt">64
+&lt;/span>&lt;span class="lnt">65
+&lt;/span>&lt;span class="lnt">66
+&lt;/span>&lt;span class="lnt">67
+&lt;/span>&lt;span class="lnt">68
+&lt;/span>&lt;span class="lnt">69
+&lt;/span>&lt;span class="lnt">70
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-text" data-lang="text">&lt;span class="line">&lt;span class="cl">(tf-py35) C:\Users\Jacob&amp;gt;python C:\Users\Jacob\Downloads\mnist_mlp.py
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Using TensorFlow backend.
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">60000 train samples
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">10000 test samples
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">_________________________________________________________________
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Layer (type) Output Shape Param #
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">=================================================================
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">dense_1 (Dense) (None, 512) 401920
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">_________________________________________________________________
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">dropout_1 (Dropout) (None, 512) 0
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">_________________________________________________________________
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">dense_2 (Dense) (None, 512) 262656
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">_________________________________________________________________
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">dropout_2 (Dropout) (None, 512) 0
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">_________________________________________________________________
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">dense_3 (Dense) (None, 10) 5130
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">=================================================================
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Total params: 669,706
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Trainable params: 669,706
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Non-trainable params: 0
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">_________________________________________________________________
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Train on 60000 samples, validate on 10000 samples
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Epoch 1/20
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">2017-11-19 11:17:30.732744: I C:\tf_jenkins\home\workspace\rel-win\M\windows-gpu\PY\35\tensorflow\core\platform\cpu_feature_guard.cc:137] Your CPU supports instructions that this TensorFlow binary was not compiled to use: AVX AVX2
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">2017-11-19 11:17:31.701106: I C:\tf_jenkins\home\workspace\rel-win\M\windows-gpu\PY\35\tensorflow\core\common_runtime\gpu\gpu_device.cc:1030] Found device 0 with properties:
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">name: GeForce GTX 850M major: 5 minor: 0 memoryClockRate(GHz): 0.8625
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">pciBusID: 0000:01:00.0
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">totalMemory: 2.00GiB freeMemory: 1.65GiB
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">2017-11-19 11:17:31.701257: I C:\tf_jenkins\home\workspace\rel-win\M\windows-gpu\PY\35\tensorflow\core\common_runtime\gpu\gpu_device.cc:1120] Creating TensorFlow device (/device:GPU:0) -&amp;gt; (device: 0, name: GeForce GTX 850M, pci bus id: 0000:01:00.0, compute capability: 5.0)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">60000/60000 [==============================] - 122s 2ms/step - loss: 0.2460 - acc: 0.9233 - val_loss: 0.1317 - val_acc: 0.9590
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Epoch 2/20
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">60000/60000 [==============================] - 6s 96us/step - loss: 0.1023 - acc: 0.9698 - val_loss: 0.0881 - val_acc: 0.9745
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Epoch 3/20
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">60000/60000 [==============================] - 6s 95us/step - loss: 0.0762 - acc: 0.9768 - val_loss: 0.0823 - val_acc: 0.9744
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Epoch 4/20
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">60000/60000 [==============================] - 5s 91us/step - loss: 0.0612 - acc: 0.9811 - val_loss: 0.0812 - val_acc: 0.9761
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Epoch 5/20
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">60000/60000 [==============================] - 6s 98us/step - loss: 0.0514 - acc: 0.9845 - val_loss: 0.0734 - val_acc: 0.9813
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Epoch 6/20
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">60000/60000 [==============================] - 6s 102us/step - loss: 0.0454 - acc: 0.9866 - val_loss: 0.0783 - val_acc: 0.9818
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Epoch 7/20
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">60000/60000 [==============================] - 6s 93us/step - loss: 0.0388 - acc: 0.9884 - val_loss: 0.0871 - val_acc: 0.9797
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Epoch 8/20
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">60000/60000 [==============================] - 6s 95us/step - loss: 0.0354 - acc: 0.9896 - val_loss: 0.0918 - val_acc: 0.9813
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Epoch 9/20
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">60000/60000 [==============================] - 6s 96us/step - loss: 0.0330 - acc: 0.9906 - val_loss: 0.0859 - val_acc: 0.9800
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Epoch 10/20
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">60000/60000 [==============================] - 6s 103us/step - loss: 0.0308 - acc: 0.9915 - val_loss: 0.0898 - val_acc: 0.9812
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Epoch 11/20
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">60000/60000 [==============================] - 5s 89us/step - loss: 0.0261 - acc: 0.9924 - val_loss: 0.0975 - val_acc: 0.9824
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Epoch 12/20
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">60000/60000 [==============================] - 6s 103us/step - loss: 0.0266 - acc: 0.9925 - val_loss: 0.0906 - val_acc: 0.9848
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Epoch 13/20
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">60000/60000 [==============================] - 6s 102us/step - loss: 0.0248 - acc: 0.9934 - val_loss: 0.0907 - val_acc: 0.9834
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Epoch 14/20
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">60000/60000 [==============================] - 6s 96us/step - loss: 0.0224 - acc: 0.9939 - val_loss: 0.1088 - val_acc: 0.9811
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Epoch 15/20
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">60000/60000 [==============================] - 6s 97us/step - loss: 0.0217 - acc: 0.9938 - val_loss: 0.0973 - val_acc: 0.9818
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Epoch 16/20
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">60000/60000 [==============================] - 6s 97us/step - loss: 0.0202 - acc: 0.9946 - val_loss: 0.1075 - val_acc: 0.9819
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Epoch 17/20
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">60000/60000 [==============================] - 6s 99us/step - loss: 0.0197 - acc: 0.9947 - val_loss: 0.1218 - val_acc: 0.9815
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Epoch 18/20
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">60000/60000 [==============================] - 6s 96us/step - loss: 0.0208 - acc: 0.9945 - val_loss: 0.1131 - val_acc: 0.9832
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Epoch 19/20
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">60000/60000 [==============================] - 6s 93us/step - loss: 0.0190 - acc: 0.9949 - val_loss: 0.1285 - val_acc: 0.9805
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Epoch 20/20
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">60000/60000 [==============================] - 6s 94us/step - loss: 0.0185 - acc: 0.9955 - val_loss: 0.1153 - val_acc: 0.9833
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Test loss: 0.115294696707
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Test accuracy: 0.9833
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>&lt;em>（可以看出Tensorflow比CNTK要慢不少）&lt;/em>&lt;/p></description></item></channel></rss>
