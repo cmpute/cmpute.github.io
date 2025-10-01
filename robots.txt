@@ -12,3 +12,33 @@ Disallow: /uploads/
 Disallow: /vendors/
 
 Sitemap: http://zyxin.xyz/blog/sitemap.xml
+
+
+# ------------ 禁止各大模型公司的爬取 ------------
+# 参考网址：https://promptwatch.com/blog/complete-guide-llm-crawler-user-agents-2025
+User-agent: GPTBot
+Disallow: /
+
+User-agent: ChatGPT-User
+Disallow: /
+
+User-agent: ChatGPT-User 2.0
+Disallow: /
+
+User-agent: Claude-Web
+Disallow: /
+
+User-agent: ClaudeBot
+Disallow: /
+
+User-agent: PerplexityBot
+Disallow: /
+
+User-agent: Perplexity-User
+Disallow: /
+
+User-agent: cohere-ai
+Disallow: /
+
+User-agent: MistralAI-User
+Disallow: /
